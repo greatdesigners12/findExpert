@@ -1,24 +1,24 @@
 import logo from './logo.svg';
 import './App.css';
+import AgoraUIKit from "agora-react-uikit"
+import { useState } from 'react';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const rtcProps = {
+    appId: "9389c3640acc415295195dce74994e91",
+    channel: "jack",
+    token: null,
+  };
+  const [videoCall, setVideoCall] = useState(false);
+  const callbacks = {
+    EndCall: () => setVideoCall(false),
+};
+  return videoCall ? (
+    <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
+      <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
     </div>
+  ) : (
+    <h3 onClick={() => setVideoCall(true)}>Join</h3>
   );
 }
 
