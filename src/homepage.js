@@ -2,6 +2,7 @@ import AgoraUIKit from "agora-react-uikit"
 import { useEffect, useState } from 'react';
 import { getAllExpertsData } from './controller/home_controller/home_controller';
 import { TampilNamaWansen } from "./wansen";
+import { TestingRegisterExpert } from "./testing backend/registerExpert";
 
 export const HomePage = () => {
     const rtcProps = {
@@ -48,6 +49,7 @@ export const HomePage = () => {
             <h1>{expert.name}</h1>
           </div>))}
         <TampilNamaWansen />
+        <TestingRegisterExpert />
        
       </div>)
 }

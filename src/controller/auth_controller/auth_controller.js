@@ -1,8 +1,11 @@
 import { db, app } from "../firebaseApp";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore"; 
+import {doc, setDoc } from "firebase/firestore"; 
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+
 import { ResultData } from "../structureJson/resultData";
 import {UserData} from "./models/userData"
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+
 export async function login (email, password)  {
     const auth = getAuth();
     const result = new ResultData();
@@ -10,6 +13,13 @@ export async function login (email, password)  {
 
     // Minimum eight characters, at least one uppercase letter, one lowercase letter and one number
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
+
+    if(email === "" || password === ""){
+        result.data = null;
+        result.errorMessage = "Please fill all the inputs";
+        result.statusCode = 400;
+        return result;
+    }
 
     var errorMsgValidation = "";
 
@@ -57,9 +67,14 @@ export async function login (email, password)  {
 
 }
 
-export async function register (email, password, confirmPassword)  {
+export async function register (name, job, email, password, confirmPassword)  {
     const result = new ResultData()
-
+    if(name === "" || job === "" || email === "" || password === "" || confirmPassword === ""){
+        result.data = null;
+        result.errorMessage = "Please fill all the inputs";
+        result.statusCode = 400;
+        return result;
+    }
     if(password != confirmPassword){
         result.data = null;
         result.errorMessage = "The password doesn't match";
@@ -120,10 +135,77 @@ export async function register (email, password, confirmPassword)  {
     });
 
     if(result.statusCode === 200){
-        const data = new UserData(result.data.uid, "", "").serialize()
+        const data = new UserData(result.data.uid, name, job).serialize()
         await setDoc(doc(db, "userData", result.data.uid), data);
     }
     
     return result;
+
+}
+
+export async function registerExpert (expert)  {
+    const result = new ResultData();
+
+    if(expert.checkIfThereIsEmpty()){
+        result.data = null;
+        result.errorMessage = "Please fill all the inputs";
+        result.statusCode = 400;
+        return result;
+    }
+    try {
+        
+        const auth = getAuth();
+        await createUserWithEmailAndPassword(auth, expert.email, expert.password).then((userCredential) => {
+            
+            result.data = userCredential.user;
+            result.errorMessage = "";
+            result.statusCode = 200;
+            
+            
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            result.data = errorCode;
+            result.errorMessage = errorMessage;
+            result.statusCode = 400;
+            
+        });
+        
+        if(result.statusCode !== 200){
+            return result
+        }
+
+        const storage = getStorage();
+        const curKTPPicName = new Date().getTime().toString() + ".png"
+        const storageKTPPicRef = ref(storage, 'ktp/' + curKTPPicName);
+        await uploadBytes(storageKTPPicRef, expert.ktp[0])
+        const curProfilePicName = new Date().getTime().toString() + ".png"
+        const storageProfilePicRef = ref(storage, 'userProfilePics/' + curProfilePicName);
+        await uploadBytes(storageProfilePicRef, expert.profilePicture[0])
+       
+        
+        const allAchievementsPicNames = [];
+        for(var el of expert.certificates){
+            const curAchievementPicName = new Date().getTime().toString() + ".png"
+            allAchievementsPicNames.push(curAchievementPicName);
+            await uploadBytes(ref(storage, 'achievements/' + curAchievementPicName), el)
+        }
+
+        expert.ktp = curKTPPicName
+        expert.certificates = allAchievementsPicNames
+        expert.profilePicture = curProfilePicName
+        await setDoc(doc(db, "expertData", result.data.uid), expert.serialize());
+        
+        return result
+       
+
+        }catch(e){
+            result.data = null 
+            result.statusCode = 400 
+            result.errorMessage = e.message
+            return result
+        }
+    
 
 }
