@@ -4,12 +4,13 @@ import { ResultData } from "../structureJson/resultData";
 import { Field } from "./models/field"; 
 import { ExpertData } from "./models/expertData"; 
 
-export async function getExpertsByField(fieldId) {
+
+export async function getExpertsByFieldAndStatus(fieldId) {
     const result = new ResultData();
 
     try {
-        const expertsCollection = collection(db, "expertData"); 
-        const fieldExpertsQuery = query(expertsCollection, where("field_id", "==", fieldId));
+        const expertsCollection = collection(db, "expertData");
+        const fieldExpertsQuery = query(expertsCollection, where("field_id", "==", fieldId), where("verified", "==", "yes"));
         const expertSnapshot = await getDocs(fieldExpertsQuery);
 
         const experts = [];
@@ -36,12 +37,12 @@ export async function getExpertsByField(fieldId) {
             result.statusCode = 200;
         } else {
             result.data = null;
-            result.errorMessage = "No experts found for this field";
+            result.errorMessage = "No verified experts found for this field";
             result.statusCode = 404;
         }
     } catch (error) {
         result.data = null;
-        result.errorMessage = "Failed to get experts by field: " + error.message;
+        result.errorMessage = "Failed to get verified experts by field: " + error.message;
         result.statusCode = 500;
     }
 

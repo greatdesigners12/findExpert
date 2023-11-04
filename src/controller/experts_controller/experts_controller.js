@@ -1,15 +1,14 @@
 import { db } from "../firebaseApp";
 import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { Expert } from "./models/expert"; 
+import { Expert } from "./models/expert";
 import { ResultData } from "../structureJson/resultData";
-
 
 export class ExpertsController {
     async getExpertById(id) {
         const result = new ResultData();
 
         try {
-            const expertsCollection = collection(db, "expertData"); // Replace with your collection name
+            const expertsCollection = collection(db, "expertData"); 
             const expertSnapshot = await getDocs(expertsCollection);
 
             for (const expertDoc of expertSnapshot.docs) {
@@ -28,7 +27,9 @@ export class ExpertsController {
                         expertData.jobExperience,
                         expertData.ktp,
                         expertData.certificates,
-                        expertData.profilePicture
+                        expertData.profilePicture,
+                        expertData.verified,
+                        expertData.status
                     );
                     result.errorMessage = "";
                     result.statusCode = 200;
@@ -52,7 +53,7 @@ export class ExpertsController {
         const result = new ResultData();
 
         try {
-            const expertsCollection = collection(db, "expertData"); 
+            const expertsCollection = collection(db, "expertData");
             const expertRef = doc(expertsCollection, id);
 
             await updateDoc(expertRef, newData);
@@ -73,7 +74,7 @@ export class ExpertsController {
         const result = new ResultData();
 
         try {
-            const expertsCollection = collection(db, "expertData"); 
+            const expertsCollection = collection(db, "expertData");
             const expertRef = doc(expertsCollection, id);
 
             await deleteDoc(expertRef);
