@@ -14,3 +14,23 @@ export async function getAllExpertsData ()  {
 
 }
 
+// home 
+
+// login
+
+// register
+
+// expert list 
+
+// expert description 
+
+// livechat
+
+// expert verification page
+
+// payment verification page
+
+// payment page
+
+
+

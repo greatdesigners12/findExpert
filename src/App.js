@@ -9,8 +9,17 @@ import {
   Routes,
 } from "react-router-dom";
 
+import { useEffect } from 'react';
+import { login, register } from './controller/auth_controller/auth_controller';
+
 function App() {
-  
+  useEffect(() => {
+    const tryLogin = async () => {
+      const data =  await login("gg@gmail.com", "Awd123");
+      console.log(data);
+    }
+    tryLogin();
+  }, [])
   return <HomePage/>;
 }
 
