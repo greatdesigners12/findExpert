@@ -14,8 +14,6 @@ export class Expert {
         this.certificates = certificates;
         this.profilePicture = profilePicture;
         this.status = "unverified";
-        this.open = open; // New variable
-        this.close = close; // New variable
     }
 
     serialize() {
@@ -34,8 +32,6 @@ export class Expert {
             "certificates": this.certificates,
             "profilePicture": this.profilePicture,
             "status": this.status,
-            "open": this.open, // New variable
-            "close": this.close, // New variable
         };
     }
 
