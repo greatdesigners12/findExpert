@@ -3,6 +3,7 @@ import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase
 import { Transaction } from "./models/transaction";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { UserData } from "../auth_controller/models/userData";
 
 export class TransactionsController {
     async createTransaction(
@@ -157,7 +158,48 @@ export class TransactionsController {
         return result;
     }
     
-
+    async getExpertByHistory(user_id) {
+        const result = new ResultData();
+    
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const userTransactionsQuery = query(transactionsCollection, where("customer_id", "==", user_id), orderBy("transaction_date", "desc"));
+            const transactionSnapshot = await getDocs(userTransactionsQuery);
+    
+            const experts = [];
+            const uniqueExpertIds = new Set();
+    
+            for (const transactionDoc of transactionSnapshot.docs) {
+                const transactionData = transactionDoc.data();
+                const expert_id = transactionData.expert_id;
+    
+                if (!uniqueExpertIds.has(expert_id) && experts.length < 4) {
+                    const expert = await this.getExpertById(expert_id); 
+                    if (expert.statusCode === 200) {
+                        experts.push(expert.data);
+                        uniqueExpertIds.add(expert_id);
+                    }
+                }
+    
+                if (experts.length >= 4) {
+                    break;
+                }
+            }
+    
+            result.data = experts;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get experts by history: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
+    
+    
     async deleteTransaction(id) {
         const result = new ResultData();
 
