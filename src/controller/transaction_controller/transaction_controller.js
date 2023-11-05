@@ -14,7 +14,8 @@ export class TransactionsController {
         consultation_time,
         payment_amount,
         transaction_date,
-        transaction_image
+        transaction_image,
+        refund_image // Tambahkan parameter refund_image
     ) {
         const result = new ResultData();
     
@@ -36,9 +37,9 @@ export class TransactionsController {
                 consultation_time,
                 payment_amount,
                 transaction_date,
-                "waiting", // Set the transaction status to "waiting"
-                transactionImageName, // Set the transaction image file name
-                null // Set refund_image to null for now
+                "waiting",
+                transactionImageName,
+                refund_image // Set refund_image
             );
     
             const docRef = await setDoc(transactionsCollection, newTransaction.serialize());
@@ -54,6 +55,7 @@ export class TransactionsController {
     
         return result;
     }
+    
     
     async getTransactionById(id) {
         const result = new ResultData();
@@ -96,6 +98,68 @@ export class TransactionsController {
         return result;
     }
 
+    async getTransactionByCustomer(user_id) {
+        const result = new ResultData();
+    
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const transactionsQuery = query(transactionsCollection, where("customer_id", "==", user_id));
+            const transactionSnapshot = await getDocs(transactionsQuery);
+    
+            const transactions = [];
+            transactionSnapshot.forEach((doc) => {
+                transactions.push({ id: doc.id, ...doc.data() });
+            });
+    
+            if (transactions.length > 0) {
+                result.data = transactions;
+                result.errorMessage = "";
+                result.statusCode = 200;
+            } else {
+                result.data = null;
+                result.errorMessage = "No transactions found for the customer";
+                result.statusCode = 404;
+            }
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get transactions for the customer: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
+
+    async getAdminTransactions() {
+        const result = new ResultData();
+    
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const adminTransactionsQuery = query(
+                transactionsCollection,
+                where("transaction_status", "in", ["waiting", "cancel"])
+            );
+    
+            const transactionSnapshot = await getDocs(adminTransactionsQuery);
+    
+            const transactions = [];
+            transactionSnapshot.forEach((transactionDoc) => {
+                const transactionData = transactionDoc.data();
+                transactions.push(transactionData);
+            });
+    
+            result.data = transactions;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get admin transactions: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
     async updateTransactionByAdmin(id, newData) {
         const result = new ResultData();
     
@@ -103,20 +167,42 @@ export class TransactionsController {
             const transactionsCollection = collection(db, "transactions");
             const transactionRef = doc(transactionsCollection, id);
     
-            // Check if the 'refund_image' and 'transaction_status' fields are provided in newData
-            if (newData.refund_image !== undefined && newData.transaction_status !== undefined) {
-                // Update the 'refund_image' and 'transaction_status' fields
-                await updateDoc(transactionRef, {
-                    refund_image: newData.refund_image,
-                    transaction_status: newData.transaction_status
-                });
+            if (newData.transaction_status) {
+                if (newData.transaction_status === "paid" || newData.transaction_status === "unvalid") {
+                    // Update the 'transaction_status' field
+                    const updateData = {
+                        transaction_status: newData.transaction_status
+                    };
     
-                result.data = newData;
-                result.errorMessage = "";
-                result.statusCode = 200;
+                    if (newData.transaction_status === "refund") {
+                        // Check if 'refund_image' is provided in newData
+                        if (newData.refund_image) {
+                            // Update the 'refund_image' field with a consistent naming format
+                            const refundImageName = new Date().getTime().toString() + "_refund.png";
+                            const refundImageRef = ref(storage, 'refundImages/' + refundImageName);
+                            await uploadBytes(refundImageRef, newData.refund_image);
+                            updateData.refund_image = refundImageName;
+                        } else {
+                            result.data = null;
+                            result.errorMessage = "Missing 'refund_image' for 'refund' status.";
+                            result.statusCode = 400;
+                            return result;
+                        }
+                    }
+    
+                    await updateDoc(transactionRef, updateData);
+    
+                    result.data = newData;
+                    result.errorMessage = "";
+                    result.statusCode = 200;
+                } else {
+                    result.data = null;
+                    result.errorMessage = "Invalid 'transaction_status' provided.";
+                    result.statusCode = 400;
+                }
             } else {
                 result.data = null;
-                result.errorMessage = "Missing 'refund_image' and 'transaction_status' fields in the update data.";
+                result.errorMessage = "Missing 'transaction_status' in the update data.";
                 result.statusCode = 400;
             }
         } catch (error) {
@@ -126,7 +212,9 @@ export class TransactionsController {
         }
     
         return result;
-    }
+    }    
+
+    
     async updateTransactionByExpert(id, newStatus) {
         const result = new ResultData();
     
@@ -134,21 +222,53 @@ export class TransactionsController {
             const transactionsCollection = collection(db, "transactions");
             const transactionRef = doc(transactionsCollection, id);
     
-            // Check if the 'transaction_status' field is provided
-            if (newStatus !== undefined) {
-                // Update the 'transaction_status' field
+            // Get the current timestamp
+            const currentTimestamp = new Date().toISOString();
+    
+            if (newStatus === "Accept") {
+                // Retrieve the amount from the transaction data
+                const transactionData = (await getDoc(transactionRef)).data();
+                const amount = transactionData.amount;
+    
+                // Calculate the end time based on the start time and amount
+                const startTime = currentTimestamp;
+                const minutesToAdd = amount; // Assume amount is the number of minutes to add
+                const endTime = new Date(new Date(startTime).getTime() + minutesToAdd * 60000);
+    
+                // Update the 'transaction_status', 'start_time', and 'end_time' fields
                 await updateDoc(transactionRef, {
-                    transaction_status: newStatus
+                    transaction_status: "ready",
+                    start_time: startTime,
+                    end_time: endTime.toISOString()
                 });
     
-                result.data = newStatus;
-                result.errorMessage = "";
-                result.statusCode = 200;
+                // Update the expert status to "Busy"
+                const expertId = transactionData.expert_id;
+                await this.updateExpertStatus(expertId, "busy"); // Assuming there's a function to update expert status
+            } else if (newStatus === "done") {
+                // Update the 'transaction_status' to "done"
+                await updateDoc(transactionRef, {
+                    transaction_status: "done"
+                });
+    
+                // Update the expert status to "Online"
+                const expertId = (await getDoc(transactionRef)).data().expert_id;
+                await this.updateExpertStatus(expertId, "online"); // Assuming there's a function to update expert status
+            } else if (newStatus === "cancel") {
+                // Update the 'transaction_status' to "cancel"
+                await updateDoc(transactionRef, {
+                    transaction_status: "cancel"
+                });
             } else {
                 result.data = null;
-                result.errorMessage = "Missing 'transaction_status' field in the update data.";
+                result.errorMessage = "Invalid status provided.";
                 result.statusCode = 400;
+                return result;
             }
+    
+            result.data = newStatus;
+            result.errorMessage = "";
+            result.statusCode = 200;
         } catch (error) {
             result.data = null;
             result.errorMessage = "Failed to update transaction: " + error.message;
@@ -157,6 +277,38 @@ export class TransactionsController {
     
         return result;
     }
+    
+    async getExpertTransactionsById(expertId) {
+        const result = new ResultData();
+    
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const expertTransactionsQuery = query(
+                transactionsCollection,
+                where("expert_id", "==", expertId),
+                where("transaction_status", "in", ["ready", "paid"])
+            );
+    
+            const transactionSnapshot = await getDocs(expertTransactionsQuery);
+    
+            const transactions = [];
+            transactionSnapshot.forEach((transactionDoc) => {
+                const transactionData = transactionDoc.data();
+                transactions.push(transactionData);
+            });
+    
+            result.data = transactions;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get expert transactions: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
     
     async getExpertByHistory(user_id) {
         const result = new ResultData();
