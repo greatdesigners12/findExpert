@@ -14,7 +14,8 @@ export class TransactionsController {
         consultation_time,
         payment_amount,
         transaction_date,
-        transaction_image
+        transaction_image,
+        return_image // Tambahkan parameter return_image
     ) {
         const result = new ResultData();
     
@@ -36,9 +37,9 @@ export class TransactionsController {
                 consultation_time,
                 payment_amount,
                 transaction_date,
-                "waiting", // Set the transaction status to "waiting"
-                transactionImageName, // Set the transaction image file name
-                null // Set refund_image to null for now
+                "waiting",
+                transactionImageName,
+                return_image // Set return_image
             );
     
             const docRef = await setDoc(transactionsCollection, newTransaction.serialize());
@@ -54,6 +55,7 @@ export class TransactionsController {
     
         return result;
     }
+    
     
     async getTransactionById(id) {
         const result = new ResultData();
@@ -76,7 +78,7 @@ export class TransactionsController {
                         transactionData.transaction_date,
                         transactionData.transaction_status,
                         transactionData.transaction_image,
-                        transactionData.refund_image
+                        transactionData.return_image
                     );
                     result.errorMessage = "";
                     result.statusCode = 200;
@@ -96,6 +98,116 @@ export class TransactionsController {
         return result;
     }
 
+    async getTransactionByCustomer(user_id) {
+        const result = new ResultData();
+    
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const transactionsQuery = query(transactionsCollection, where("customer_id", "==", user_id));
+            const transactionSnapshot = await getDocs(transactionsQuery);
+    
+            const transactions = [];
+            transactionSnapshot.forEach((doc) => {
+                transactions.push({ id: doc.id, ...doc.data() });
+            });
+    
+            if (transactions.length > 0) {
+                result.data = transactions;
+                result.errorMessage = "";
+                result.statusCode = 200;
+            } else {
+                result.data = null;
+                result.errorMessage = "No transactions found for the customer";
+                result.statusCode = 404;
+            }
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get transactions for the customer: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
+    async updateTransactionStatusToOngoing(transactionId) {
+        const result = new ResultData();
+    
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const transactionRef = doc(transactionsCollection, transactionId);
+            const transactionSnapshot = await getDoc(transactionRef);
+    
+            if (transactionSnapshot.exists()) {
+                // Check if the current transaction status is "waiting" to update it to "ongoing"
+                if (transactionSnapshot.data().transaction_status === "waiting") {
+                    // Calculate the start time and end time based on the amount in minutes
+                    const currentTimestamp = new Date().toISOString();
+                    const amount = transactionSnapshot.data().amount;
+                    const startTime = currentTimestamp;
+                    const endTime = new Date(new Date(startTime).getTime() + amount * 60000);
+    
+                    // Update the transaction status to "ongoing" and update start_time and end_time
+                    await updateDoc(transactionRef, {
+                        transaction_status: "ongoing",
+                        start_time: startTime,
+                        end_time: endTime.toISOString()
+                    });
+    
+                    result.data = "ongoing";
+                    result.errorMessage = "";
+                    result.statusCode = 200;
+                } else {
+                    result.data = null;
+                    result.errorMessage = "Transaction is not in 'waiting' status.";
+                    result.statusCode = 400;
+                }
+            } else {
+                result.data = null;
+                result.errorMessage = "Transaction not found";
+                result.statusCode = 404;
+            }
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to update transaction status to 'ongoing': " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
+    
+
+    async getAdminTransactions() {
+        const result = new ResultData();
+    
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const adminTransactionsQuery = query(
+                transactionsCollection,
+                where("transaction_status", "in", ["waiting", "paid","cancel", "done"])
+            );
+    
+            const transactionSnapshot = await getDocs(adminTransactionsQuery);
+    
+            const transactions = [];
+            transactionSnapshot.forEach((transactionDoc) => {
+                const transactionData = transactionDoc.data();
+                transactions.push(transactionData);
+            });
+    
+            result.data = transactions;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get admin transactions: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
+    
     async updateTransactionByAdmin(id, newData) {
         const result = new ResultData();
     
@@ -103,20 +215,42 @@ export class TransactionsController {
             const transactionsCollection = collection(db, "transactions");
             const transactionRef = doc(transactionsCollection, id);
     
-            // Check if the 'refund_image' and 'transaction_status' fields are provided in newData
-            if (newData.refund_image !== undefined && newData.transaction_status !== undefined) {
-                // Update the 'refund_image' and 'transaction_status' fields
-                await updateDoc(transactionRef, {
-                    refund_image: newData.refund_image,
-                    transaction_status: newData.transaction_status
-                });
+            if (newData.transaction_status) {
+                if (newData.transaction_status === "paid" || newData.transaction_status === "unvalid" || newData.transaction_status === "end") {
+                    // Update the 'transaction_status' field
+                    const updateData = {
+                        transaction_status: newData.transaction_status
+                    };
     
-                result.data = newData;
-                result.errorMessage = "";
-                result.statusCode = 200;
+                    if (newData.transaction_status === "refund" || newData.transaction_status === "end") {
+                        // Check if 'return_image' is provided in newData
+                        if (newData.return_image) {
+                            const imageType = newData.transaction_status === "refund" ? "refund" : "end";
+                            const imageName = new Date().getTime().toString() + `_${imageType}.png`;
+                            const imageRef = ref(storage, `${imageType}Images/${imageName}`);
+                            await uploadBytes(imageRef, newData.return_image);
+                            updateData[`${imageType}_image`] = imageName;
+                        } else {
+                            result.data = null;
+                            result.errorMessage = `Missing 'return_image' for '${newData.transaction_status}' status.`;
+                            result.statusCode = 400;
+                            return result;
+                        }
+                    }
+                    
+                    await updateDoc(transactionRef, updateData);
+    
+                    result.data = newData;
+                    result.errorMessage = "";
+                    result.statusCode = 200;
+                } else {
+                    result.data = null;
+                    result.errorMessage = "Invalid 'transaction_status' provided.";
+                    result.statusCode = 400;
+                }
             } else {
                 result.data = null;
-                result.errorMessage = "Missing 'refund_image' and 'transaction_status' fields in the update data.";
+                result.errorMessage = "Missing 'transaction_status' in the update data.";
                 result.statusCode = 400;
             }
         } catch (error) {
@@ -127,6 +261,9 @@ export class TransactionsController {
     
         return result;
     }
+    
+
+    
     async updateTransactionByExpert(id, newStatus) {
         const result = new ResultData();
     
@@ -134,21 +271,69 @@ export class TransactionsController {
             const transactionsCollection = collection(db, "transactions");
             const transactionRef = doc(transactionsCollection, id);
     
-            // Check if the 'transaction_status' field is provided
-            if (newStatus !== undefined) {
-                // Update the 'transaction_status' field
+            // Get the current timestamp
+            const currentTimestamp = new Date().toISOString();
+    
+            if (newStatus === "Accept") {
+                // Retrieve the amount from the transaction data
+                const transactionData = (await getDoc(transactionRef)).data();
+                const amount = transactionData.amount;
+    
+                // Calculate the end time based on the start time and amount
+                const startTime = currentTimestamp;
+                const minutesToAdd = amount; // Assume amount is the number of minutes to add
+                const endTime = new Date(new Date(startTime).getTime() + minutesToAdd * 60000);
+    
+                // Update the 'transaction_status', 'start_time', and 'end_time' fields
                 await updateDoc(transactionRef, {
-                    transaction_status: newStatus
+                    transaction_status: "ready",
+                    start_time: startTime,
+                    end_time: endTime.toISOString()
                 });
     
-                result.data = newStatus;
-                result.errorMessage = "";
-                result.statusCode = 200;
+                // Update the expert status to "Busy"
+                const expertId = transactionData.expert_id;
+                await this.updateExpertStatus(expertId, "busy"); // Assuming there's a function to update expert status
+            } else if (newStatus === "done") {
+                // Retrieve the transaction data
+                const transactionData = (await getDoc(transactionRef)).data();
+    
+                // Check if it has been at least 15 minutes since the transaction started
+                const startTime = new Date(transactionData.start_time);
+                const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
+    
+                if (new Date(currentTimestamp) >= fifteenMinutesLater) {
+                    // Update the 'transaction_status' to "done"
+                    await updateDoc(transactionRef, {
+                        transaction_status: "done"
+                    });
+    
+                    // Update the expert status to "Online"
+                    const expertId = transactionData.expert_id;
+                    await this.updateExpertStatus(expertId, "online"); // Assuming there's a function to update expert status
+    
+                    result.data = newStatus;
+                    result.errorMessage = "";
+                    result.statusCode = 200;
+                } else {
+                    result.data = null;
+                    result.errorMessage = "Transaction must be at least 15 minutes to be marked as 'done'.";
+                    result.statusCode = 400;
+                }
+            } else if (newStatus === "cancel") {
+                // Update the 'transaction_status' to "cancel"
+                await updateDoc(transactionRef, {
+                    transaction_status: "cancel"
+                });
             } else {
                 result.data = null;
-                result.errorMessage = "Missing 'transaction_status' field in the update data.";
+                result.errorMessage = "Invalid status provided.";
                 result.statusCode = 400;
             }
+    
+            result.data = newStatus;
+            result.errorMessage = "";
+            result.statusCode = 200;
         } catch (error) {
             result.data = null;
             result.errorMessage = "Failed to update transaction: " + error.message;
@@ -157,6 +342,39 @@ export class TransactionsController {
     
         return result;
     }
+    
+    
+    async getExpertTransactionsById(expertId) {
+        const result = new ResultData();
+    
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const expertTransactionsQuery = query(
+                transactionsCollection,
+                where("expert_id", "==", expertId),
+                where("transaction_status", "in", ["ready", "paid", "ongoing"])
+            );
+    
+            const transactionSnapshot = await getDocs(expertTransactionsQuery);
+    
+            const transactions = [];
+            transactionSnapshot.forEach((transactionDoc) => {
+                const transactionData = transactionDoc.data();
+                transactions.push(transactionData);
+            });
+    
+            result.data = transactions;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get expert transactions: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
     
     async getExpertByHistory(user_id) {
         const result = new ResultData();

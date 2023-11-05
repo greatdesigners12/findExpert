@@ -61,7 +61,11 @@ export async function getAllFieldsWithExperts() {
             const fieldData = fieldDoc.data();
             const field = new Field(fieldData.id, fieldData.name, fieldData.icon, fieldData.description);
 
-            const fieldExpertsQuery = query(collection(db, "expertData"), where("field_id", "==", fieldData.id));
+            const fieldExpertsQuery = query(collection(db, "expertData"),
+                where("field_id", "==", fieldData.id),
+                where("verified", "==", "yes") // Filter by verified experts
+            );
+
             const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
 
             if (fieldExpertsSnapshot.size > 0) {
@@ -75,7 +79,7 @@ export async function getAllFieldsWithExperts() {
             result.statusCode = 200;
         } else {
             result.data = null;
-            result.errorMessage = "No fields with experts found";
+            result.errorMessage = "No fields with verified experts found"; // Update the error message
             result.statusCode = 404;
         }
     } catch (error) {
@@ -86,3 +90,4 @@ export async function getAllFieldsWithExperts() {
 
     return result;
 }
+
