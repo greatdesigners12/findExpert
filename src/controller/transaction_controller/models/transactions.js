@@ -10,7 +10,7 @@ export class Transaction {
         transaction_date,
         transaction_status,
         transaction_image,
-        refund_image
+        return_image
     ) {
         this.id = id;
         this.expert_id = expert_id;
@@ -22,7 +22,7 @@ export class Transaction {
         this.transaction_date = transaction_date;
         this.transaction_status = transaction_status;
         this.transaction_image = transaction_image;
-        this.refund_image = refund_image;
+        this.return_image = return_image;
     }
 
     serialize() {
@@ -37,7 +37,7 @@ export class Transaction {
             "transaction_date": this.transaction_date,
             "transaction_status": this.transaction_status,
             "transaction_image": this.transaction_image,
-            "refund_image": this.refund_image
+            "return_image": this.return_image
         };
     }
 }
