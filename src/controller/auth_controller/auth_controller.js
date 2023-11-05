@@ -1,10 +1,10 @@
 import { db, app } from "../firebaseApp";
-import {doc, setDoc } from "firebase/firestore"; 
+import {doc, setDoc, getDoc} from "firebase/firestore"; 
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 import { ResultData } from "../structureJson/resultData";
 import {UserData} from "./models/userData"
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export async function login (email, password)  {
     const auth = getAuth();
@@ -49,11 +49,27 @@ export async function login (email, password)  {
     }
 
     await signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
         // Signed in 
         result.data = userCredential.user;
         result.errorMessage = "";
         result.statusCode = 200;
+        
+
+        const checkUser = doc(db, "userData", userCredential.user.uid);
+        const checkUserSnap = await getDoc(checkUser);
+
+        if (checkUserSnap.exists()) {
+            result.data["role"] = "user"
+        } else {
+            const checkExpert = doc(db, "expertData", userCredential.user.uid);
+            const checkExpertSnap = await getDoc(checkExpert);
+            if (checkExpertSnap.exists()) {
+                result.data["role"] = "expert"
+            }else {
+                result.data["role"] = "admin"
+            }
+        }
     })
     .catch((error) => {
         const errorCode = error.code;
@@ -177,19 +193,43 @@ export async function registerExpert (expert)  {
         }
 
         const storage = getStorage();
-        const curKTPPicName = new Date().getTime().toString() + ".png"
+        var curKTPPicName = new Date().getTime().toString() + ".png"
         const storageKTPPicRef = ref(storage, 'ktp/' + curKTPPicName);
-        await uploadBytes(storageKTPPicRef, expert.ktp[0])
-        const curProfilePicName = new Date().getTime().toString() + ".png"
-        const storageProfilePicRef = ref(storage, 'userProfilePics/' + curProfilePicName);
-        await uploadBytes(storageProfilePicRef, expert.profilePicture[0])
-       
+        await uploadBytes(storageKTPPicRef, expert.ktp[0]).then(async (snapshot) => {
+                
+                
+            await getDownloadURL(snapshot.ref).then((downloadURL) => {
+                curKTPPicName = downloadURL
+              });
+           
+          
+        });
+        var curProfilePicName = new Date().getTime().toString() + ".png"
+        const storageProfilePicRef = ref(storage, 'userProfilePics/' + curProfilePicName)
+
+        await uploadBytes(storageProfilePicRef, expert.profilePicture[0]).then(async (snapshot) => {
+                
+                
+            await getDownloadURL(snapshot.ref).then((downloadURL) => {
+                curProfilePicName = downloadURL
+              });
+           
+          
+        });
         
         const allAchievementsPicNames = [];
         for(var el of expert.certificates){
             const curAchievementPicName = new Date().getTime().toString() + ".png"
-            allAchievementsPicNames.push(curAchievementPicName);
-            await uploadBytes(ref(storage, 'achievements/' + curAchievementPicName), el)
+            
+            await uploadBytes(ref(storage, 'achievements/' + curAchievementPicName), el).then(async (snapshot) => {
+                
+                
+                await getDownloadURL(snapshot.ref).then((downloadURL) => {
+                    allAchievementsPicNames.push(downloadURL);
+                  });
+               
+              
+            });
         }
 
         expert.ktp = curKTPPicName

@@ -13,7 +13,7 @@ export class Expert {
         this.ktp = ktp;
         this.certificates = certificates;
         this.profilePicture = profilePicture;
-        this.verified = "no";
+        this.verified = "false";
         this.status = "offline";
     }
 
