@@ -184,7 +184,7 @@ export class TransactionsController {
             const transactionsCollection = collection(db, "transactions");
             const adminTransactionsQuery = query(
                 transactionsCollection,
-                where("transaction_status", "in", ["waiting", "cancel", "done"])
+                where("transaction_status", "in", ["waiting", "paid","cancel", "done"])
             );
     
             const transactionSnapshot = await getDocs(adminTransactionsQuery);
