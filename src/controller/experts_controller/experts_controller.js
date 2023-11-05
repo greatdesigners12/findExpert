@@ -69,6 +69,50 @@ export class ExpertsController {
 
         return result;
     }
+    
+    async getAllVerifiedExperts() {
+        const result = new ResultData();
+
+        try {
+            const expertsCollection = collection(db, "expertData");
+            const verifiedExpertsQuery = query(expertsCollection, where("verified", "==", "yes"));
+            const expertSnapshot = await getDocs(verifiedExpertsQuery);
+
+            const experts = [];
+            expertSnapshot.forEach((expertDoc) => {
+                const expertData = expertDoc.data();
+                experts.push(
+                    new Expert(
+                        expertData.fullName,
+                        expertData.phoneNumber,
+                        expertData.email,
+                        expertData.password,
+                        expertData.birthDate,
+                        expertData.gender,
+                        expertData.education,
+                        expertData.fieldId,
+                        expertData.nik,
+                        expertData.jobExperience,
+                        expertData.ktp,
+                        expertData.certificates,
+                        expertData.profilePicture,
+                        expertData.verified,
+                        expertData.status
+                    )
+                );
+            });
+
+            result.data = experts;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get verified experts: " + error.message;
+            result.statusCode = 500;
+        }
+
+        return result;
+    }
 
     async deleteExpert(id) {
         const result = new ResultData();

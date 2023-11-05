@@ -262,7 +262,63 @@ export class TransactionsController {
         return result;
     }
     
+    async getAllTransactionsForExpert(expertId) {
+        const result = new ResultData();
 
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const expertTransactionsQuery = query(
+                transactionsCollection,
+                where("expert_id", "==", expertId),
+                where("transaction_status", "==", "done")
+            );
+
+            const transactionSnapshot = await getDocs(expertTransactionsQuery);
+
+            const transactions = [];
+            transactionSnapshot.forEach((transactionDoc) => {
+                const transactionData = transactionDoc.data();
+                transactions.push(transactionData);
+            });
+
+            result.data = transactions;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get expert transactions with status 'done': " + error.message;
+            result.statusCode = 500;
+        }
+
+        return result;
+    }
+
+    // Fungsi untuk mengambil jumlah total transaksi dengan status "done" untuk seorang expert
+    async getAmountOfTransactionsForExpert(expertId) {
+        const result = new ResultData();
+
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const expertTransactionsQuery = query(
+                transactionsCollection,
+                where("expert_id", "==", expertId),
+                where("transaction_status", "==", "done")
+            );
+
+            const transactionSnapshot = await getDocs(expertTransactionsQuery);
+            const amount = transactionSnapshot.size;
+
+            result.data = amount;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get the amount of expert transactions with status 'done': " + error.message;
+            result.statusCode = 500;
+        }
+
+        return result;
+    }
     
     async updateTransactionByExpert(id, newStatus) {
         const result = new ResultData();
@@ -344,37 +400,6 @@ export class TransactionsController {
     }
     
     
-    async getExpertTransactionsById(expertId) {
-        const result = new ResultData();
-    
-        try {
-            const transactionsCollection = collection(db, "transactions");
-            const expertTransactionsQuery = query(
-                transactionsCollection,
-                where("expert_id", "==", expertId),
-                where("transaction_status", "in", ["ready", "paid", "ongoing"])
-            );
-    
-            const transactionSnapshot = await getDocs(expertTransactionsQuery);
-    
-            const transactions = [];
-            transactionSnapshot.forEach((transactionDoc) => {
-                const transactionData = transactionDoc.data();
-                transactions.push(transactionData);
-            });
-    
-            result.data = transactions;
-            result.errorMessage = "";
-            result.statusCode = 200;
-        } catch (error) {
-            result.data = null;
-            result.errorMessage = "Failed to get expert transactions: " + error.message;
-            result.statusCode = 500;
-        }
-    
-        return result;
-    }
-    
     
     async getExpertByHistory(user_id) {
         const result = new ResultData();
@@ -438,4 +463,40 @@ export class TransactionsController {
 
         return result;
     }
+}
+
+export async function getExpertTransactionsById(expertId) {
+    const result = new ResultData();
+
+    try {
+        const transactionsCollection = collection(db, "transactions");
+        const expertTransactionsQuery = query(
+            transactionsCollection,
+            where("expert_id", "==", expertId),
+            where("transaction_status", "in", ["ready", "paid", "ongoing"])
+        );
+
+        // Subscribe to real-time updates
+        const unsubscribe = onSnapshot(expertTransactionsQuery, (snapshot) => {
+            const transactions = [];
+            snapshot.forEach((transactionDoc) => {
+                const transactionData = transactionDoc.data();
+                transactions.push(transactionData);
+            });
+
+            // Handle the updated data, e.g., update your UI with the new transactions
+            result.data = transactions;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        });
+
+        // Save the unsubscribe function so you can stop receiving updates later
+        result.unsubscribe = unsubscribe;
+    } catch (error) {
+        result.data = null;
+        result.errorMessage = "Failed to get expert transactions: " + error.message;
+        result.statusCode = 500;
+    }
+
+    return result;
 }

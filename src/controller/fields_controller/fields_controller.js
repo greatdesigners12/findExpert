@@ -4,8 +4,7 @@ import { ResultData } from "../structureJson/resultData";
 import { Field } from "./models/field"; 
 import { ExpertData } from "./models/expertData"; 
 
-
-export async function getExpertsByFieldAndStatus(fieldId) {
+export async function getExpertsByFieldAndStatus(fieldId, currentPage, pageSize, existingData = []) {
     const result = new ResultData();
 
     try {
@@ -13,41 +12,65 @@ export async function getExpertsByFieldAndStatus(fieldId) {
         const fieldExpertsQuery = query(expertsCollection, where("field_id", "==", fieldId), where("verified", "==", "yes"));
         const expertSnapshot = await getDocs(fieldExpertsQuery);
 
-        const experts = [];
+        const onlineExperts = [];
+        const busyExperts = [];
+        const offlineExperts = [];
+
         expertSnapshot.forEach((expertDoc) => {
             const expertData = expertDoc.data();
-            experts.push(
-                new ExpertData(
-                    expertData.id,
-                    expertData.full_name,
-                    expertData.field_id,
-                    expertData.education,
-                    expertData.KTP,
-                    expertData.NIK,
-                    expertData.certificate_images,
-                    expertData.no_telp,
-                    expertData.status
-                )
+            const expert = new ExpertData(
+                expertData.id,
+                expertData.full_name,
+                expertData.field_id,
+                expertData.education,
+                expertData.KTP,
+                expertData.NIK,
+                expertData.certificate_images,
+                expertData.no_telp,
+                expertData.status
             );
+
+            // Categorize experts based on their status.
+            if (expertData.status === "online") {
+                onlineExperts.push(expert);
+            } else if (expertData.status === "busy") {
+                busyExperts.push(expert);
+            } else {
+                offlineExperts.push(expert);
+            }
         });
 
-        if (experts.length > 0) {
-            result.data = experts;
+        // Sort online experts at the top, followed by busy and then offline.
+        const sortedExperts = onlineExperts.concat(busyExperts, offlineExperts);
+
+        // Calculate the start and end indices based on the current page and page size.
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+
+        // Get the experts to show for the current page.
+        const expertsToShow = sortedExperts.slice(startIndex, endIndex);
+
+        // Accumulate the newly fetched data with existingData.
+        const allData = existingData.concat(expertsToShow);
+
+        if (expertsToShow.length > 0) {
+            result.data = allData;
             result.errorMessage = "";
             result.statusCode = 200;
         } else {
             result.data = null;
-            result.errorMessage = "No verified experts found for this field";
+            result.errorMessage = "No more experts found for this field";
             result.statusCode = 404;
         }
     } catch (error) {
         result.data = null;
-        result.errorMessage = "Failed to get verified experts by field: " + error.message;
+        result.errorMessage = "Failed to get experts by field and status: " + error.message;
         result.statusCode = 500;
     }
 
     return result;
 }
+
 
 export async function getAllFieldsWithExperts() {
     const result = new ResultData();
