@@ -9,7 +9,7 @@ export async function getExpertsByFieldAndStatus(fieldId, currentPage, pageSize,
 
     try {
         const expertsCollection = collection(db, "expertData");
-        const fieldExpertsQuery = query(expertsCollection, where("field_id", "==", fieldId), where("verified", "==", "yes"));
+        const fieldExpertsQuery = query(expertsCollection, where("field_id", "==", fieldId), where("verified", "==", "true"));
         const expertSnapshot = await getDocs(fieldExpertsQuery);
 
         const onlineExperts = [];
@@ -134,7 +134,7 @@ export async function searchFieldsAndExperts(queryText, currentPage, pageSize) {
 
             const fieldExpertsQuery = query(collection(db, "expertData"),
                 where("field_id", "==", fieldData.id),
-                where("verified", "==", "yes"),
+                where("verified", "==", "true"),
                 where("full_name", "array-contains", queryText) // Search for experts by name
             );
 
