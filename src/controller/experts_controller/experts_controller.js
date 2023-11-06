@@ -15,6 +15,9 @@ export class ExpertsController {
 
             if (docSnap.exists()) {
                 result.data = docSnap.data();
+                const docRefField = doc(db, "field", result.data.fieldId);
+                const docSnapField = await getDoc(docRefField);
+                result.data["field"] = docSnapField.data()
                 result.errorMessage = "";
                 result.statusCode = 200;
             console.log("Document data:", docSnap.data());

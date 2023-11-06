@@ -3,9 +3,11 @@ import { HomePage } from './pages/homepage/homepage';
 import { useEffect } from 'react';
 import { login, register } from './controller/auth_controller/auth_controller';
 import { getAllTransactions, getAllUnverifiedWithdrawalRequest } from './controller/admin_controller/admin_controller';
+
 import { Expert } from './controller/experts_controller/models/expert';
 // import {getExpertData}
 import { Transaction } from './controller/transaction_controller/models/transactions';
+import { ExpertsController } from './controller/experts_controller/experts_controller';
 
 
 // const expertRef = new Expert(); // Initialize with the appropriate reference
@@ -19,10 +21,11 @@ function App() {
       const data =  await login("gg@gmail.com", "Awd123");
       const result1 =  await getAllTransactions(1, 5)
       const result2 =  await getAllUnverifiedWithdrawalRequest(1, 5)
-    
+      const e = new ExpertsController()
+      const getExpertById = await e.getExpertById("50zreHcLmQcVNQUAXbWuIjDkWj63")
       console.log(result1)
       console.log(result2)
-      
+      console.log(getExpertById)
       
     }
     tryLogin();
