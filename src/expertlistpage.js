@@ -29,7 +29,7 @@ export const TeamArea = () => {
                </div>
                <div className="row">
                {expertsData.map((expert) => (<div>
-            <SingleTeam image={expert.profilePicture} name={expert.fullname} title={expert.education} />
+            <SingleTeam image={expert.profilePicture} name={expert.fullName} title={expert.education} />
           </div>))}
                   {/* <SingleTeam image="1" name="Berlin Corleone" title="CEO & founder" />
                   <SingleTeam image="2" name="Norman Gordon" title="Associate Consultant" />

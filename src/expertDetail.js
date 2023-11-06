@@ -43,22 +43,6 @@ export const ExpertDetail = () => {
                <div className="row">
                 
                 <h1>{expertsData.data.fullName}</h1>
-               {/* {expertsData.map((expert) => (<div>
-            <SingleTeam image={expert.profilePicture} name={expert.fullname} title={expert.education} />
-          </div>))} */}
-                  {/* <SingleTeam image="1" name="Berlin Corleone" title="CEO & founder" />
-                  <SingleTeam image="2" name="Norman Gordon" title="Associate Consultant" />
-                  <SingleTeam image="3" name="Indigo Violet" title="Project Manager" />
-                  <SingleTeam image="4" name="Dylan Meringue" title="Support" />
-                  <SingleTeam image="5" name="Berlin Corleone" title="App Developer" />
-                  <SingleTeam image="6" name="Shahnewaz Sakil" title="Web Developer" />
-                  <SingleTeam image="7" name="Chauffina Carr" title="UI/UX Designer" />
-                  <SingleTeam image="8" name="Justin Case" title="Sumo Founder" />
-                  <SingleTeam image="9" name="Joss Sticks" title="Support" />
-                  <SingleTeam image="10" name="Dianne Ameter" title="App Designer" />
-                  <SingleTeam image="11" name="Russell Sprout" title="Web Developer" />
-                  <SingleTeam image="12" name="Lurch Schpellchek" title="Digital Marketer" /> */}
-
                </div >
             </div >
          </section > 

@@ -57,8 +57,8 @@ export const HomePage = () => {
             <h1>{expert.fullname}</h1>
           </div>))}
         <TampilNamaWansen />
-        {/* <TeamArea/> */}
-        <ExpertDetail id ={'50zreHcLmQcVNQUAXbWuIjDkWj63'}/>
+        <TeamArea/>
+        {/* <ExpertDetail id ={'50zreHcLmQcVNQUAXbWuIjDkWj63'}/> */}
         <TestingRegisterExpert />
         <LiveChatPage transaction={transaction} />
       </div>)

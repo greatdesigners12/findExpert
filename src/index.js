@@ -5,9 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ExpertDetail from './expertDetail';
+import TeamArea from './expertlistpage';
 const router = createBrowserRouter([
   {path : "/", element : <App/>},
   {path : "/expertDetail/:id", element : <ExpertDetail/>},
+  {path : "/expertList", element : <TeamArea/>},
 ])
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
