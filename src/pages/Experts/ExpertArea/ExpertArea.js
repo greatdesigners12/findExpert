@@ -1,13 +1,15 @@
 import React from 'react';
 import SingleTeam from '../../../components/SingleTeam/SingleTeam';
 import { useEffect, useState } from 'react';
-import { getAllVerifiedExperts } from '../../../controller/experts_controller/experts_controller';
+import { ExpertsController} from '../../../controller/experts_controller/experts_controller';
 
 export const ExpertArea = () => {
     const [expertsData, setExpertsData] = useState([])
     useEffect(() => {
+        console.log('hi');
         const getData = async () => {
-          const data = await getAllVerifiedExperts();
+        const ec = new ExpertsController()
+        const data = await ec.getAllVerifiedExperts();
           console.log(data);
           setExpertsData(data);
         } 
@@ -29,7 +31,7 @@ export const ExpertArea = () => {
                </div>
                <div className="row">
                {expertsData.map((expert) => (<div>
-                <SingleTeam image={expert.profilePicture} name={expert.fullName} title={expert.education} />
+                <SingleTeam image={expert.data.profilePicture} name={expert.data.fullName} title={expert.data.education} />
           </div>))}
                </div >
             </div >
