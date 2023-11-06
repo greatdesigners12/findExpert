@@ -7,8 +7,8 @@ import { Expert } from './controller/experts_controller/models/expert';
 // import {getExpertData}
 import { Transaction } from './controller/transaction_controller/models/transactions';
 
-const expertRef = new Expert(); // Initialize with the appropriate reference
-const transactionRef = new Transaction(); // Initialize with the appropriate reference
+// const expertRef = new Expert(); // Initialize with the appropriate reference
+// const transactionRef = new Transaction(); // Initialize with the appropriate reference
 
 function App() {
   useEffect(() => {
@@ -37,40 +37,40 @@ function hasNetwork(online) {
     element.classList.add("online");
 
     // Retrieve expert data and transactions data
-    const expertData = expertRef.getExpertData(); // Use the appropriate method to get expert data
-    const transactions = transactionRef.getAllTransactions(); // Use the appropriate method to get transactions
+    // const expertData = expertRef.getExpertData(); // Use the appropriate method to get expert data
+    // const transactions = transactionRef.getAllTransactions(); // Use the appropriate method to get transactions
 
-    const hasOngoingOrReadyTransactions = transactions.some(
-      (transaction) =>
-        transaction.transaction_status === "ongoing" ||
-        transaction.transaction_status === "ready"
-    );
+  //   const hasOngoingOrReadyTransactions = transactions.some(
+  //     (transaction) =>
+  //       transaction.transaction_status === "ongoing" ||
+  //       transaction.transaction_status === "ready"
+  //   );
 
-    if (hasOngoingOrReadyTransactions) {
-      expertData.status = "busy";
-    } else {
-      expertData.status = "online";
-    }
-  } else {
-    element.classList.remove("online");
-    element.classList.add("offline");
-    expertData.status = "offline";
-  }
+  //   if (hasOngoingOrReadyTransactions) {
+  //     expertData.status = "busy";
+  //   } else {
+  //     expertData.status = "online";
+  //   }
+  // } else {
+  //   element.classList.remove("online");
+  //   element.classList.add("offline");
+  //   expertData.status = "offline";
+  // }
 }
-
+}
 // Initial call when the page loads
-window.addEventListener("load", () => {
-  hasNetwork(navigator.onLine);
-});
+// window.addEventListener("load", () => {
+//   hasNetwork(navigator.onLine);
+// });
 
-// Listen for online/offline events
-window.addEventListener("online", () => {
-  hasNetwork(true);
-});
+// // Listen for online/offline events
+// window.addEventListener("online", () => {
+//   hasNetwork(true);
+// });
 
-window.addEventListener("offline", () => {
-  hasNetwork(false);
-});
+// window.addEventListener("offline", () => {
+//   hasNetwork(false);
+// });
 
 
 export default App;
