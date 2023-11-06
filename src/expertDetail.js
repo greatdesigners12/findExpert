@@ -2,9 +2,14 @@ import React from 'react';
 // import SingleTeam from './SingleTeam';
 import { useEffect, useState } from 'react';
 import {ExpertsController} from './controller/experts_controller/experts_controller';
+import { useParams } from 'react-router-dom';
 
-export const ExpertDetail = ({id}) => {
+export const ExpertDetail = () => {
     const [expertsData, setExpertsData] = useState(null)
+    // Ambil id di url
+    // /expertDetail/:id
+    const params = useParams();
+    const id = params.id
     useEffect(() => {
         console.log('hi');
         const getData = async () => {

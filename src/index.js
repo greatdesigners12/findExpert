@@ -5,9 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ExpertDetail from './expertDetail';
-const router = createBrowserRouter([{
-    path : "/", element : <App/>},
-    {path : "/expertDetail", element : <ExpertDetail/>},
+const router = createBrowserRouter([
+  {path : "/", element : <App/>},
+  {path : "/expertDetail/:id", element : <ExpertDetail/>},
 ])
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
