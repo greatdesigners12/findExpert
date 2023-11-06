@@ -1,8 +1,17 @@
 
 import {getAllFieldsWithExperts} from '../../controller/fields_controller/fields_controller'
 import React from 'react';
+import HomeOneHeader from '../Home/HomeOneHeader/HomeOneHeader';
+import CommonPageHeader from '../../components/CommonPageHeader/CommonPageHeader';
 import { Link } from 'react-router-dom';
+import HomeCapabilities from '../Home/HomeCapabilities/HomeCapabilities';
 import { useEffect, useState } from 'react';
+import PageHelmet from '../../components/shared/PageHelmet';
+import HomeThreeSecondServices from '../Home/HomeThreeSingleService/HomeThreeSingleService';
+import CommonCtaArea from '../../components/CommonCtaArea/CommonCtaArea';
+import Footer from '../../components/shared/Footer';
+
+
 export const ServicesPages = () => {
     const [fieldData, setFieldData] = useState([])
     const [isLoading, setLoading] = useState(true);
@@ -16,8 +25,11 @@ export const ServicesPages = () => {
         getData();
       }, []);
       return (
+       
         <div>
-    
+     <PageHelmet pageTitle="Services Page"/>
+     <HomeOneHeader/>
+         <CommonPageHeader title="Services" subtitle="Services" />
               <section className="services__area pt-115 pb-80">
                  <div className="container">
                     <div className="row">
@@ -41,7 +53,7 @@ export const ServicesPages = () => {
                   <img src={field.icon} alt="services" height={60} width={60}/>
                </div>
                <div className="services__content">
-                  <h3><Link to="/servicesDetails">{field.name}</Link></h3>
+                  <h3><Link to="/expert/">{field.name}</Link></h3>
                   <p>{field.description}</p>
                </div>
             </div>
@@ -54,6 +66,10 @@ export const ServicesPages = () => {
               </div>
                  </div>
               </section>
+              <HomeCapabilities/>
+         <HomeThreeSecondServices />
+         <CommonCtaArea/>
+         <Footer/>
            </div>
          
        
