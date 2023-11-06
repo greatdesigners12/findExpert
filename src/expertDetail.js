@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 export const ExpertDetail = () => {
     const [expertsData, setExpertsData] = useState(null)
     // Ambil id di url
-    // /expertDetail/:id <- index.js
+    // /expertDetail/:id
     const params = useParams();
     const id = params.id
     useEffect(() => {
