@@ -15,36 +15,42 @@ export class ExpertsController {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
+                result.data = docSnap.data();
+                result.errorMessage = "";
+                result.statusCode = 200;
             console.log("Document data:", docSnap.data());
             } else {
+                result.data = null;
+                result.errorMessage = "There's an error in getexpert(id)";
+                result.statusCode = 400;
             // docSnap.data() will be undefined in this case
             console.log("No such document!");
             }
-            for (const expertDoc of expertSnapshot.docs) {
-                const expertData = expertDoc.data();
-                if (expertData.id === id) {
-                    result.data = new Expert(
-                        expertData.fullName,
-                        expertData.phoneNumber,
-                        expertData.email,
-                        expertData.password,
-                        expertData.birthDate,
-                        expertData.gender,
-                        expertData.education,
-                        expertData.fieldId,
-                        expertData.nik,
-                        expertData.jobExperience,
-                        expertData.ktp,
-                        expertData.certificates,
-                        expertData.profilePicture,
-                        expertData.verified,
-                        expertData.status
-                    );
-                    result.errorMessage = "";
-                    result.statusCode = 200;
-                    return result;
-                }
-            }
+            // for (const expertDoc of expertSnapshot.docs) {
+            //     const expertData = expertDoc.data();
+            //     if (expertData.id === id) {
+            //         result.data = new Expert(
+            //             expertData.fullName,
+            //             expertData.phoneNumber,
+            //             expertData.email,
+            //             expertData.password,
+            //             expertData.birthDate,
+            //             expertData.gender,
+            //             expertData.education,
+            //             expertData.fieldId,
+            //             expertData.nik,
+            //             expertData.jobExperience,
+            //             expertData.ktp,
+            //             expertData.certificates,
+            //             expertData.profilePicture,
+            //             expertData.verified,
+            //             expertData.status
+            //         );
+            //         result.errorMessage = "";
+            //         result.statusCode = 200;
+            //         return result;
+            //     }
+            // }
 
             result.data = null;
             result.errorMessage = "Expert not found";
