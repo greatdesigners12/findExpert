@@ -23,7 +23,7 @@ export const ExpertDetail = ({id}) => {
    return (
     
     <>
-    <h1>{expertsData.statusCode == 200 ? "Berhasil" : "Ada Masalah"}</h1>
+    {/* <h1>{expertsData.statusCode == 200 ? "Berhasil" : "Ada Masalah"}</h1> */}
     {expertsData == null ? "Loading.." : (
          <section className="team__area pt-115 pb-110">
             <div className="container">
