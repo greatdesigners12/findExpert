@@ -12,7 +12,7 @@ import {
 import { TestingRegisterExpert } from './testing backend/registerExpert';
 import { LiveChatPage } from './testing backend/livechat';
 import { RegisterUserPage } from './pages/register-user-page/register-user-page';
-import { ServicesPages } from './servicesPage';
+import { ServicesPages } from './pages/Services/servicesPage';
 import { ExpertArea } from './pages/Experts/ExpertArea/ExpertArea';
 import ExpertDetailsArea from './pages/ExpertDetails/ExpertDetailsArea/ExpertDetailsArea';
 
