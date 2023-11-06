@@ -69,6 +69,11 @@ export const ExpertDetailsArea = () => {
                                        <span>Ave 14th Street, Mirpur 210, <br/> San Franciso, USA 3296.</span>
                                     </div>
                                  </li>
+                                 <li>
+                                    <div className="address-button">
+                                    <Link to="/transaction" className="z-btn">Consult</Link>
+                                    </div>
+                                 </li>
                               </ul>
                            </div>
                            <div className="team__details-social theme-social" >

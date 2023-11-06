@@ -30,12 +30,16 @@ export const ExpertArea = () => {
                   </div>
                </div>
                <div className="row">
-               {expertsData.data.map((expert) => (<div>
+               {expertsData.data.map((expert) => (
+               <div>
+                <a href="/expertdetails/{expert.id}"> 
                 <SingleTeam image={expert.profilePicture} name={expert.fullName} title={expert.education} />
+                </a>
           </div>))}
                </div >
             </div >
          </section >
+          
          )};
       </>
    );
