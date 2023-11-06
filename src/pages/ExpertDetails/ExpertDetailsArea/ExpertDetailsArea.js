@@ -40,7 +40,7 @@ export const ExpertDetailsArea = () => {
                      </div>
                      <div className="col-xl-6 col-lg-6">
                         <div className="team__details-content pt-105">
-                           <span>UI/UX Designer</span>
+                           <span>{expertsData.data.field.name}</span>
                            <h3>{expertsData.data.fullName}</h3>
                            <p>So I said on your bike mate easy peasy dropped a clanger blow  porkies is fantastic show off show.!</p>
                            <div className="team__details-contact mb-45">
@@ -67,6 +67,11 @@ export const ExpertDetailsArea = () => {
                                     </div>
                                     <div className="text">
                                        <span>Ave 14th Street, Mirpur 210, <br/> San Franciso, USA 3296.</span>
+                                    </div>
+                                 </li>
+                                 <li>
+                                    <div className="address-button">
+                                    <Link to="/transaction" className="z-btn">Consult</Link>
                                     </div>
                                  </li>
                               </ul>
