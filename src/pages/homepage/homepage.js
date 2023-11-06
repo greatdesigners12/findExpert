@@ -1,10 +1,10 @@
 import AgoraUIKit from "agora-react-uikit"
 import { useEffect, useState } from 'react';
-import { getAllExpertsData } from './controller/home_controller/home_controller';
-import { TampilNamaWansen } from "./wansen";
-import { TestingRegisterExpert } from "./testing backend/registerExpert";
-import { LiveChatPage } from "./testing backend/livechat";
-import { Transaction } from "./controller/transaction_controller/models/transactions";
+import { getAllExpertsData } from '../../controller/home_controller/home_controller';
+import { TestingRegisterExpert } from "../../testing backend/registerExpert";
+import { LiveChatPage } from "../../testing backend/livechat";
+import { Transaction } from "../../controller/transaction_controller/models/transactions";
+import { Link } from "react-router-dom";
 export const HomePage = () => {
     const rtcProps = {
         appId: "9389c3640acc415295195dce74994e91",
@@ -12,9 +12,8 @@ export const HomePage = () => {
         token: null,
         enableScreensharing: true
       };
-      const [wansenTidur, setWansenTidur] = useState(false)
       const currentDate = new Date()
-      const transaction = new Transaction("awdwad", "50zreHcLmQcVNQUAXbWuIjDkWj63", "jzBPUODvTOXUnsJHE0PoVGEfHG12", currentDate, currentDate.setTime(currentDate.getTime() + (30 * 60 * 1000)), 30*60*1000, 100000, currentDate, "verified", "gg.jpg", "gg.jpg")
+      const transaction = new Transaction("DqAL9H3PaY411pi7AWxd", "50zreHcLmQcVNQUAXbWuIjDkWj63", "jzBPUODvTOXUnsJHE0PoVGEfHG12", currentDate, currentDate.setTime(currentDate.getTime() + (30 * 60 * 1000)), 30*60*1000, 100000, currentDate, "verified", "gg.jpg", "gg.jpg")
       const [expertsData, setExpertsData] = useState([])
       const [videoCall, setVideoCall] = useState(false);
       const [isLoading, setLoading] = useState(true);
@@ -35,7 +34,6 @@ export const HomePage = () => {
         getData();
     
       }, []);
-      // [{nama : wansen, age : 15}, {nama: micheila, age: 20}]
 
     return (<div>
         {videoCall ? (
@@ -50,8 +48,9 @@ export const HomePage = () => {
           <h2>Halo</h2>
             <h1>{expert.name}</h1>
           </div>))}
-        <TampilNamaWansen />
-        <TestingRegisterExpert />
-        <LiveChatPage transaction={transaction} />
+       
+        <button><Link to="register/expert">Ke halaman register expert</Link></button>
+        <button><Link to={`livechat/${transaction.id}`}>Ke halaman live chat</Link></button>
+        
       </div>)
 }

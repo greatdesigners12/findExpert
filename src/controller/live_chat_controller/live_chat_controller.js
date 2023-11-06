@@ -1,5 +1,5 @@
 import { db, app } from "../firebaseApp";
-import {collection, addDoc, getDocs, orderBy, query, where} from "firebase/firestore"; 
+import {collection, addDoc, getDocs, orderBy, query, where, getDoc, doc} from "firebase/firestore"; 
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -18,6 +18,36 @@ export async function getAllMessages(id_transaction){
         result.data = allMessages
         result.statusCode = 200
         result.errorMessage = null
+        
+        
+    }catch(e){
+        result.data = null
+        result.statusCode = 400
+        result.errorMessage = e.message
+    }
+    return result
+}
+
+export async function getTransactionById(id_transaction){
+    const result = new ResultData();
+    
+    try{
+        const docRef = doc(db, "transactions", id_transaction);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+            console.log(docSnap.data())
+         
+            result.data = docSnap.data()
+            result.statusCode = 200
+            result.errorMessage = null
+        } else {
+          // docSnap.data() will be undefined in this case
+            result.data = null
+            result.statusCode = 400
+            result.errorMessage = docSnap
+        }
+        
         
         
     }catch(e){
