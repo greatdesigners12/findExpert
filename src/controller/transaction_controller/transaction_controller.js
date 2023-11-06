@@ -15,7 +15,7 @@ export class TransactionsController {
         payment_amount,
         transaction_date,
         transaction_image,
-        return_image // Tambahkan parameter return_image
+        return_image
     ) {
         const result = new ResultData();
     
@@ -216,28 +216,66 @@ export class TransactionsController {
             const transactionRef = doc(transactionsCollection, id);
     
             if (newData.transaction_status) {
-                if (newData.transaction_status === "paid" || newData.transaction_status === "unvalid" || newData.transaction_status === "end") {
+                if (newData.transaction_status === "paid" || newData.transaction_status === "unvalid") {
                     // Update the 'transaction_status' field
                     const updateData = {
                         transaction_status: newData.transaction_status
                     };
     
-                    if (newData.transaction_status === "refund" || newData.transaction_status === "end") {
-                        // Check if 'return_image' is provided in newData
-                        if (newData.return_image) {
-                            const imageType = newData.transaction_status === "refund" ? "refund" : "end";
-                            const imageName = new Date().getTime().toString() + `_${imageType}.png`;
-                            const imageRef = ref(storage, `${imageType}Images/${imageName}`);
-                            await uploadBytes(imageRef, newData.return_image);
-                            updateData[`${imageType}_image`] = imageName;
-                        } else {
-                            result.data = null;
-                            result.errorMessage = `Missing 'return_image' for '${newData.transaction_status}' status.`;
-                            result.statusCode = 400;
-                            return result;
-                        }
+                    await updateDoc(transactionRef, updateData);
+    
+                    result.data = newData;
+                    result.errorMessage = "";
+                    result.statusCode = 200;
+                } else if (newData.transaction_status === "refund") {
+                    // Check if 'return_image' is provided in newData
+                    if (newData.return_image) {
+                        const imageType = "refund";
+                        const imageName = new Date().getTime().toString() + `_${imageType}.png`;
+                        const imageRef = ref(storage, `${imageType}Images/${imageName}`);
+                        await uploadBytes(imageRef, newData.return_image);
+    
+                        const updateData = {
+                            transaction_status: newData.transaction_status,
+                            refund_image: imageName
+                        };
+    
+                        await updateDoc(transactionRef, updateData);
+    
+                        result.data = newData;
+                        result.errorMessage = "";
+                        result.statusCode = 200;
+                    } else {
+                        result.data = null;
+                        result.errorMessage = `Missing 'return_image' for 'refund' status.`;
+                        result.statusCode = 400;
                     }
-                    
+                } else if (newData.transaction_status === "end") {
+                    // Update the 'transaction_status' field to "end"
+                    const updateData = {
+                        transaction_status: newData.transaction_status
+                    };
+    
+                    // You should also update the expert's cash_amount here by adding the payment_amount
+                    const transactionSnapshot = await getDoc(transactionRef);
+                    const transactionData = transactionSnapshot.data();
+                    const expertId = transactionData.expert_id;
+    
+                    const expertsCollection = collection(db, "expertData");
+                    const expertRef = doc(expertsCollection, expertId);
+                    const expertSnapshot = await getDoc(expertRef);
+                    const expertData = expertSnapshot.data();
+    
+                    if (expertData) {
+                        const newCashAmount = expertData.cash_amount + transactionData.payment_amount;
+                        await updateDoc(expertRef, { cash_amount: newCashAmount });
+                    } else {
+                        result.data = null;
+                        result.errorMessage = "Expert not found.";
+                        result.statusCode = 400;
+                        return result;
+                    }
+    
                     await updateDoc(transactionRef, updateData);
     
                     result.data = newData;
@@ -344,37 +382,6 @@ export class TransactionsController {
     }
     
     
-    async getExpertTransactionsById(expertId) {
-        const result = new ResultData();
-    
-        try {
-            const transactionsCollection = collection(db, "transactions");
-            const expertTransactionsQuery = query(
-                transactionsCollection,
-                where("expert_id", "==", expertId),
-                where("transaction_status", "in", ["ready", "paid", "ongoing"])
-            );
-    
-            const transactionSnapshot = await getDocs(expertTransactionsQuery);
-    
-            const transactions = [];
-            transactionSnapshot.forEach((transactionDoc) => {
-                const transactionData = transactionDoc.data();
-                transactions.push(transactionData);
-            });
-    
-            result.data = transactions;
-            result.errorMessage = "";
-            result.statusCode = 200;
-        } catch (error) {
-            result.data = null;
-            result.errorMessage = "Failed to get expert transactions: " + error.message;
-            result.statusCode = 500;
-        }
-    
-        return result;
-    }
-    
     
     async getExpertByHistory(user_id) {
         const result = new ResultData();
@@ -438,4 +445,40 @@ export class TransactionsController {
 
         return result;
     }
+}
+
+export async function getExpertTransactionsById(expertId) {
+    const result = new ResultData();
+
+    try {
+        const transactionsCollection = collection(db, "transactions");
+        const expertTransactionsQuery = query(
+            transactionsCollection,
+            where("expert_id", "==", expertId),
+            where("transaction_status", "in", ["ready", "paid", "ongoing"])
+        );
+
+        // Subscribe to real-time updates
+        const unsubscribe = onSnapshot(expertTransactionsQuery, (snapshot) => {
+            const transactions = [];
+            snapshot.forEach((transactionDoc) => {
+                const transactionData = transactionDoc.data();
+                transactions.push(transactionData);
+            });
+
+            // Handle the updated data, e.g., update your UI with the new transactions
+            result.data = transactions;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        });
+
+        // Save the unsubscribe function so you can stop receiving updates later
+        result.unsubscribe = unsubscribe;
+    } catch (error) {
+        result.data = null;
+        result.errorMessage = "Failed to get expert transactions: " + error.message;
+        result.statusCode = 500;
+    }
+
+    return result;
 }
