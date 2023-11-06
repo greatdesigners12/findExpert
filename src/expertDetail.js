@@ -10,6 +10,9 @@ export const ExpertDetail = ({id}) => {
         const getData = async () => {
         const ec = new ExpertsController()
         const data = await ec.getExpertById(id);
+        // if (data.statusCode != 200){
+            
+        // }
           console.log(data);
           setExpertsData(data);
         } 
@@ -18,7 +21,9 @@ export const ExpertDetail = ({id}) => {
     
       }, []);
    return (
+    
     <>
+    <h1>{expertsData.statusCode == 200 ? "Berhasil" : "Ada Masalah"}</h1>
     {expertsData == null ? "Loading.." : (
          <section className="team__area pt-115 pb-110">
             <div className="container">
@@ -31,6 +36,7 @@ export const ExpertDetail = ({id}) => {
                   </div>
                </div>
                <div className="row">
+                
                 <h1>{expertsData.data.fullName}</h1>
                {/* {expertsData.map((expert) => (<div>
             <SingleTeam image={expert.profilePicture} name={expert.fullname} title={expert.education} />
