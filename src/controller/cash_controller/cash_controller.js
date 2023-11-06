@@ -1,9 +1,7 @@
 import { db } from "../firebaseApp";
-import { collection, doc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc, updateDoc, query, where, getDoc } from "firebase/firestore";
 import { Cash } from "./models/cash";
 import { ResultData } from "../structureJson/resultData";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
 
 export class CashController {
     async getAllCashRecords(expertId) {
@@ -22,10 +20,10 @@ export class CashController {
                         cashData.amount,
                         cashData.id,
                         cashData.expert_id,
-                        cashData.image,
                         cashData.no_rek,
                         cashData.status,
-                        cashData.withdraw_time
+                        cashData.withdraw_time,
+                        cashData.account
                     )
                 );
             });
@@ -42,8 +40,7 @@ export class CashController {
         return result;
     }
     
-
-    async createCashRequest(expert_id, amount, no_rek) {
+    async createCashRequest(expert_id, amount, no_rek, account) {
         const result = new ResultData();
     
         try {
@@ -56,10 +53,10 @@ export class CashController {
                 amount,
                 cashRef.id,
                 expert_id,
-                null, // Initially, the image is set to null
                 no_rek,
                 "request", // Initially, the status is set to "request"
-                currentTimestamp // Set the withdraw_time to the current timestamp
+                currentTimestamp, // Set the withdraw_time to the current timestamp
+                account
             );
     
             await setDoc(cashRef, newCashRequest.serialize());
@@ -76,8 +73,7 @@ export class CashController {
         return result;
     }
     
-
-    async updateCashRequest(cashRequestId, image, requestedAmount) {
+    async updateCashRequest(cashRequestId, requestedAmount, image) {
         const result = new ResultData();
     
         try {
@@ -102,9 +98,16 @@ export class CashController {
                     const newCashAmount = expertData.cash_amount - requestedAmount;
                     await updateDoc(expertRef, { cash_amount: newCashAmount });
     
-                    // Update the cash record with the provided image and status
+                    // Save the image to Firebase Storage with a specific naming convention
+                    const storage = getStorage();
+                    const imageName = new Date().getTime().toString() + "_cash_image.png";
+                    const storageRef = ref(storage, 'cashImages/' + imageName);
+                    await uploadBytes(storageRef, image);
+                    const imageUrl = await getDownloadURL(storageRef);
+    
+                    // Update the cash record with the image and status
                     await updateDoc(cashRef, {
-                        image: image,
+                        image: imageUrl,
                         status: "done"
                     });
     
