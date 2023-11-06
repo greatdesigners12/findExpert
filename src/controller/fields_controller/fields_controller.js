@@ -115,3 +115,72 @@ export async function getAllFieldsWithExperts() {
     return result;
 }
 
+export async function searchFieldsAndExperts(queryText, currentPage, pageSize) {
+    const result = new ResultData();
+
+    try {
+        const fieldsCollection = collection(db, "field");
+        const fieldSnapshot = await getDocs(fieldsCollection);
+
+        const searchResults = [];
+        for (const fieldDoc of fieldSnapshot.docs) {
+            const fieldData = fieldDoc.data();
+            const field = new Field(fieldData.id, fieldData.name, fieldData.icon, fieldData.description);
+
+            // Add fields to search results if their names contain the queryText
+            if (field.name.toLowerCase().includes(queryText.toLowerCase())) {
+                searchResults.push({ type: 'field', data: field });
+            }
+
+            const fieldExpertsQuery = query(collection(db, "expertData"),
+                where("field_id", "==", fieldData.id),
+                where("verified", "==", "yes"),
+                where("full_name", "array-contains", queryText) // Search for experts by name
+            );
+
+            const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
+
+            for (const expertDoc of fieldExpertsSnapshot.docs) {
+                const expertData = expertDoc.data();
+                const expert = new ExpertData(
+                    expertData.id,
+                    expertData.full_name,
+                    expertData.field_id,
+                    expertData.education,
+                    expertData.KTP,
+                    expertData.NIK,
+                    expertData.certificate_images,
+                    expertData.no_telp,
+                    expertData.status,
+                    expertData.cash_amount
+                );
+
+                searchResults.push({ type: 'expert', data: expert });
+            }
+        }
+
+        // Calculate the start and end indices based on the current page and page size.
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+
+        // Get the search results to show for the current page.
+        const resultsToShow = searchResults.slice(startIndex, endIndex);
+
+        if (resultsToShow.length > 0) {
+            result.data = resultsToShow;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } else {
+            result.data = null;
+            result.errorMessage = "No results found for the given query.";
+            result.statusCode = 404;
+        }
+    } catch (error) {
+        result.data = null;
+        result.errorMessage = "Failed to search for fields and experts: " + error.message;
+        result.statusCode = 500;
+    }
+
+    return result;
+}
+
