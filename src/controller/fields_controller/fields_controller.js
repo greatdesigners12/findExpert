@@ -9,7 +9,7 @@ export async function getExpertsByFieldAndStatus(fieldId, currentPage, pageSize,
 
     try {
         const expertsCollection = collection(db, "expertData");
-        const fieldExpertsQuery = query(expertsCollection, where("field_id", "==", fieldId), where("verified", "==", "true"));
+        const fieldExpertsQuery = query(expertsCollection, where("fieldId", "==", fieldId), where("verified", "==", "true"));
         const expertSnapshot = await getDocs(fieldExpertsQuery);
 
         const onlineExperts = [];
@@ -21,7 +21,7 @@ export async function getExpertsByFieldAndStatus(fieldId, currentPage, pageSize,
             const expert = new Expert(
                 expertData.id,
                 expertData.full_name,
-                expertData.field_id,
+                expertData.fieldId,
                 expertData.education,
                 expertData.KTP,
                 expertData.NIK,
@@ -86,8 +86,8 @@ export async function getAllFieldsWithExperts() {
             const field = new Field(fieldData.id, fieldData.name, fieldData.icon, fieldData.description);
 
             const fieldExpertsQuery = query(collection(db, "expertData"),
-                // where("field_id", "==", fieldData.id),
-                where("verified", "==", "false") // Filter by verified experts
+                where("fieldId", "==", fieldData.id),
+                where("verified", "==", "false")
             );
 
             const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
@@ -133,7 +133,7 @@ export async function searchFieldsAndExperts(queryText, currentPage, pageSize) {
             }
 
             const fieldExpertsQuery = query(collection(db, "expertData"),
-                where("field_id", "==", fieldData.id),
+                where("fieldId", "==", fieldData.id),
                 where("verified", "==", "true"),
                 where("full_name", "array-contains", queryText) // Search for experts by name
             );
@@ -145,7 +145,7 @@ export async function searchFieldsAndExperts(queryText, currentPage, pageSize) {
                 const expert = new Expert(
                     expertData.id,
                     expertData.full_name,
-                    expertData.field_id,
+                    expertData.fieldId,
                     expertData.education,
                     expertData.KTP,
                     expertData.NIK,
