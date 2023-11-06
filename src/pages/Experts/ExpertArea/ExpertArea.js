@@ -1,13 +1,13 @@
 import React from 'react';
 import SingleTeam from '../../../components/SingleTeam/SingleTeam';
 import { useEffect, useState } from 'react';
-import { getAllExpertsData } from './controller/home_controller/home_controller';
+import { getAllVerifiedExperts } from '../../../controller/experts_controller/experts_controller';
 
 export const ExpertArea = () => {
     const [expertsData, setExpertsData] = useState([])
     useEffect(() => {
         const getData = async () => {
-          const data = await getAllExpertsData();
+          const data = await getAllVerifiedExperts();
           console.log(data);
           setExpertsData(data);
         } 
