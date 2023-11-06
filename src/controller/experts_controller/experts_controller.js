@@ -1,16 +1,25 @@
 import { db } from "../firebaseApp";
-import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, getDoc, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { Expert } from "./models/expert";
 import { ResultData } from "../structureJson/resultData";
+
 
 export class ExpertsController {
     async getExpertById(id) {
         const result = new ResultData();
 
         try {
-            const expertsCollection = collection(db, "expertData"); 
-            const expertSnapshot = await getDocs(expertsCollection);
+            // const expertsCollection = collection(db, "expertData"); 
+            // const expertSnapshot = await getDocs(expertsCollection);
+            const docRef = doc(db, "expertData", id);
+            const docSnap = await getDoc(docRef);
 
+            if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            } else {
+            // docSnap.data() will be undefined in this case
+            console.log("No such document!");
+            }
             for (const expertDoc of expertSnapshot.docs) {
                 const expertData = expertDoc.data();
                 if (expertData.id === id) {

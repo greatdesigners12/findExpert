@@ -1,6 +1,10 @@
 import AgoraUIKit from "agora-react-uikit"
 import { useEffect, useState } from 'react';
 import { getAllExpertsData } from './controller/home_controller/home_controller';
+import { TeamArea } from './expertlistpage';
+// import {getExpertById} from './controller/ExpertsController/ExpertsController';
+// getExpertById
+import { ExpertDetail } from './expertDetail';
 import { TampilNamaWansen } from "./wansen";
 import { TestingRegisterExpert } from "./testing backend/registerExpert";
 import { LiveChatPage } from "./testing backend/livechat";
@@ -37,7 +41,9 @@ export const HomePage = () => {
       }, []);
       // [{nama : wansen, age : 15}, {nama: micheila, age: 20}]
 
-    return (<div>
+    return (
+      
+    <div>
         {videoCall ? (
         <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
           <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
@@ -48,9 +54,11 @@ export const HomePage = () => {
       
         {isLoading ? "Loading..." : expertsData.map((expert) => (<div>
           <h2>Halo</h2>
-            <h1>{expert.name}</h1>
+            <h1>{expert.fullname}</h1>
           </div>))}
         <TampilNamaWansen />
+        {/* <TeamArea/> */}
+        <ExpertDetail id ={'50zreHcLmQcVNQUAXbWuIjDkWj63'}/>
         <TestingRegisterExpert />
         <LiveChatPage transaction={transaction} />
       </div>)
