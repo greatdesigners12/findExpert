@@ -2,7 +2,7 @@ import { db } from "../firebaseApp";
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
 import { Field } from "./models/field"; 
-import { ExpertData } from "./models/expertData"; 
+import { Expert } from "../experts_controller/models/expert"; 
 
 export async function getExpertsByFieldAndStatus(fieldId, currentPage, pageSize, existingData = []) {
     const result = new ResultData();
@@ -18,7 +18,7 @@ export async function getExpertsByFieldAndStatus(fieldId, currentPage, pageSize,
 
         expertSnapshot.forEach((expertDoc) => {
             const expertData = expertDoc.data();
-            const expert = new ExpertData(
+            const expert = new Expert(
                 expertData.id,
                 expertData.full_name,
                 expertData.field_id,
@@ -86,8 +86,8 @@ export async function getAllFieldsWithExperts() {
             const field = new Field(fieldData.id, fieldData.name, fieldData.icon, fieldData.description);
 
             const fieldExpertsQuery = query(collection(db, "expertData"),
-                where("field_id", "==", fieldData.id),
-                where("verified", "==", "yes") // Filter by verified experts
+                // where("field_id", "==", fieldData.id),
+                where("verified", "==", "false") // Filter by verified experts
             );
 
             const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
@@ -142,7 +142,7 @@ export async function searchFieldsAndExperts(queryText, currentPage, pageSize) {
 
             for (const expertDoc of fieldExpertsSnapshot.docs) {
                 const expertData = expertDoc.data();
-                const expert = new ExpertData(
+                const expert = new Expert(
                     expertData.id,
                     expertData.full_name,
                     expertData.field_id,
