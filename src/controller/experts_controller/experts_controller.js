@@ -97,26 +97,28 @@ export class ExpertsController {
             const experts = [];
             expertSnapshot.forEach((expertDoc) => {
                 const expertData = expertDoc.data();
-                experts.push(
-                    new Expert(
-                        expertData.fullName,
-                        expertData.phoneNumber,
-                        expertData.email,
-                        expertData.password,
-                        expertData.birthDate,
-                        expertData.gender,
-                        expertData.education,
-                        expertData.fieldId,
-                        expertData.nik,
-                        expertData.jobExperience,
-                        expertData.ktp,
-                        expertData.certificates,
-                        expertData.profilePicture,
-                        expertData.verified,
-                        expertData.status,
-                        expertData.cash_amount,
-                        expertData.id,
-                    )
+                console.log(expertData)
+                experts.push(expertData
+                    
+                    // new Expert(
+                    //     expertData.fullName,
+                    //     expertData.phoneNumber,
+                    //     expertData.email,
+                    //     expertData.password,
+                    //     expertData.birthDate,
+                    //     expertData.gender,
+                    //     expertData.education,
+                    //     expertData.fieldId,
+                    //     expertData.nik,
+                    //     expertData.jobExperience,
+                    //     expertData.ktp,
+                    //     expertData.certificates,
+                    //     expertData.profilePicture,
+                    //     expertData.verified,
+                    //     expertData.status,
+                    //     expertData.cash_amount,
+                    //     expertData.id,
+                    // )
                 );
             });
 
