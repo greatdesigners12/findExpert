@@ -36,7 +36,7 @@ export const ExpertArea = () => {
                {expertsData.data.map((expert) => (
                <div>
                 
-                <a href={`/expertdetails/${expertsData.id}`}>
+                <a href={`/expertdetails/${expert.id}`}>
                 <SingleTeam 
                 image={expert.profilePicture} 
                 name={expert.fullName} 

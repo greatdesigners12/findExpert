@@ -114,7 +114,8 @@ export class ExpertsController {
                         expertData.profilePicture,
                         expertData.verified,
                         expertData.status,
-                        expertData.cash_amount
+                        expertData.cash_amount,
+                        expertData.id,
                     )
                 );
             });

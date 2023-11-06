@@ -10,10 +10,10 @@ const SingleTeam = ({ image, name, title, status }) => {
       <div className="col-xl-3 col-lg-4 col-md-6">
         <div className="team__item p-relative text-center fix mb-30">
           <div className="team__thumb mb-25">
-            <div
+            {/* <div
               className="status-circle"
               style={{ backgroundColor: circleColor }}
-            ></div>
+            ></div> */}
             <img src={`assets/img/team/team-${image}.jpg`} alt="team" />
             <div className="team__info text-start">
               <h3>
