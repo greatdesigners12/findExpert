@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react';
 import {ExpertsController} from './controller/experts_controller/experts_controller';
 
 export const ExpertDetail = ({id}) => {
-    const [expertsData, setExpertsData] = useState()
+    const [expertsData, setExpertsData] = useState(null)
     useEffect(() => {
+        console.log('hi');
         const getData = async () => {
-          const data = await ExpertsController.getExpertById(id);
+        const ec = new ExpertsController()
+        const data = await ec.getExpertById(id);
           console.log(data);
           setExpertsData(data);
         } 
@@ -16,7 +18,8 @@ export const ExpertDetail = ({id}) => {
     
       }, []);
    return (
-      <>
+    <>
+    {expertsData == null ? "Loading.." : (
          <section className="team__area pt-115 pb-110">
             <div className="container">
                <div className="row align-items-center mb-55">
@@ -28,7 +31,7 @@ export const ExpertDetail = ({id}) => {
                   </div>
                </div>
                <div className="row">
-                <h1>{expertsData.fullName}</h1>
+                <h1>{expertsData.data.fullName}</h1>
                {/* {expertsData.map((expert) => (<div>
             <SingleTeam image={expert.profilePicture} name={expert.fullname} title={expert.education} />
           </div>))} */}
@@ -47,8 +50,9 @@ export const ExpertDetail = ({id}) => {
 
                </div >
             </div >
-         </section >
-      </>
+         </section > 
+     )};
+     </>
    );
 };
 

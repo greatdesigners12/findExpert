@@ -26,6 +26,7 @@ export class ExpertsController {
             // docSnap.data() will be undefined in this case
             console.log("No such document!");
             }
+            return result
             // for (const expertDoc of expertSnapshot.docs) {
             //     const expertData = expertDoc.data();
             //     if (expertData.id === id) {
@@ -52,9 +53,7 @@ export class ExpertsController {
             //     }
             // }
 
-            result.data = null;
-            result.errorMessage = "Expert not found";
-            result.statusCode = 404;
+            
         } catch (error) {
             result.data = null;
             result.errorMessage = "Failed to get expert: " + error.message;
