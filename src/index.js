@@ -12,6 +12,7 @@ import {
 import { TestingRegisterExpert } from './testing backend/registerExpert';
 import { LiveChatPage } from './testing backend/livechat';
 import { RegisterUserPage } from './pages/register-user-page/register-user-page';
+import { ServicesPages } from './servicesPage';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/register/",
     element: <RegisterUserPage />,
+  },
+  {
+    path: "/fields/",
+    element: <ServicesPages />,
   },
   
 ]);
