@@ -1,16 +1,15 @@
 import React from 'react';
-import SingleTeam from '../../../components/SingleTeam/SingleTeam';
+import SingleTeam from './SingleTeam';
 import { useEffect, useState } from 'react';
-import { ExpertsController} from '../../../controller/experts_controller/experts_controller';
+import { getAllExpertsData } from './controller/home_controller/home_controller';
 
-export const ExpertArea = () => {
+export const TeamArea = () => {
     const [expertsData, setExpertsData] = useState([])
     useEffect(() => {
         const getData = async () => {
-            const ec = new ExpertsController()
-            const data = await ec.getAllVerifiedExperts();
-            console.log(data);
-            setExpertsData(data);
+          const data = await getAllExpertsData();
+          console.log(data);
+          setExpertsData(data);
         } 
         
         getData();
@@ -29,8 +28,8 @@ export const ExpertArea = () => {
                   </div>
                </div>
                <div className="row">
-               {expertsData.data.map((expert) => (<div>
-                <SingleTeam image={expert.profilePicture} name={expert.fullName} title={expert.education} />
+               {expertsData.map((expert) => (<div>
+            <SingleTeam image={expert.profilePicture} name={expert.fullName} title={expert.education} />
           </div>))}
                </div >
             </div >
@@ -39,4 +38,4 @@ export const ExpertArea = () => {
    );
 };
 
-export default ExpertArea;
+export default TeamArea;

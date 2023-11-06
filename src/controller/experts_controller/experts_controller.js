@@ -1,5 +1,5 @@
 import { db } from "../firebaseApp";
-import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc, query, getDoc, where } from "firebase/firestore";
 import { Expert } from "./models/expert";
 import { ResultData } from "../structureJson/resultData";
 
