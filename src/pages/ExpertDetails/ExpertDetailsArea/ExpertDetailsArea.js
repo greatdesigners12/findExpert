@@ -2,10 +2,30 @@ import React from 'react';
 import { BiMap } from 'react-icons/bi';
 import { FaEnvelope, FaFacebookF, FaPhoneAlt, FaTwitter, FaVimeoV } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { ExpertsController} from '../../../controller/experts_controller/experts_controller';
+import { useParams } from 'react-router-dom';
 
-const ExpertDetailsArea = () => {
+export const ExpertDetailsArea = () => {
+    const [expertsData, setExpertsData] = useState(null)
+    // Ambil id di url
+    // /expertDetail/:id
+    const params = useParams();
+    const id = params.id
+    useEffect(() => {
+        const getData = async () => {
+        const ec = new ExpertsController()
+        const data = await ec.getExpertById(id);
+          console.log(data);
+          setExpertsData(data);
+        } 
+        
+        getData();
+    
+      }, []);
    return (
       <>
+      {expertsData == null ? "Loading.." : (
          <section className="team__details pt-120 pb-160">
             <div className="container">
                <div className="team__details-inner p-relative white-bg">
@@ -21,7 +41,7 @@ const ExpertDetailsArea = () => {
                      <div className="col-xl-6 col-lg-6">
                         <div className="team__details-content pt-105">
                            <span>UI/UX Designer</span>
-                           <h3>Parsley Montana</h3>
+                           <h3>{expertsData.data.fullName}</h3>
                            <p>So I said on your bike mate easy peasy dropped a clanger blow  porkies is fantastic show off show.!</p>
                            <div className="team__details-contact mb-45">
                               <ul>
@@ -90,6 +110,7 @@ const ExpertDetailsArea = () => {
                </div>
             </div>
          </section>
+         )};
       </>
    );
 };

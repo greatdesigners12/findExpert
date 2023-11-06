@@ -6,32 +6,50 @@ import { ResultData } from "../structureJson/resultData";
 export class ExpertsController {
     async getExpertById(id) {
         const result = new ResultData();
-    
+
         try {
-            const docRef = doc(db, "expertData", id);
-            const docSnap = await getDoc(docRef);
-    
-            if (docSnap.exists()) {
-                result.data = docSnap.data();
-                result.errorMessage = "";
-                result.statusCode = 200;
-                console.log("Document data:", docSnap.data());
-            } else {
-                result.data = null;
-                result.errorMessage = "Expert not found";
-                result.statusCode = 404;
-                console.log("No such document!");
+            const expertsCollection = collection(db, "expertData"); 
+            const expertSnapshot = await getDocs(expertsCollection);
+
+            for (const expertDoc of expertSnapshot.docs) {
+                const expertData = expertDoc.data();
+                if (expertData.id === id) {
+                    result.data = new Expert(
+                        expertData.fullName,
+                        expertData.phoneNumber,
+                        expertData.email,
+                        expertData.password,
+                        expertData.birthDate,
+                        expertData.gender,
+                        expertData.education,
+                        expertData.fieldId,
+                        expertData.nik,
+                        expertData.jobExperience,
+                        expertData.ktp,
+                        expertData.certificates,
+                        expertData.profilePicture,
+                        expertData.verified,
+                        expertData.status,
+                        expertData.cash_amount
+                    );
+                    result.errorMessage = "";
+                    result.statusCode = 200;
+                    return result;
+                }
             }
-    
+
+            result.data = null;
+            result.errorMessage = "Expert not found";
+            result.statusCode = 404;
         } catch (error) {
             result.data = null;
             result.errorMessage = "Failed to get expert: " + error.message;
             result.statusCode = 500;
         }
-    
+
         return result;
     }
-    
+
     async updateExpert(id, newData) {
         const result = new ResultData();
 
