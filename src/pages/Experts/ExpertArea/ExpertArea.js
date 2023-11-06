@@ -1,7 +1,20 @@
 import React from 'react';
 import SingleTeam from '../../../components/SingleTeam/SingleTeam';
+import { useEffect, useState } from 'react';
+import { getAllVerifiedExperts } from '../../../controller/experts_controller/experts_controller';
 
-const ExpertArea = () => {
+export const ExpertArea = () => {
+    const [expertsData, setExpertsData] = useState([])
+    useEffect(() => {
+        const getData = async () => {
+          const data = await getAllVerifiedExperts();
+          console.log(data);
+          setExpertsData(data);
+        } 
+        
+        getData();
+    
+      }, []);
    return (
       <>
          <section className="team__area pt-115 pb-110">
@@ -15,20 +28,9 @@ const ExpertArea = () => {
                   </div>
                </div>
                <div className="row">
-
-                  <SingleTeam image="1" name="Berlin Corleone" title="CEO & founder" />
-                  <SingleTeam image="2" name="Norman Gordon" title="Associate Consultant" />
-                  <SingleTeam image="3" name="Indigo Violet" title="Project Manager" />
-                  <SingleTeam image="4" name="Dylan Meringue" title="Support" />
-                  <SingleTeam image="5" name="Berlin Corleone" title="App Developer" />
-                  <SingleTeam image="6" name="Shahnewaz Sakil" title="Web Developer" />
-                  <SingleTeam image="7" name="Chauffina Carr" title="UI/UX Designer" />
-                  <SingleTeam image="8" name="Justin Case" title="Sumo Founder" />
-                  <SingleTeam image="9" name="Joss Sticks" title="Support" />
-                  <SingleTeam image="10" name="Dianne Ameter" title="App Designer" />
-                  <SingleTeam image="11" name="Russell Sprout" title="Web Developer" />
-                  <SingleTeam image="12" name="Lurch Schpellchek" title="Digital Marketer" />
-
+               {expertsData.map((expert) => (<div>
+                <SingleTeam image={expert.profilePicture} name={expert.fullName} title={expert.education} />
+          </div>))}
                </div >
             </div >
          </section >
