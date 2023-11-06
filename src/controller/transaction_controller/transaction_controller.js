@@ -59,45 +59,31 @@ export class TransactionsController {
     
     async getTransactionById(id) {
         const result = new ResultData();
-
+    
         try {
-            const transactionsCollection = collection(db, "transactions");
-            const transactionSnapshot = await getDocs(transactionsCollection);
-
-            for (const transactionDoc of transactionSnapshot.docs) {
-                const transactionData = transactionDoc.data();
-                if (transactionData.id === id) {
-                    result.data = new Transaction(
-                        transactionData.id,
-                        transactionData.expert_id,
-                        transactionData.customer_id,
-                        transactionData.start_time,
-                        transactionData.end_time,
-                        transactionData.consultation_time,
-                        transactionData.payment_amount,
-                        transactionData.transaction_date,
-                        transactionData.transaction_status,
-                        transactionData.transaction_image,
-                        transactionData.return_image
-                    );
-                    result.errorMessage = "";
-                    result.statusCode = 200;
-                    return result;
-                }
+            const docRef = doc(db, "transactions", id);
+            const docSnap = await getDoc(docRef);
+    
+            if (docSnap.exists()) {
+                result.data = docSnap.data();
+                result.errorMessage = "";
+                result.statusCode = 200;
+                console.log("Document data:", docSnap.data());
+            } else {
+                result.data = null;
+                result.errorMessage = "Transaction not found";
+                result.statusCode = 404;
+                console.log("No such document!");
             }
-
-            result.data = null;
-            result.errorMessage = "Transaction not found";
-            result.statusCode = 404;
         } catch (error) {
             result.data = null;
             result.errorMessage = "Failed to get transaction: " + error.message;
             result.statusCode = 500;
         }
-
+    
         return result;
     }
-
+    
     async getTransactionByCustomer(user_id) {
         const result = new ResultData();
     
