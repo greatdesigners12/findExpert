@@ -87,7 +87,7 @@ export async function getAllFieldsWithExperts() {
 
             const fieldExpertsQuery = query(collection(db, "expertData"),
                 where("fieldId", "==", fieldData.id),
-                where("verified", "==", "false")
+                where("verified", "==", "true")
             );
 
             const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
