@@ -5,8 +5,8 @@ import { login, register } from './controller/auth_controller/auth_controller';
 import { getAllTransactions, getAllUnverifiedWithdrawalRequest } from './controller/admin_controller/admin_controller';
 
 
-const expertRef = new Expert(); // Initialize with the appropriate reference
-const transactionRef = new Transaction(); // Initialize with the appropriate reference
+// const expertRef = new Expert(); // Initialize with the appropriate reference
+// const transactionRef = new Transaction(); // Initialize with the appropriate reference
 
 function App() {
   useEffect(() => {
