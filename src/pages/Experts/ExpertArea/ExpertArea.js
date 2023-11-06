@@ -2,9 +2,12 @@ import React from 'react';
 import SingleTeam from '../../../components/SingleTeam/SingleTeam';
 import { useEffect, useState } from 'react';
 import { ExpertsController} from '../../../controller/experts_controller/experts_controller';
+// import { useParams } from 'react-router-dom';
 
 export const ExpertArea = () => {
     const [expertsData, setExpertsData] = useState([])
+    // const params = useParams();
+    // const id = params.id
     useEffect(() => {
         const getData = async () => {
             const ec = new ExpertsController()
@@ -32,8 +35,13 @@ export const ExpertArea = () => {
                <div className="row">
                {expertsData.data.map((expert) => (
                <div>
-                <a href="/expertdetails/{expert.id}"> 
-                <SingleTeam image={expert.profilePicture} name={expert.fullName} title={expert.education} />
+                
+                <a href={`/expertdetails/${expertsData.id}`}>
+                <SingleTeam 
+                image={expert.profilePicture} 
+                name={expert.fullName} 
+                title={expert.education}
+                status={expert.status} />
                 </a>
           </div>))}
                </div >
