@@ -14,6 +14,7 @@ import { LiveChatPage } from './testing backend/livechat';
 import { RegisterUserPage } from './pages/register-user-page/register-user-page';
 import { ServicesPages } from './servicesPage';
 import { ExpertArea } from './pages/Experts/ExpertArea/ExpertArea';
+import ExpertDetailsArea from './pages/ExpertDetails/ExpertDetailsArea/ExpertDetailsArea';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "/expert/",
     element: <ExpertArea />,
+  },
+  {
+    path: "/expertdetails/:id",
+    element: <ExpertDetailsArea />
   },
   
 ]);
