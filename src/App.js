@@ -3,7 +3,9 @@ import { HomePage } from './pages/homepage/homepage';
 import { useEffect } from 'react';
 import { login, register } from './controller/auth_controller/auth_controller';
 import { getAllTransactions, getAllUnverifiedWithdrawalRequest } from './controller/admin_controller/admin_controller';
-
+import { Expert } from './controller/experts_controller/models/expert';
+// import {getExpertData}
+import { Transaction } from './controller/transaction_controller/models/transactions';
 
 // const expertRef = new Expert(); // Initialize with the appropriate reference
 // const transactionRef = new Transaction(); // Initialize with the appropriate reference
