@@ -1,5 +1,5 @@
 export class Expert {
-    constructor(fullName, phoneNumber, email, password, birthDate, gender, education, fieldId, nik, jobExperience, ktp, certificates, profilePicture) {
+    constructor(fullName, phoneNumber, email, password, birthDate, gender, education, fieldId, nik, jobExperience, ktp, certificates, profilePicture, cash_amount) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -15,6 +15,7 @@ export class Expert {
         this.profilePicture = profilePicture;
         this.verified = "false";
         this.status = "offline";
+        this.cash_amount = 0;
     }
 
     serialize() {
@@ -33,7 +34,8 @@ export class Expert {
             "certificates": this.certificates,
             "profilePicture": this.profilePicture,
             "verified": this.verified,
-            "status": this.status
+            "status": this.status,
+            "cash_amount": this.cash_amount
         };
     }
 
@@ -46,14 +48,15 @@ export class Expert {
             this.birthDate === "" ||
             this.gender === "" ||
             this.education === "" ||
-            this.fieldId === "" ||+
+            this.fieldId === "" ||
             this.nik === "" ||
             this.jobExperience === "" ||
             this.ktp === "" ||
             this.certificates === null ||
             this.profilePicture === "" ||
-            this.verified ==="" ||
-            this.status ===""
+            this.verified === "" ||
+            this.status === "" ||
+            this.cash_amount === ""
         );
     }
 }

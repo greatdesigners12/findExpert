@@ -27,7 +27,8 @@ export async function getExpertsByFieldAndStatus(fieldId, currentPage, pageSize,
                 expertData.NIK,
                 expertData.certificate_images,
                 expertData.no_telp,
-                expertData.status
+                expertData.status,
+                expertData.cash_amount
             );
 
             // Categorize experts based on their status.

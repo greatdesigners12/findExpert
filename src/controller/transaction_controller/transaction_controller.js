@@ -15,7 +15,7 @@ export class TransactionsController {
         payment_amount,
         transaction_date,
         transaction_image,
-        return_image // Tambahkan parameter return_image
+        return_image
     ) {
         const result = new ResultData();
     
@@ -216,28 +216,66 @@ export class TransactionsController {
             const transactionRef = doc(transactionsCollection, id);
     
             if (newData.transaction_status) {
-                if (newData.transaction_status === "paid" || newData.transaction_status === "unvalid" || newData.transaction_status === "end") {
+                if (newData.transaction_status === "paid" || newData.transaction_status === "unvalid") {
                     // Update the 'transaction_status' field
                     const updateData = {
                         transaction_status: newData.transaction_status
                     };
     
-                    if (newData.transaction_status === "refund" || newData.transaction_status === "end") {
-                        // Check if 'return_image' is provided in newData
-                        if (newData.return_image) {
-                            const imageType = newData.transaction_status === "refund" ? "refund" : "end";
-                            const imageName = new Date().getTime().toString() + `_${imageType}.png`;
-                            const imageRef = ref(storage, `${imageType}Images/${imageName}`);
-                            await uploadBytes(imageRef, newData.return_image);
-                            updateData[`${imageType}_image`] = imageName;
-                        } else {
-                            result.data = null;
-                            result.errorMessage = `Missing 'return_image' for '${newData.transaction_status}' status.`;
-                            result.statusCode = 400;
-                            return result;
-                        }
+                    await updateDoc(transactionRef, updateData);
+    
+                    result.data = newData;
+                    result.errorMessage = "";
+                    result.statusCode = 200;
+                } else if (newData.transaction_status === "refund") {
+                    // Check if 'return_image' is provided in newData
+                    if (newData.return_image) {
+                        const imageType = "refund";
+                        const imageName = new Date().getTime().toString() + `_${imageType}.png`;
+                        const imageRef = ref(storage, `${imageType}Images/${imageName}`);
+                        await uploadBytes(imageRef, newData.return_image);
+    
+                        const updateData = {
+                            transaction_status: newData.transaction_status,
+                            refund_image: imageName
+                        };
+    
+                        await updateDoc(transactionRef, updateData);
+    
+                        result.data = newData;
+                        result.errorMessage = "";
+                        result.statusCode = 200;
+                    } else {
+                        result.data = null;
+                        result.errorMessage = `Missing 'return_image' for 'refund' status.`;
+                        result.statusCode = 400;
                     }
-                    
+                } else if (newData.transaction_status === "end") {
+                    // Update the 'transaction_status' field to "end"
+                    const updateData = {
+                        transaction_status: newData.transaction_status
+                    };
+    
+                    // You should also update the expert's cash_amount here by adding the payment_amount
+                    const transactionSnapshot = await getDoc(transactionRef);
+                    const transactionData = transactionSnapshot.data();
+                    const expertId = transactionData.expert_id;
+    
+                    const expertsCollection = collection(db, "expertData");
+                    const expertRef = doc(expertsCollection, expertId);
+                    const expertSnapshot = await getDoc(expertRef);
+                    const expertData = expertSnapshot.data();
+    
+                    if (expertData) {
+                        const newCashAmount = expertData.cash_amount + transactionData.payment_amount;
+                        await updateDoc(expertRef, { cash_amount: newCashAmount });
+                    } else {
+                        result.data = null;
+                        result.errorMessage = "Expert not found.";
+                        result.statusCode = 400;
+                        return result;
+                    }
+    
                     await updateDoc(transactionRef, updateData);
     
                     result.data = newData;
@@ -262,63 +300,7 @@ export class TransactionsController {
         return result;
     }
     
-    async getAllTransactionsForExpert(expertId) {
-        const result = new ResultData();
 
-        try {
-            const transactionsCollection = collection(db, "transactions");
-            const expertTransactionsQuery = query(
-                transactionsCollection,
-                where("expert_id", "==", expertId),
-                where("transaction_status", "==", "done")
-            );
-
-            const transactionSnapshot = await getDocs(expertTransactionsQuery);
-
-            const transactions = [];
-            transactionSnapshot.forEach((transactionDoc) => {
-                const transactionData = transactionDoc.data();
-                transactions.push(transactionData);
-            });
-
-            result.data = transactions;
-            result.errorMessage = "";
-            result.statusCode = 200;
-        } catch (error) {
-            result.data = null;
-            result.errorMessage = "Failed to get expert transactions with status 'done': " + error.message;
-            result.statusCode = 500;
-        }
-
-        return result;
-    }
-
-    // Fungsi untuk mengambil jumlah total transaksi dengan status "done" untuk seorang expert
-    async getAmountOfTransactionsForExpert(expertId) {
-        const result = new ResultData();
-
-        try {
-            const transactionsCollection = collection(db, "transactions");
-            const expertTransactionsQuery = query(
-                transactionsCollection,
-                where("expert_id", "==", expertId),
-                where("transaction_status", "==", "done")
-            );
-
-            const transactionSnapshot = await getDocs(expertTransactionsQuery);
-            const amount = transactionSnapshot.size;
-
-            result.data = amount;
-            result.errorMessage = "";
-            result.statusCode = 200;
-        } catch (error) {
-            result.data = null;
-            result.errorMessage = "Failed to get the amount of expert transactions with status 'done': " + error.message;
-            result.statusCode = 500;
-        }
-
-        return result;
-    }
     
     async updateTransactionByExpert(id, newStatus) {
         const result = new ResultData();

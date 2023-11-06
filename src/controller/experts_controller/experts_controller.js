@@ -29,7 +29,8 @@ export class ExpertsController {
                         expertData.certificates,
                         expertData.profilePicture,
                         expertData.verified,
-                        expertData.status
+                        expertData.status,
+                        expertData.cash_amount
                     );
                     result.errorMessage = "";
                     result.statusCode = 200;
@@ -69,7 +70,7 @@ export class ExpertsController {
 
         return result;
     }
-    
+
     async getAllVerifiedExperts() {
         const result = new ResultData();
 
@@ -97,7 +98,8 @@ export class ExpertsController {
                         expertData.certificates,
                         expertData.profilePicture,
                         expertData.verified,
-                        expertData.status
+                        expertData.status,
+                        expertData.cash_amount
                     )
                 );
             });
@@ -113,6 +115,34 @@ export class ExpertsController {
 
         return result;
     }
+
+    async getExpertCashAmountById(expertId) {
+        const result = new ResultData();
+    
+        try {
+            const expertsCollection = collection(db, "expertData");
+            const expertRef = doc(expertsCollection, expertId);
+            const expertSnapshot = await getDoc(expertRef);
+            const expertData = expertSnapshot.data();
+    
+            if (expertData) {
+                result.data = expertData.cash_amount;
+                result.errorMessage = "";
+                result.statusCode = 200;
+            } else {
+                result.data = null;
+                result.errorMessage = "Expert not found.";
+                result.statusCode = 404;
+            }
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get expert's cash amount: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
 
     async deleteExpert(id) {
         const result = new ResultData();
