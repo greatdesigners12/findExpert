@@ -35,7 +35,7 @@ export const ExpertDetailsArea = () => {
                   <div className="row">
                      <div className="col-xl-6 col-lg-6">
                         <div className="team__details-img w-img mr-70">
-                           <img src="assets/img/team/details/team-01.jpg" alt=""/>
+                           <img src={expertsData.data.profilePicture} alt=""/>
                         </div>
                      </div>
                      <div className="col-xl-6 col-lg-6">
