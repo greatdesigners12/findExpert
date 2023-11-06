@@ -76,7 +76,7 @@ export class ExpertsController {
 
         try {
             const expertsCollection = collection(db, "expertData");
-            const verifiedExpertsQuery = query(expertsCollection, where("verified", "==", "yes"));
+            const verifiedExpertsQuery = query(expertsCollection, where("verified", "==", "true"));
             const expertSnapshot = await getDocs(verifiedExpertsQuery);
 
             const experts = [];
