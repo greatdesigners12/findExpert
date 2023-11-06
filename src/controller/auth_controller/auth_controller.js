@@ -235,6 +235,7 @@ export async function registerExpert (expert)  {
         expert.ktp = curKTPPicName
         expert.certificates = allAchievementsPicNames
         expert.profilePicture = curProfilePicName
+        expert.id = result.data.uid
         await setDoc(doc(db, "expertData", result.data.uid), expert.serialize());
         
         return result
