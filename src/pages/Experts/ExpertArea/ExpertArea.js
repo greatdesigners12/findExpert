@@ -18,6 +18,7 @@ export const ExpertArea = () => {
         
         getData();
     
+        
       }, []);
    return (
       <>

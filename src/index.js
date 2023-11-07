@@ -15,6 +15,7 @@ import { RegisterUserPage } from './pages/register-user-page/register-user-page'
 import { ServicesPages } from './servicesPage';
 import { ExpertArea } from './pages/Experts/ExpertArea/ExpertArea';
 import ExpertDetailsArea from './pages/ExpertDetails/ExpertDetailsArea/ExpertDetailsArea';
+import { TransactionArea } from './pages/Transactions/TransactionArea/TransactionArea';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
   {
     path: "/expertdetails/:id",
     element: <ExpertDetailsArea />
+  },
+  {
+    path: "/transaction/",
+    element: <TransactionArea />
   },
   
 ]);

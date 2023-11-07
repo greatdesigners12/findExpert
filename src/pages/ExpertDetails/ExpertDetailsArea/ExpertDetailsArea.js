@@ -8,10 +8,15 @@ import { useParams } from 'react-router-dom';
 
 export const ExpertDetailsArea = () => {
     const [expertsData, setExpertsData] = useState(null)
+    const [hours, setHours] = useState(0); 
     // Ambil id di url
     // /expertDetail/:id
     const params = useParams();
     const id = params.id
+    const handleHoursChange = (event) => {
+      const inputValue = event.target.value;
+      setHours(inputValue);
+  };
     useEffect(() => {
         const getData = async () => {
         const ec = new ExpertsController()
@@ -42,7 +47,7 @@ export const ExpertDetailsArea = () => {
                         <div className="team__details-content pt-105">
                            <span>{expertsData.data.field.name}</span>
                            <h3>{expertsData.data.fullName}</h3>
-                           <p>So I said on your bike mate easy peasy dropped a clanger blow  porkies is fantastic show off show.!</p>
+                           <p>{expertsData.data.jobExperience}</p>
                            <div className="team__details-contact mb-45">
                               <ul>
                                  <li>
@@ -50,28 +55,33 @@ export const ExpertDetailsArea = () => {
                                        <i > <FaEnvelope/> </i>
                                     </div>
                                     <div className="text theme-color ">
-                                       <span><a href="mailto:support@zibber.com">support@zibber.com</a></span>
+                                       <span>Rp. 50.000 / Jam</span>
                                     </div>
                                  </li>
-                                 <li>
-                                    <div className="icon theme-color">
-                                       <i ><FaPhoneAlt /> </i>
-                                    </div>
-                                    <div className="text theme-color">
-                                       <span><a href="tel:(+642)-394-396-432">(+642) 394 396 432</a></span>
-                                    </div>
-                                 </li>
-                                 <li>
+                                 {/* <li>
+                                            <div className="icon theme-color">
+                                                <i><FaPhoneAlt /> </i>
+                                            </div>
+                                            <div className="text theme-color">
+                                                <input
+                                                    type="number"
+                                                    value={hours}
+                                                    onChange={handleHoursChange}
+                                                    placeholder="Masukkan Berapa Jam"
+                                                />
+                                            </div>
+                                        </li> */}
+                                 {/* <li>
                                     <div className="icon">
                                        <i > <BiMap /> </i>
                                     </div>
                                     <div className="text">
                                        <span>Ave 14th Street, Mirpur 210, <br/> San Franciso, USA 3296.</span>
                                     </div>
-                                 </li>
+                                 </li> */}
                                  <li>
                                     <div className="address-button">
-                                    <Link to="/transaction" className="z-btn">Consult</Link>
+                                    <Link to="/transaction/" className="z-btn">Consult</Link>
                                     </div>
                                  </li>
                               </ul>
