@@ -16,7 +16,7 @@ import { LiveChatPage } from './testing backend/livechat';
 import { RegisterUserPage } from './pages/register-user-page/register-user-page';
 import { ServicesPages } from './pages/Services/servicesPage';
 import { ExpertArea } from './pages/Experts/ExpertArea/ExpertArea';
-import ExpertDetailsArea from './pages/ExpertDetails/ExpertDetailsArea/ExpertDetailsArea';
+import {ExpertDetailsArea} from './pages/ExpertDetails/ExpertDetailsArea/ExpertDetailsArea';
 import { TransactionArea } from './pages/Transactions/TransactionArea/TransactionArea';
 
 const router = createBrowserRouter([
@@ -49,8 +49,9 @@ const router = createBrowserRouter([
     path: "/expertdetails/:id",
     element: <ExpertDetailsArea />
   },
+  // {`/transaction/${expertsData.data.id}&${timeIntervals}`}
   {
-    path: "/transaction/",
+    path: "/transaction/:id/:timeIntervals",
     element: <TransactionArea />
   },
   

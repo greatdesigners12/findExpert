@@ -1,6 +1,6 @@
 import { db } from "../firebaseApp";
-import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { Transaction } from "./models/transaction";
+import { storage, onSnapshot, orderBy, getDoc, query, where, collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { Transaction } from "./models/transactions";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { UserData } from "../auth_controller/models/userData";

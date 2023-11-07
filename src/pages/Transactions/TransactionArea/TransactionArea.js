@@ -1,40 +1,69 @@
-import React from "react";
-import SingleTeam from "../../../components/SingleTeam/SingleTeam";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useEffect } from "react";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
-// import { useParams } from 'react-router-dom';
+import { TransactionsController } from "../../../controller/transaction_controller/transaction_controller";
+import { useParams } from "react-router-dom";
+import "./transaction.css";
 
 export const TransactionArea = () => {
+  const [expertsData, setExpertsData] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // State to store the selected image file
+
+  // Ambil id di url
+  // /expertDetail/:id
+  const params = useParams();
+  const id = params.id;
+  const timeIntervals = params.timeIntervals;
+  // const tc = new TransactionsController();
+
+  useEffect(() => {
+    const getData = async () => {
+      const ec = new ExpertsController();
+      const data = await ec.getExpertById(id);
+      console.log(data);
+      setExpertsData(data);
+    };
+
+    getData();
+  }, []);
+
+  // Function to handle file input change
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedImage(file);
+  };
+
   return (
-    <>
-        <section className="team__area pt-115 pb-110">
-          <div className="container">
-            <div className="row align-items-center mb-55">
-              <div className="col-xl-6 col-lg-8 col-md-8 col-sm-8">
-                <div className="section__title section__title-3 mb-30">
-                  <h2>Steps To Complete The Payment</h2>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-               {/* <h1>{hours}</h1> */}
-              {/* {expertsData.data.map((expert) => (
-                <div>
-                  <a href={`/expertdetails/${expert.id}`}>
-                    <SingleTeam
-                      image={expert.profilePicture}
-                      name={expert.fullName}
-                      title={expert.education}
-                      status={expert.status}
-                    />
-                  </a>
-                </div>
-              ))} */}
-            </div>
+    <div className="transaction-container">
+      {expertsData == null ? (
+        "Loading.."
+      ) : (
+        <div className="transaction-content">
+          <div className="left-side">
+            <img src="Group119.png" alt="Expert Profile" />
+            
           </div>
-        </section>
-      ;
-    </>
+          <div className="right-side">
+            <h1>BCA Account</h1>
+            <h1>123456789</h1>
+            <h1>{`Rp. ${expertsData.data.price * timeIntervals + 1000}`}</h1>
+            <h5>Consultation Fee: Rp {expertsData.data.price}</h5>
+            <h5>Service Fee: Rp 1.000</h5>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              id="input-image"
+              style={{ display: "none" }}
+            />
+            <label htmlFor="input-image" className="custom-file-upload">
+              Upload Image
+            </label>
+            {/* <button onClick={startFunction}>Start Function</button> */}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
