@@ -38,11 +38,7 @@ export const ExpertArea = () => {
                <div>
                 
                 <a href={`/expertdetails/${expert.id}`}>
-                <SingleTeam 
-                image={expert.profilePicture} 
-                name={expert.fullName} 
-                title={expert.education}
-                status={expert.status} />
+                <SingleTeam image={expert.profilePicture} name={expert.fullName} title={expert.education} status={expert.status} />
                 </a>
           </div>))}
                </div >

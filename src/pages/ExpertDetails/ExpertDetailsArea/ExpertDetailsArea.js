@@ -1,13 +1,7 @@
-import React from "react";
-// import { BiMap } from "react-icons/bi";
-import {
-  FaEnvelope,
-  FaFacebookF,
-  FaPhoneAlt,
-  FaTwitter,
-  FaVimeoV,
-} from "react-icons/fa";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { BiMap } from 'react-icons/bi';
+import { FaEnvelope, FaFacebookF, FaPhoneAlt, FaTwitter, FaVimeoV } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
 import { useParams } from "react-router-dom";
