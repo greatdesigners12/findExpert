@@ -1,5 +1,5 @@
 export class Expert {
-    constructor(fullName, phoneNumber, email, password, birthDate, gender, education, fieldId, nik, jobExperience, ktp, certificates, profilePicture, cash_amount, id="") {
+    constructor(fullName, phoneNumber, email, password, birthDate, gender, education, fieldId, nik, jobExperience, ktp, certificates, profilePicture, cash_amount, price, id="") {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -16,6 +16,7 @@ export class Expert {
         this.verified = "false";
         this.status = "offline";
         this.cash_amount = 0;
+        this.price = price;
         this.id = id;
     }
 
@@ -37,7 +38,8 @@ export class Expert {
             "verified": this.verified,
             "status": this.status,
             "cash_amount": this.cash_amount,
-            "id" : this.id
+            "price": this.price,
+            "id": this.id
         };
     }
 
@@ -58,7 +60,8 @@ export class Expert {
             this.profilePicture === "" ||
             this.verified === "" ||
             this.status === "" ||
-            this.cash_amount === ""
+            this.cash_amount === "" ||
+            this.price === ""
         );
     }
 }

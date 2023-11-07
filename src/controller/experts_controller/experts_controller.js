@@ -47,6 +47,7 @@ export class ExpertsController {
             //             expertData.certificates,
             //             expertData.profilePicture,
             //             expertData.verified,
+            //             expertData.price,
             //             expertData.status
             //         );
             //         result.errorMessage = "";
@@ -117,7 +118,9 @@ export class ExpertsController {
                     //     expertData.verified,
                     //     expertData.status,
                     //     expertData.cash_amount,
+                    //     expertData.price,
                     //     expertData.id,
+
                     // )
                 );
             });
