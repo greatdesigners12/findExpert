@@ -84,37 +84,46 @@ export class TransactionsController {
         return result;
     }
     
-    async getTransactionByCustomer(user_id) {
+    async getTransactionById(id) {
         const result = new ResultData();
-    
+
         try {
             const transactionsCollection = collection(db, "transactions");
-            const transactionsQuery = query(transactionsCollection, where("customer_id", "==", user_id));
-            const transactionSnapshot = await getDocs(transactionsQuery);
-    
-            const transactions = [];
-            transactionSnapshot.forEach((doc) => {
-                transactions.push({ id: doc.id, ...doc.data() });
-            });
-    
-            if (transactions.length > 0) {
-                result.data = transactions;
-                result.errorMessage = "";
-                result.statusCode = 200;
-            } else {
-                result.data = null;
-                result.errorMessage = "No transactions found for the customer";
-                result.statusCode = 404;
+            const transactionSnapshot = await getDocs(transactionsCollection);
+
+            for (const transactionDoc of transactionSnapshot.docs) {
+                const transactionData = transactionDoc.data();
+                if (transactionData.id === id) {
+                    result.data = new Transaction(
+                        transactionData.id,
+                        transactionData.expert_id,
+                        transactionData.customer_id,
+                        transactionData.start_time,
+                        transactionData.end_time,
+                        transactionData.consultation_time,
+                        transactionData.payment_amount,
+                        transactionData.transaction_date,
+                        transactionData.transaction_status,
+                        transactionData.transaction_image,
+                        transactionData.return_image
+                    );
+                    result.errorMessage = "";
+                    result.statusCode = 200;
+                    return result;
+                }
             }
+
+            result.data = null;
+            result.errorMessage = "Transaction not found";
+            result.statusCode = 404;
         } catch (error) {
             result.data = null;
-            result.errorMessage = "Failed to get transactions for the customer: " + error.message;
+            result.errorMessage = "Failed to get transaction: " + error.message;
             result.statusCode = 500;
         }
-    
+
         return result;
     }
-    
     async updateTransactionStatusToOngoing(transactionId) {
         const result = new ResultData();
     

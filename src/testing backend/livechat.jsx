@@ -93,12 +93,12 @@ export const LiveChatPage = () => {
     
     return (uid !== "" && transaction != null ? (<div>
 
-        {allMessages.map((dt) => dt.receiver_id !== uid ? (<div key={dt.date} class="container">
+        {allMessages.map((dt) => dt.receiver_id !== uid ? (<div key={dt.date} class="containerLivechat">
            
             <img src="/w3images/bandmember.jpg" alt="Avatar" />
             {dt.type === "text" ? <p>{dt.sender_message}</p> : <img src={dt.sender_message} />} 
             <span class="time-right">{getMinutes(dt.date)} : {getSeconds(dt.date)}</span>
-        </div>) : (<div key={dt.date}  class="container darker">
+        </div>) : (<div key={dt.date}  class="containerLivechat darker">
             <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right" />
             {dt.type === "text" ? <p>{dt.sender_message}</p> : <img src={dt.sender_message} />} 
             <span class="time-left">{getMinutes(dt.date)} : {getSeconds(dt.date)}</span>
