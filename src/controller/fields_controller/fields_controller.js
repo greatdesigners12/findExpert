@@ -135,7 +135,7 @@ export async function searchFieldsAndExperts(queryText, currentPage, pageSize) {
             const fieldExpertsQuery = query(collection(db, "expertData"),
                 where("fieldId", "==", fieldData.id),
                 where("verified", "==", "true"),
-                where("full_name", "array-contains", queryText) // Search for experts by name
+                where("full_name", "array-contains", queryText) 
             );
 
             const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
