@@ -1,0 +1,25 @@
+.transaction-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .transaction-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+  }
+  
+  .left-side {
+    width: 50%;
+  }
+  
+  .right-side {
+    width: 50%;
+  }
+  
+  .left-side img {
+    max-width: 100%;
+    height: auto;
+  }
+  

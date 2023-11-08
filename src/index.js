@@ -15,9 +15,10 @@ import { TestingRegisterExpert } from './testing backend/registerExpert';
 import { LiveChatPage } from './testing backend/livechat';
 import { RegisterUserPage } from './pages/register-user-page/register-user-page';
 import { ServicesPages } from './pages/Services/servicesPage';
-import { ExpertArea } from './pages/Experts/ExpertArea/ExpertArea';
-import ExpertDetailsArea from './pages/ExpertDetails/ExpertDetailsArea/ExpertDetailsArea';
-
+import { Expert } from './pages/Experts/Expert';
+import { ExpertDetails } from './pages/ExpertDetails/ExpertDetails';
+// import { TransactionArea } from './pages/Transactions/TransactionArea/TransactionArea';
+import Transaction from './pages/Transaction/Transaction';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -42,11 +43,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/expert/",
-    element: <ExpertArea />,
+    element: <Expert />,
   },
   {
     path: "/expertdetails/:id",
-    element: <ExpertDetailsArea />
+    element: <ExpertDetails />
+  },
+  {
+    path: "/transaction/:id/:timeIntervals",
+    element: <Transaction />
   },
   
 ]);

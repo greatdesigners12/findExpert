@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 const CommonPageHeader = ({ title, subtitle}) => {
    return (
       <>
-         <section className="page__title p-relative d-flex align-items-center fix" style={{ background: `url(assets/img/page-title/page-title-1.jpg)`, backgroundPosition: 'center', backgroundSize: 'cover'}}>
+         <section className="page__title p-relative d-flex align-items-center fix" style={{ background: `url(../../../assets/img/page-title/page-title-1.jpg)`, backgroundPosition: 'center', backgroundSize: 'cover'}}>
             <div className="slider__shape">
-               <img className= "shape triangle"  src="assets/img/icon/slider/triangle.png" alt="triangle" />
-               <img className="shape dotted-square" src="assets/img/icon/slider/dotted-square.png" alt="dotted-square" />
-               <img className="shape solid-square" src="assets/img/icon/slider/solid-square.png" alt="solid-square" />
-               <img className="shape circle-2" src="assets/img/icon/slider/circle.png" alt="circle" />
+               <img className= "shape triangle"  src="../../assets/img/icon/slider/triangle.png" alt="triangle" />
+               <img className="shape dotted-square" src="../../assets/img/icon/slider/dotted-square.png" alt="dotted-square" />
+               <img className="shape solid-square" src="../../assets/img/icon/slider/solid-square.png" alt="solid-square" />
+               <img className="shape circle-2" src="../../assets/img/icon/slider/circle.png" alt="circle" />
             </div>
             <div className="container p-relative">
                <div className="row">
