@@ -90,7 +90,7 @@ export async function login(email, password) {
   return result;
 }
 
-export async function getCurrentUser(){
+export function getCurrentUser(){
     const auth = getAuth()
     return auth.currentUser
 } 
