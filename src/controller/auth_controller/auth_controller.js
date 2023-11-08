@@ -83,6 +83,36 @@ export async function login (email, password)  {
 
 }
 
+// please make sure you get the id from the session
+export async function checkRole(id){
+    const result = new ResultData();
+
+    try{
+        const checkUser = doc(db, "userData", id);
+        const checkUserSnap = await getDoc(checkUser);
+
+        if (checkUserSnap.exists()) {
+            result.data = "user"
+        } else {
+            const checkExpert = doc(db, "expertData", id);
+            const checkExpertSnap = await getDoc(checkExpert);
+            if (checkExpertSnap.exists()) {
+                result.data = "expert"
+            }else {
+                result.data = "admin"
+            }
+        }
+        result.statusCode = 200
+        result.errorMessage = null
+    }catch(e){
+        result.data = e
+        result.statusCode = 200
+        result.errorMessage = e.message
+    }
+
+    return result
+}
+
 export async function register (name, job, email, password, confirmPassword)  {
     const result = new ResultData()
     if(name === "" || job === "" || email === "" || password === "" || confirmPassword === ""){

@@ -1,7 +1,7 @@
 import './App.css';
 import { HomePage } from './pages/homepage/homepage';
 import { useEffect } from 'react';
-import { login, register } from './controller/auth_controller/auth_controller';
+import { login, register, checkRole  } from './controller/auth_controller/auth_controller';
 import { getAllTransactions, getAllUnverifiedWithdrawalRequest } from './controller/admin_controller/admin_controller';
 
 import { Expert } from './controller/experts_controller/models/expert';
@@ -21,9 +21,11 @@ function App() {
       const data =  await login("gg@gmail.com", "Awd123");
       const result1 =  await getAllTransactions(1, 5)
       const result2 =  await getAllUnverifiedWithdrawalRequest(1, 5)
+      const result3 =  await checkRole("57ATrg73k9PGRReXHFhavjuQgFa2")
       
       console.log(result1)
       console.log(result2)
+      console.log(result3)
       
     }
     tryLogin();
