@@ -17,7 +17,7 @@ import { RegisterUserPage } from './pages/register-user-page/register-user-page'
 import { ServicesPages } from './pages/Services/servicesPage';
 import { Expert } from './pages/Experts/Expert';
 import { ExpertDetails } from './pages/ExpertDetails/ExpertDetails';
-// import { TransactionArea } from './pages/Transactions/TransactionArea/TransactionArea';
+import { ExpertByField } from './pages/ExpertByFields/ExpertByField';
 import Transaction from './pages/Transaction/Transaction';
 const router = createBrowserRouter([
   {
@@ -52,6 +52,10 @@ const router = createBrowserRouter([
   {
     path: "/transaction/:id/:timeIntervals",
     element: <Transaction />
+  },
+  {
+    path: "/expertbyfield/:id",
+    element: <ExpertByField />
   },
   
 ]);

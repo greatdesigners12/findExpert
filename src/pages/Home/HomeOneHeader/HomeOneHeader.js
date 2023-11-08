@@ -63,7 +63,7 @@ const HomeOneHeader = () => {
                            </div>
                            <div className="logo-gradient">
                               <NavLink to="/">
-                                 <img src="../assets/img/logo/logo-gradient.png" alt="logo"/>
+                                 <img src="../../../assets/img/logo/logo-gradient.png" alt="logo"/>
                               </NavLink>
                            </div>
                         </div>

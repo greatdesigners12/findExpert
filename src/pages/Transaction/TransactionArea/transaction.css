@@ -1,13 +1,15 @@
 .transaction-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Optional: Center vertically in the viewport */
   }
   
   .transaction-content {
     display: flex;
     width: 100%;
     align-items: center;
+    justify-content: center;
   }
   
   .left-side {
