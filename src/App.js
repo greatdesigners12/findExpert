@@ -8,6 +8,7 @@ import { Expert } from './controller/experts_controller/models/expert';
 // import {getExpertData}
 import { Transaction } from './controller/transaction_controller/models/transactions';
 import { ExpertsController } from './controller/experts_controller/experts_controller';
+import { createTransaction } from './controller/transaction_controller/transaction_controller';
 
 
 // const expertRef = new Expert(); // Initialize with the appropriate reference

@@ -179,7 +179,7 @@ export async function getAdminTransactions() {
 
 export async function updateTransactionByAdmin(id, newData) {
     const result = new ResultData();
-
+    const storage = getStorage()
     try {
         const transactionsCollection = collection(db, "transactions");
         const transactionRef = doc(transactionsCollection, id);

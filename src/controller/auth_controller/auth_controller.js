@@ -94,11 +94,6 @@ export function getCurrentUser() {
   const auth = getAuth();
   return auth.currentUser;
 }
-export function getCurrentUser(){
-    const auth = getAuth()
-    return auth.currentUser
-} 
-
 // please make sure you get the id from the session
 export async function checkRole(id) {
   const result = new ResultData();
