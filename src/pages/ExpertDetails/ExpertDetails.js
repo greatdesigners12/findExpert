@@ -6,13 +6,13 @@ import PageHelmet from '../../components/shared/PageHelmet';
 import HomeOneHeader from '../Home/HomeOneHeader/HomeOneHeader';
 import ExpertDetailsArea from './ExpertDetailsArea/ExpertDetailsArea';
 
-const ExpertDetails = () => {
+export const ExpertDetails = () => {
    return (
       <>
-         <PageHelmet pageTitle="Team Details Page" />
+         <PageHelmet pageTitle="Expert Details Page" />
 
          <HomeOneHeader/>
-         <CommonPageHeader title="Team Details" subtitle="Team Details" />
+         <CommonPageHeader title="Expert Details" subtitle="Expert Details" />
          <ExpertDetailsArea/>
          <CommonCtaArea/>
          <Footer/>

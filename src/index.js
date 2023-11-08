@@ -12,8 +12,10 @@ import { TestingRegisterExpert } from "./testing backend/registerExpert";
 import { LiveChatPage } from "./testing backend/livechat";
 import { RegisterUserPage } from "./pages/Register/register-user-page";
 import { ServicesPages } from "./pages/Services/servicesPage";
-import { ExpertArea } from "./pages/Experts/ExpertArea/ExpertArea";
-import ExpertDetailsArea from "./pages/ExpertDetails/ExpertDetailsArea/ExpertDetailsArea";
+import { Expert } from "./pages/Experts/Expert";
+import { ExpertDetails } from "./pages/ExpertDetails/ExpertDetails";
+import { ExpertByField } from "./pages/ExpertByFields/ExpertByField";
+import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
 
 const router = createBrowserRouter([
@@ -43,11 +45,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/expert/",
-    element: <ExpertArea />,
+    element: <Expert />,
   },
   {
     path: "/expertdetails/:id",
-    element: <ExpertDetailsArea />,
+    element: <ExpertDetails />,
+  },
+  {
+    path: "/transaction/:id/:timeIntervals",
+    element: <Transaction />,
+  },
+  {
+    path: "/expertbyfield/:id",
+    element: <ExpertByField />,
   },
 ]);
 

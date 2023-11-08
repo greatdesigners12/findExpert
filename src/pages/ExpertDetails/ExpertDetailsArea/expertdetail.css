@@ -1,0 +1,14 @@
+/* Custom CSS for the buttons */
+.custom-button {
+    background-color: purple;
+    color: white;
+    font-size: 24px; /* Adjust the font size to make the buttons bigger */
+    padding: 5px 10px; /* Adjust the padding to make the buttons larger */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.custom-button:hover {
+    background-color: #800080; /* Darker purple on hover */
+}
