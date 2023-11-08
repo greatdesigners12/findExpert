@@ -70,6 +70,11 @@ export async function login(email, password) {
         if (checkExpertSnap.exists()) {
           result.data["role"] = "expert";
         } else {
+          const checkAdmin = doc(db, "adminData", userCredential.user.uid);
+          const checkAdminSnap = await getDoc(checkAdmin);
+          if (checkAdminSnap.exists()) {
+            result.data["role"] = "admin";
+          }
           result.data["role"] = "admin";
         }
       }
