@@ -4,20 +4,20 @@ import CommonPageHeader from '../../components/CommonPageHeader/CommonPageHeader
 import Footer from '../../components/shared/Footer';
 import PageHelmet from '../../components/shared/PageHelmet';
 import HomeOneHeader from '../Home/HomeOneHeader/HomeOneHeader';
-import TransactionArea from './TransactionArea/TransactionArea';
+import ExpertByFieldArea from './ExpertByFieldArea/ExpertByFieldArea';
 
-export const Transaction = () => {
+export const ExpertByField = () => {
    return (
       <>
-         <PageHelmet pageTitle="Expert Details Page" />
+         <PageHelmet pageTitle="Expert Page" />
 
          <HomeOneHeader/>
-         <CommonPageHeader title="Expert Details" subtitle="Expert Details" />
-         <TransactionArea/>
+         <CommonPageHeader title="Experts List" subtitle="Team" />
+         <ExpertByFieldArea/>
          <CommonCtaArea/>
          <Footer/>
       </>
    );
 };
 
-export default Transaction;
+export default ExpertByField;
