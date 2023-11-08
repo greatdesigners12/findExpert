@@ -85,9 +85,9 @@ export async function login(email, password) {
   return result;
 }
 
-export async function checkIfAuthenticated(){
+export async function getCurrentUser(){
     const auth = getAuth()
-    return auth.currentUser != null
+    return auth.currentUser
 } 
 
 // please make sure you get the id from the session
