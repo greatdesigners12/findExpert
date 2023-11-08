@@ -1,9 +1,9 @@
 import { db } from "../firebaseApp";
-import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, setDoc } from "firebase/firestore";
 import { Transaction } from "./models/transaction";
 import { ResultData } from "../structureJson/resultData";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
-import { UserData } from "../auth_controller/models/userData";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import getDownloadURL
+
 
 export class TransactionsController {
     async createTransaction(
@@ -28,6 +28,9 @@ export class TransactionsController {
             const transactionImageRef = ref(storage, 'transactionImages/' + transactionImageName);
             await uploadBytes(transactionImageRef, transaction_image);
     
+            // Get the download URL for the uploaded image
+            const downloadURL = await getDownloadURL(transactionImageRef);
+    
             const newTransaction = new Transaction(
                 null,
                 expert_id,
@@ -38,8 +41,8 @@ export class TransactionsController {
                 payment_amount,
                 transaction_date,
                 "waiting",
-                transactionImageName,
-                return_image // Set return_image
+                downloadURL, // Set download URL as the image name
+                return_image
             );
     
             const docRef = await setDoc(transactionsCollection, newTransaction.serialize());
@@ -50,34 +53,6 @@ export class TransactionsController {
         } catch (error) {
             result.data = null;
             result.errorMessage = "Failed to create a transaction: " + error.message;
-            result.statusCode = 500;
-        }
-    
-        return result;
-    }
-    
-    
-    async getTransactionById(id) {
-        const result = new ResultData();
-    
-        try {
-            const docRef = doc(db, "transactions", id);
-            const docSnap = await getDoc(docRef);
-    
-            if (docSnap.exists()) {
-                result.data = docSnap.data();
-                result.errorMessage = "";
-                result.statusCode = 200;
-                console.log("Document data:", docSnap.data());
-            } else {
-                result.data = null;
-                result.errorMessage = "Transaction not found";
-                result.statusCode = 404;
-                console.log("No such document!");
-            }
-        } catch (error) {
-            result.data = null;
-            result.errorMessage = "Failed to get transaction: " + error.message;
             result.statusCode = 500;
         }
     
@@ -440,40 +415,41 @@ export class TransactionsController {
 
         return result;
     }
-}
+    async getExpertTransactionsById(expertId) {
+        const result = new ResultData();
 
-export async function getExpertTransactionsById(expertId) {
-    const result = new ResultData();
+        try {
+            const transactionsCollection = collection(db, "transactions");
+            const expertTransactionsQuery = query(
+                transactionsCollection,
+                where("expert_id", "==", expertId),
+                where("transaction_status", "in", ["ready", "paid", "ongoing"])
+            );
 
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const expertTransactionsQuery = query(
-            transactionsCollection,
-            where("expert_id", "==", expertId),
-            where("transaction_status", "in", ["ready", "paid", "ongoing"])
-        );
+            // Subscribe to real-time updates
+            const unsubscribe = onSnapshot(expertTransactionsQuery, (snapshot) => {
+                const transactions = [];
+                snapshot.forEach((transactionDoc) => {
+                    const transactionData = transactionDoc.data();
+                    transactions.push(transactionData);
+                });
 
-        // Subscribe to real-time updates
-        const unsubscribe = onSnapshot(expertTransactionsQuery, (snapshot) => {
-            const transactions = [];
-            snapshot.forEach((transactionDoc) => {
-                const transactionData = transactionDoc.data();
-                transactions.push(transactionData);
+                // Handle the updated data, e.g., update your UI with the new transactions
+                result.data = transactions;
+                result.errorMessage = "";
+                result.statusCode = 200;
             });
 
-            // Handle the updated data, e.g., update your UI with the new transactions
-            result.data = transactions;
-            result.errorMessage = "";
-            result.statusCode = 200;
-        });
+            // Save the unsubscribe function so you can stop receiving updates later
+            result.unsubscribe = unsubscribe;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get expert transactions: " + error.message;
+            result.statusCode = 500;
+        }
 
-        // Save the unsubscribe function so you can stop receiving updates later
-        result.unsubscribe = unsubscribe;
-    } catch (error) {
-        result.data = null;
-        result.errorMessage = "Failed to get expert transactions: " + error.message;
-        result.statusCode = 500;
+        return result;
     }
-
-    return result;
 }
+
+export { TransactionsController };
