@@ -1,8 +1,7 @@
 import { db } from "../firebaseApp";
-import { storage, onSnapshot, orderBy, getDoc, query, where, collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { storage, onSnapshot, orderBy, getDoc, query, where, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
-import { Transaction } from "./models/transaction";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import getDownloadURL
 
@@ -454,4 +453,4 @@ export class TransactionsController {
     }
 }
 
-export { TransactionsController };
+// export { TransactionsController };

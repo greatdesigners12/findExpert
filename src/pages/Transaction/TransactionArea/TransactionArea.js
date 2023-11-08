@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
+// import { TransactionController } from "../../../controller/transaction_controller/transaction_controller";
 import { useParams } from "react-router-dom";
 import "./transaction.css";
 import { Link } from 'react-router-dom';
@@ -12,6 +13,7 @@ export const TransactionArea = () => {
   const params = useParams();
   const id = params.id;
   const timeIntervals = params.timeIntervals;
+//   const tc = new TransactionController();
 
   useEffect(() => {
     const getData = async () => {

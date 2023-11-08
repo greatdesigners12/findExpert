@@ -1,19 +1,21 @@
 import React from 'react';
 import SingleTeam from '../../../components/SingleTeam/SingleTeam';
 import { useEffect, useState } from 'react';
-import { ExpertsController} from '../../../controller/experts_controller/experts_controller';
-// import { useParams } from 'react-router-dom';
+import { getExpertsByFieldAndStatus} from '../../../controller/fields_controller/fields_controller';
+import { useParams } from 'react-router-dom';
 
 export const ExpertByFieldArea = () => {
     const [expertsData, setExpertsData] = useState([])
     const params = useParams();
     const field_id = params.id
+    const currentPage = 1;
     useEffect(() => {
         const getData = async () => {
-            const ec = new ExpertsController()
-            const data = await ec.getExpertsByFieldAndStatus(field_id);
-            console.log(data);
-            setExpertsData(data);
+            const firstCallResult = await getExpertsByFieldAndStatus(field_id, currentPage, 12);
+            const existingData = firstCallResult.data;
+
+            console.log(existingData);
+            setExpertsData(existingData);
         } 
         
         getData();
