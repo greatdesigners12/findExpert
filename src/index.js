@@ -1,24 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './index.scss';
-import 'bootstrap/dist/js/bootstrap.min.js';
-import AllContext from './context/AllContext';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import "./index.scss";
+import "bootstrap/dist/js/bootstrap.min.js";
+import AllContext from "./context/AllContext";
 
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import { TestingRegisterExpert } from './testing backend/registerExpert';
-import { LiveChatPage } from './testing backend/livechat';
-import { RegisterUserPage } from './pages/register-user-page/register-user-page';
-import { ServicesPages } from './pages/Services/servicesPage';
-import { Expert } from './pages/Experts/Expert';
-import { ExpertDetails } from './pages/ExpertDetails/ExpertDetails';
-import { ExpertByField } from './pages/ExpertByFields/ExpertByField';
-import Transaction from './pages/Transaction/Transaction';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { TestingRegisterExpert } from "./testing backend/registerExpert";
+import { LiveChatPage } from "./testing backend/livechat";
+import { RegisterUserPage } from "./pages/Register/register-user-page";
+import { ServicesPages } from "./pages/Services/servicesPage";
+import { Expert } from "./pages/Experts/Expert";
+import { ExpertDetails } from "./pages/ExpertDetails/ExpertDetails";
+import { ExpertByField } from "./pages/ExpertByFields/ExpertByField";
+import Transaction from "./pages/Transaction/Transaction";
+import { Login } from "./pages/Login/login";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,20 +25,23 @@ const router = createBrowserRouter([
   },
   {
     path: "/livechat/:id",
-    element: <LiveChatPage />
+    element: <LiveChatPage />,
   },
   {
     path: "/register/expert",
-    element: <TestingRegisterExpert />
+    element: <TestingRegisterExpert />,
   },
   {
     path: "/register/",
     element: <RegisterUserPage />,
   },
   {
+    path: "/login/",
+    element: <Login />,
+  },
+  {
     path: "/fields/",
     element: <ServicesPages />,
-    
   },
   {
     path: "/expert/",
@@ -47,20 +49,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/expertdetails/:id",
-    element: <ExpertDetails />
+    element: <ExpertDetails />,
   },
   {
     path: "/transaction/:id/:timeIntervals",
-    element: <Transaction />
+    element: <Transaction />,
   },
   {
     path: "/expertbyfield/:id",
-    element: <ExpertByField />
+    element: <ExpertByField />,
   },
-  
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
 // root.render(
 //     <RouterProvider router={router} />
@@ -69,9 +70,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.Fragment>
     <AllContext>
-    <RouterProvider router={router} />
-    </AllContext>
-  </React.Fragment>,
+      <RouterProvider router={router} />{" "}
+    </AllContext>{" "}
+  </React.Fragment>
 );
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

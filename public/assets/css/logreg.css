@@ -1,0 +1,125 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+@import "bootstrap";
+* {
+    font-family: "Montserrat";
+}
+
+.font-montserrat {
+    font-family: "Montserrat" !important;
+}
+
+.logreg-container {
+    height: 100vh;
+}
+
+.login-register-bg {
+    background-color: #1F1841;
+}
+
+.login-register-form-bg {
+    background-color: rgba(255, 255, 255, 0.896);
+    height: 100%;
+    border-radius: 25px;
+    width: 90%;
+}
+
+.login-register-logo-container {
+    width: 50vw;
+    height: 100vh;
+}
+
+.logologinregister {
+    height: 100px;
+}
+
+.color-purple {
+    color: #690ED0;
+}
+
+.line1 {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 4px solid #690ED0;
+    padding: 0;
+    width: 30%;
+}
+
+a:hover {
+    color: #3e067e !important;
+}
+
+.form-select:focus,
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.uneditable-input:focus {
+    border-color: #dcdcdcba !important;
+    box-shadow: 0 0px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(197, 197, 197, 0.6) !important;
+    outline: 0 none !important;
+}
+.btn-primary {
+    color: #ffffff !important;
+    background-color: #7044EB !important;
+    border-color: #7044EB !important;
+    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+}
+.btn-primary:hover {
+    color: #ffffff !important;
+    background-color: #6136d7 !important;
+    border-color: #6136d7 !important;
+    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+}
+.btn-primary:focus,
+.btn-primary.focus {
+    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+}
+.btn-primary.disabled,
+.btn-primary:disabled {
+    color: #ffffff !important;
+    background-color: #635881 !important;
+    border-color: #635881 !important;
+    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+}
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show>.btn-primary.dropdown-toggle {
+    color: #ffffff !important;
+    background-color: #4d29b1 !important;
+    border-color: #4d29b1 !important;
+    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+}
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.show>.btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 1px 4px 1px #b7b7b7 !important;
+}
+
+@media only screen and (min-width: 768px) {
+    .login-register-form-bg {
+        width: 75%;
+        border-radius: 50px;
+    }
+}
+
+
+@media only screen and (min-width: 1024px) {
+    .login-register-form-bg {
+        width: 50%;
+        border-radius: 0px 0px 0px 0px;
+        height: 100vh;
+        background-color: rgb(255, 255, 255);
+    }
+}
