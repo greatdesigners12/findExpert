@@ -9,10 +9,10 @@ import TransactionArea from './TransactionArea/TransactionArea';
 export const Transaction = () => {
    return (
       <>
-         <PageHelmet pageTitle="Expert Details Page" />
+         <PageHelmet pageTitle="Payment Page" />
 
          <HomeOneHeader/>
-         <CommonPageHeader title="Expert Details" subtitle="Expert Details" />
+         <CommonPageHeader title="Payment Page" subtitle="Payment" />
          <TransactionArea/>
          <CommonCtaArea/>
          <Footer/>

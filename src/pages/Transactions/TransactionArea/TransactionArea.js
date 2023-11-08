@@ -4,6 +4,7 @@ import { ExpertsController } from "../../../controller/experts_controller/expert
 // import { TransactionsController } from "../../../controller/transaction_controller/transaction_controller";
 import { useParams } from "react-router-dom";
 import "./transaction.css";
+import { Link } from 'react-router-dom';
 
 export const TransactionArea = () => {
   const [expertsData, setExpertsData] = useState(null);
@@ -40,8 +41,8 @@ export const TransactionArea = () => {
       ) : (
         <div className="transaction-content">
           <div className="left-side">
-            <img src="Group119.png" alt="Expert Profile" />
-            
+          <img src="../../assets/img/logo/Group119.png" alt="logo"/>
+          <img src="../../assets/img/logo/logo.png" alt="logo"/>
           </div>
           <div className="right-side">
             <h1>BCA Account</h1>
@@ -59,7 +60,13 @@ export const TransactionArea = () => {
             <label htmlFor="input-image" className="custom-file-upload">
               Upload Image
             </label>
-            {/* <button onClick={startFunction}>Start Function</button> */}
+            <li>
+                          <div className="address-button">
+                           <Link to={`/transaction/${expertsData.data.id}/${timeIntervals}`} className="z-btn">
+                              Confirm
+                            </Link>
+                          </div>
+                        </li>
           </div>
         </div>
       )}
