@@ -85,6 +85,11 @@ export async function login(email, password) {
   return result;
 }
 
+export async function checkIfAuthenticated(){
+    const auth = getAuth()
+    return auth.currentUser != null
+} 
+
 // please make sure you get the id from the session
 export async function checkRole(id){
     const result = new ResultData();
