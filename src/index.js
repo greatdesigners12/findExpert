@@ -17,6 +17,7 @@ import { ExpertDetails } from "./pages/ExpertDetails/ExpertDetails";
 import { ExpertByField } from "./pages/ExpertByFields/ExpertByField";
 import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
+import { IsNotAuthenticated } from "./pages/Middleware/Middlewares";
 
 const router = createBrowserRouter([
   {
@@ -37,7 +38,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/login/",
-    element: <Login />,
+    element: (
+      <IsNotAuthenticated>
+        <Login />
+      </IsNotAuthenticated>
+    ),
   },
   {
     path: "/fields/",
