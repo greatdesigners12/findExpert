@@ -1,4 +1,4 @@
-import { redirect } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import LoginRegisterPageHelmet from "../../components/shared/LoginRegisterPageHelmet";
 import { useState } from "react";
 import { login } from "../../controller/auth_controller/auth_controller";
@@ -7,13 +7,14 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const result = await login(email, password);
       if (result.data != null) {
-        redirect("/");
+        navigate("/");
       } else {
         setMessage(result.errorMessage);
       }

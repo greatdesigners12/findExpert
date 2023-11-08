@@ -90,51 +90,44 @@ export async function login(email, password) {
   return result;
 }
 
+export function getCurrentUser() {
+  const auth = getAuth();
+  return auth.currentUser;
+}
 export function getCurrentUser(){
     const auth = getAuth()
     return auth.currentUser
 } 
 
 // please make sure you get the id from the session
-export async function checkRole(id){
-    const result = new ResultData();
+export async function checkRole(id) {
+  const result = new ResultData();
 
-    try{
-        const checkUser = doc(db, "userData", id);
-        const checkUserSnap = await getDoc(checkUser);
+  try {
+    const checkUser = doc(db, "userData", id);
+    const checkUserSnap = await getDoc(checkUser);
 
-        if (checkUserSnap.exists()) {
-            result.data = "user"
-        } else {
-            const checkExpert = doc(db, "expertData", id);
-            const checkExpertSnap = await getDoc(checkExpert);
-            if (checkExpertSnap.exists()) {
-                result.data = "expert"
-            }else {
-                const checkAdmin = doc(db, "adminData", id);
-                const checkAdminSnap = await getDoc(checkAdmin);
-                if (checkAdminSnap.exists()) {
-                    result.data["role"] = "admin";
-                }else{
-                    result.data = null
-                    result.statusCode = 400
-                    result.errorMessage = "Role is not found"
-                }
-                
-            }
-        }
-        result.statusCode = 200
-        result.errorMessage = null
-    }catch(e){
-        result.data = e
-        result.statusCode = 200
-        result.errorMessage = e.message
+    if (checkUserSnap.exists()) {
+      result.data = "user";
+    } else {
+      const checkExpert = doc(db, "expertData", id);
+      const checkExpertSnap = await getDoc(checkExpert);
+      if (checkExpertSnap.exists()) {
+        result.data = "expert";
+      } else {
+        result.data = "admin";
+      }
     }
+    result.statusCode = 200;
+    result.errorMessage = null;
+  } catch (e) {
+    result.data = e;
+    result.statusCode = 200;
+    result.errorMessage = e.message;
+  }
 
-    return result
+  return result;
 }
-
-
 
 export async function register(name, job, email, password, confirmPassword) {
   const result = new ResultData();
@@ -213,83 +206,83 @@ export async function register(name, job, email, password, confirmPassword) {
 }
 
 export async function registerExpert(expert) {
-    const result = new ResultData();
-  
-    if (expert.checkIfThereIsEmpty()) {
-      result.data = null;
-      result.errorMessage = "Please fill all the inputs";
-      result.statusCode = 400;
-      return result;
-    }
-    try {
-      const auth = getAuth();
-      await createUserWithEmailAndPassword(auth, expert.email, expert.password)
-        .then((userCredential) => {
-          result.data = userCredential.user;
-          result.errorMessage = "";
-          result.statusCode = 200;
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          result.data = errorCode;
-          result.errorMessage = errorMessage;
-          result.statusCode = 400;
-        });
-  
-      if (result.statusCode !== 200) {
-        return result;
-      }
-  
-      const storage = getStorage();
-      var curKTPPicName = new Date().getTime().toString() + ".png";
-      const storageKTPPicRef = ref(storage, "ktp/" + curKTPPicName);
-      await uploadBytes(storageKTPPicRef, expert.ktp[0]).then(
-        async (snapshot) => {
-          await getDownloadURL(snapshot.ref).then((downloadURL) => {
-            curKTPPicName = downloadURL;
-          });
-        }
-      );
-      var curProfilePicName = new Date().getTime().toString() + ".png";
-      const storageProfilePicRef = ref(
-        storage,
-        "userProfilePics/" + curProfilePicName
-      );
-  
-      await uploadBytes(storageProfilePicRef, expert.profilePicture[0]).then(
-        async (snapshot) => {
-          await getDownloadURL(snapshot.ref).then((downloadURL) => {
-            curProfilePicName = downloadURL;
-          });
-        }
-      );
-  
-      const allAchievementsPicNames = [];
-      for (var el of expert.certificates) {
-        const curAchievementPicName = new Date().getTime().toString() + ".png";
-  
-        await uploadBytes(
-          ref(storage, "achievements/" + curAchievementPicName),
-          el
-        ).then(async (snapshot) => {
-          await getDownloadURL(snapshot.ref).then((downloadURL) => {
-            allAchievementsPicNames.push(downloadURL);
-          });
-        });
-      }
-  
-      expert.ktp = curKTPPicName;
-      expert.certificates = allAchievementsPicNames;
-      expert.profilePicture = curProfilePicName;
-      expert.id = result.data.uid;
-      await setDoc(doc(db, "expertData", result.data.uid), expert.serialize());
-  
-      return result;
-    } catch (e) {
-      result.data = null;
-      result.statusCode = 400;
-      result.errorMessage = e.message;
-      return result;
-    }
+  const result = new ResultData();
+
+  if (expert.checkIfThereIsEmpty()) {
+    result.data = null;
+    result.errorMessage = "Please fill all the inputs";
+    result.statusCode = 400;
+    return result;
   }
+  try {
+    const auth = getAuth();
+    await createUserWithEmailAndPassword(auth, expert.email, expert.password)
+      .then((userCredential) => {
+        result.data = userCredential.user;
+        result.errorMessage = "";
+        result.statusCode = 200;
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        result.data = errorCode;
+        result.errorMessage = errorMessage;
+        result.statusCode = 400;
+      });
+
+    if (result.statusCode !== 200) {
+      return result;
+    }
+
+    const storage = getStorage();
+    var curKTPPicName = new Date().getTime().toString() + ".png";
+    const storageKTPPicRef = ref(storage, "ktp/" + curKTPPicName);
+    await uploadBytes(storageKTPPicRef, expert.ktp[0]).then(
+      async (snapshot) => {
+        await getDownloadURL(snapshot.ref).then((downloadURL) => {
+          curKTPPicName = downloadURL;
+        });
+      }
+    );
+    var curProfilePicName = new Date().getTime().toString() + ".png";
+    const storageProfilePicRef = ref(
+      storage,
+      "userProfilePics/" + curProfilePicName
+    );
+
+    await uploadBytes(storageProfilePicRef, expert.profilePicture[0]).then(
+      async (snapshot) => {
+        await getDownloadURL(snapshot.ref).then((downloadURL) => {
+          curProfilePicName = downloadURL;
+        });
+      }
+    );
+
+    const allAchievementsPicNames = [];
+    for (var el of expert.certificates) {
+      const curAchievementPicName = new Date().getTime().toString() + ".png";
+
+      await uploadBytes(
+        ref(storage, "achievements/" + curAchievementPicName),
+        el
+      ).then(async (snapshot) => {
+        await getDownloadURL(snapshot.ref).then((downloadURL) => {
+          allAchievementsPicNames.push(downloadURL);
+        });
+      });
+    }
+
+    expert.ktp = curKTPPicName;
+    expert.certificates = allAchievementsPicNames;
+    expert.profilePicture = curProfilePicName;
+    expert.id = result.data.uid;
+    await setDoc(doc(db, "expertData", result.data.uid), expert.serialize());
+
+    return result;
+  } catch (e) {
+    result.data = null;
+    result.statusCode = 400;
+    result.errorMessage = e.message;
+    return result;
+  }
+}
