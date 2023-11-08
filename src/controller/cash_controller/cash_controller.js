@@ -101,7 +101,7 @@ export class CashController {
                     // Save the image to Firebase Storage with a specific naming convention
                     const storage = getStorage();
                     const imageName = new Date().getTime().toString() + "_cash_image.png";
-                    const storageRef = ref(storage, 'cashImages/' + imageName);
+                    const storageRef = ref(storage, 'transaction_images/' + imageName);
                     await uploadBytes(storageRef, image);
                     const imageUrl = await getDownloadURL(storageRef);
     

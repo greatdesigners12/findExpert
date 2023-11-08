@@ -25,7 +25,7 @@ export async function createTransaction(
         // Upload transaction_image to Firebase Storage
         const storageRef = getStorage();
         const transactionImageName = new Date().getTime().toString() + ".png";
-        const transactionImageRef = ref(storageRef, 'transactionImages/' + transactionImageName);
+        const transactionImageRef = ref(storageRef, 'transaction_images/' + transactionImageName);
         await uploadBytes(transactionImageRef, transaction_image);
 
         // Get the download URL for the uploaded image
@@ -201,7 +201,7 @@ export async function updateTransactionByAdmin(id, newData) {
                 if (newData.return_image) {
                     const imageType = "refund";
                     const imageName = new Date().getTime().toString() + `_${imageType}.png`;
-                    const imageRef = ref(storage, `${imageType}Images/${imageName}`);
+                    const imageRef = ref(storage, `transaction_images/${imageName}`);
                     await uploadBytes(imageRef, newData.return_image);
 
                     const updateData = {
