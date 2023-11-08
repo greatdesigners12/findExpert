@@ -111,7 +111,7 @@ export async function checkRole(id){
             if (checkExpertSnap.exists()) {
                 result.data = "expert"
             }else {
-                const checkAdmin = doc(db, "adminData", userCredential.user.uid);
+                const checkAdmin = doc(db, "adminData", id);
                 const checkAdminSnap = await getDoc(checkAdmin);
                 if (checkAdminSnap.exists()) {
                     result.data["role"] = "admin";
