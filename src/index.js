@@ -18,6 +18,7 @@ import { ExpertByField } from "./pages/ExpertByFields/ExpertByField";
 import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
 import { IsNotAuthenticated } from "./pages/Middleware/Middlewares";
+import { IsAuthenticated } from "./pages/Middleware/Middlewares";
 
 const router = createBrowserRouter([
   {
