@@ -1,10 +1,13 @@
-import { useNavigate } from "react-router-dom";
-import LoginRegisterPageHelmet from "../../components/shared/LoginRegisterPageHelmet";
 import { useState } from "react";
-import { login } from "../../controller/auth_controller/auth_controller";
+import LoginRegisterPageHelmet from "../../components/shared/LoginRegisterPageHelmet";
+import { register } from "../../controller/auth_controller/auth_controller";
+import { useNavigate } from "react-router-dom";
 
-export const Login = () => {
+export const RegisterUser = () => {
+  const [name, setName] = useState("");
+  const [job, setJob] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -12,9 +15,16 @@ export const Login = () => {
   let handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await login(email, password);
+      const result = await register(
+        name,
+        job,
+        email,
+        password,
+        confirmPassword
+      );
+
       if (result.data != null) {
-        navigate("/");
+        navigate("/login");
       } else {
         setMessage(result.errorMessage);
       }
@@ -25,7 +35,7 @@ export const Login = () => {
 
   return (
     <>
-      <LoginRegisterPageHelmet pageTitle="Login" />
+      <LoginRegisterPageHelmet pageTitle="Register" />
       <div className="login-register-bg">
         <div className="d-flex flex-row justify-content-lg-start justify-content-center py-lg-0 py-4 logreg-container">
           <div className="login-register-form-bg d-flex align-items-center justify-content-center flex-column">
@@ -34,13 +44,37 @@ export const Login = () => {
               className="logologinregister d-lg-none pb-5"
               alt=""
             />
-            <h2 className="fw-bold font-montserrat">LOGIN</h2>
+            <h2 className="fw-bold font-montserrat">REGISTER</h2>
             <div className="line1 mx-4"></div>
             <h5 className="font-montserrat fw-semibold mt-3 text-center mx-5">
               We Help <span className="color-purple">Clients</span> Meet The{" "}
               <span className="color-purple">Experts</span> They Need
             </h5>
             <form onSubmit={handleSubmit} className="w-75">
+              <div className="mb-3 mt-4">
+                <input
+                  type="name"
+                  className="form-control font-montserrat"
+                  id="inputName"
+                  name="name"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3 mt-4">
+                <input
+                  type="text"
+                  className="form-control font-montserrat"
+                  id="inputJob"
+                  name="job"
+                  placeholder="Job"
+                  value={job}
+                  onChange={(e) => setJob(e.target.value)}
+                  required
+                />
+              </div>
               <div className="mb-3 mt-4">
                 <input
                   type="email"
@@ -65,13 +99,25 @@ export const Login = () => {
                   required
                 />
               </div>
+              <div className="mb-3 mt-4">
+                <input
+                  type="password"
+                  className="form-control font-montserrat"
+                  id="inputConfirmPassword"
+                  name="confirmPassword"
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
               <div className="d-flex flex-column justify-content-center">
                 <div className="d-flex justify-content-center">
                   <button
                     type="submit"
                     className="btn btn-primary font-montserrat fw-semibold py-2 px-4"
                   >
-                    Login
+                    Register
                   </button>
                 </div>
                 <small className="text-danger font-montserrat text-center mt-3">
@@ -80,13 +126,13 @@ export const Login = () => {
               </div>
             </form>
             <h6 className="font-montserrat fw-semibold mt-3 text-center mx-4">
-              Don't have an account yet?{" "}
+              Already have an account?{" "}
               <span className="color-purple fw-bold">
                 <a
-                  href="/register"
+                  href="/login"
                   className="text-decoration-none color-purple fw-bold"
                 >
-                  Register Here!
+                  Login Here!
                 </a>
               </span>
             </h6>

@@ -10,7 +10,7 @@ import AllContext from "./context/AllContext";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { TestingRegisterExpert } from "./testing backend/registerExpert";
 import { LiveChatPage } from "./testing backend/livechat";
-import { RegisterUserPage } from "./pages/Register/register-user-page";
+import { RegisterUser } from "./pages/Register/registerUser";
 import { ServicesPages } from "./pages/Services/servicesPage";
 import { Expert } from "./pages/Experts/Expert";
 import { ExpertDetails } from "./pages/ExpertDetails/ExpertDetails";
@@ -35,7 +35,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/register/",
-    element: <RegisterUserPage />,
+    element: (
+      <IsNotAuthenticated>
+        <RegisterUser />
+      </IsNotAuthenticated>
+    ),
   },
   {
     path: "/login/",

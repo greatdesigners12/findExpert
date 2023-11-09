@@ -166,7 +166,7 @@ export async function register(name, job, email, password, confirmPassword) {
   }
 
   if (errorMsgValidation !== "") {
-    errorMsgValidation += " format is not corrent";
+    errorMsgValidation += " format is not correct";
     if (errorMsgValidation.includes("Password")) {
       errorMsgValidation +=
         " (For password, please input atleast at least one uppercase letter, one lowercase letter and one number)";
