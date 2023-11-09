@@ -8,17 +8,22 @@ import "./transaction.css";
 import { Link } from 'react-router-dom';
 
 export const TransactionArea = () => {
+  //   expert_id,
+  //   customer_id,
+  //   start_time,
+  //   end_time,
+  //   consultation_time,
+  //   payment_amount,
+  //   transaction_date,
+  //   transaction_image,
+  //   return_image
   const [expertsData, setExpertsData] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [tanggalLahir, updateTanggalLahir] = useState(null);
+  const [profilePicture, updateProfilePicture] = useState(null)
   
   const params = useParams();
   const id = params.id;
   const timeIntervals = params.timeIntervals;
-  const handlePriceChange = (event) => {
-    console.log(event.value)
-    updateTanggalLahir(event.target.value);
-}
 
   useEffect(() => {
     const getData = async () => {
@@ -31,24 +36,21 @@ export const TransactionArea = () => {
     getData();
   }, []);
 
+  const profilePictureInputHandler = (event) => {
+    updateProfilePicture(event.target.files);
+    console.log(event.target.files);
+}
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setSelectedImage(file);
   };
 
-  //   expert_id,
-  //   customer_id,
-  //   start_time,
-  //   end_time,
-  //   consultation_time,
-  //   payment_amount,
-  //   transaction_date,
-  //   transaction_image,
-  //   return_image
+  
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
-    const data = new Transaction(expertsData.id, "1231212131","", "", "consultation_time", "Mandiri", "ktp", "ktp", handleImageChange, "profilePicture")
+    const data = new Transaction(expertsData.id, "40eqXaqMBLTeBs7tx0ygFFQB2Zc2","", "", 30, 65000, "2018-07-22", profilePicture, "profilePicture")
     const result = await createTransaction(data)
     console.log(result);
 }
@@ -67,16 +69,19 @@ export const TransactionArea = () => {
           <div className="right-side">
             <h1>BCA Account</h1>
             <h1>123456789</h1>
-            <h1 onChange={handlePriceChange} value="{expertsData.data.price * timeIntervals + 1000}">{`Rp. ${expertsData.data.price * timeIntervals + 1000}`}</h1>
+            {/* <h1 onChange={handlePriceChange} name="TotalPrices">{`Rp. ${expertsData.data.price * timeIntervals + 1000}`}</h1> */}
             <h5>Consultation Fee: Rp {expertsData.data.price}</h5>
             <h5>Service Fee: Rp 1.000</h5>
-            <input
+            <input type="file" name="profilePicture" onChange={profilePictureInputHandler} accept=".png,.jpg,.jpeg" />
+            
+            {/* <input
               type="file"
               accept="image/*"
               onChange={handleImageChange}
               id="input-image"
               style={{ display: "none" }}
             />
+            
             <label htmlFor="input-image" className="custom-file-upload">
               Upload Image
             </label>
@@ -86,7 +91,7 @@ export const TransactionArea = () => {
                 alt="Selected"
                 style={{ maxWidth: "100px" }}
               />
-            )}
+            )} */}
             <li>
               <div className="address-button">
               <button onClick={onSubmitHandler}>Confirm</button>
