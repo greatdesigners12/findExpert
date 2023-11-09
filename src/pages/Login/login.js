@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import LoginRegisterPageHelmet from "../../components/shared/LoginRegisterPageHelmet";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { login } from "../../controller/auth_controller/auth_controller";
 
 export const Login = () => {
@@ -8,11 +8,13 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
+  
   let handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const result = await login(email, password);
+      sessionStorage.setItem("role", result.data.role)
+      
       if (result.data != null) {
         navigate("/");
       } else {

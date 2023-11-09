@@ -1,12 +1,14 @@
-import { useState } from "react"
-import { registerExpert } from "../controller/auth_controller/auth_controller"
+import { useContext, useEffect, useState } from "react"
+import { getCurrentUser, registerExpert } from "../controller/auth_controller/auth_controller"
 import {Expert} from "../controller/experts_controller/models/expert"
+import { UserContext } from "../context/authContext"
 
 export const TestingRegisterExpert = () => {
     const [certificates, updateCertificates] = useState(null)
     const [profilePicture, updateProfilePicture] = useState(null)
     const [ktp, updateKtp] = useState(null)
     const [tanggalLahir, updateTanggalLahir] = useState(null)
+    const [user, updateUser] = useState(null)
 
     const certificatesInputHandler = (event) => {
         updateCertificates(event.target.files);
@@ -23,6 +25,8 @@ export const TestingRegisterExpert = () => {
         console.log(event.target.files);
     }
 
+    const {userData, setUser} = useContext(UserContext)
+    
     const tanggalLahirInputHandler = (event) => {
         console.log(event.value)
         updateTanggalLahir(event.target.value);
@@ -35,10 +39,15 @@ export const TestingRegisterExpert = () => {
         console.log(result);
     }
 
+    
+
 
 
     return (
+        
         <form>
+            {userData != null ? userData.uid : "loading"}
+            {user != null ? user.displayName : "adw"}
             <input type="file" name="certificates" multiple="multiple" onChange={certificatesInputHandler} accept=".png,.jpg,.jpeg" />
             
             <input onChange={tanggalLahirInputHandler} type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31" />

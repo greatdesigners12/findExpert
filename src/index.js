@@ -19,6 +19,8 @@ import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
 import { IsNotAuthenticated } from "./pages/Middleware/Middlewares";
 import { IsAuthenticated } from "./pages/Middleware/Middlewares";
+import { UserContextProvider } from "./context/authContext";
+
 
 const router = createBrowserRouter([
   {
@@ -79,8 +81,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.Fragment>
+    
     <AllContext>
-      <RouterProvider router={router} />{" "}
+        <UserContextProvider>
+          <RouterProvider router={router} />{" "}
+        </UserContextProvider>
     </AllContext>{" "}
   </React.Fragment>
 );

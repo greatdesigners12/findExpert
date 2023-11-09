@@ -1,18 +1,22 @@
 import { db, app } from "../firebaseApp";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { updateProfile } from "firebase/auth";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
+
 import { ResultData } from "../structureJson/resultData";
 import { UserData } from "./models/userData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
+
 export async function login(email, password) {
   const auth = getAuth();
   const result = new ResultData();
+  
   const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -78,6 +82,10 @@ export async function login(email, password) {
           result.data["role"] = "admin";
         }
       }
+      updateProfile(auth.currentUser, {
+        displayName: result.data.role
+      })
+     
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -90,7 +98,7 @@ export async function login(email, password) {
   return result;
 }
 
-export function getCurrentUser() {
+export async function getCurrentUser() {
   const auth = getAuth();
   return auth.currentUser;
 }
@@ -166,7 +174,7 @@ export async function register(name, job, email, password, confirmPassword) {
   }
 
   if (errorMsgValidation !== "") {
-    errorMsgValidation += " format is not correct";
+    errorMsgValidation += " format is not corrent";
     if (errorMsgValidation.includes("Password")) {
       errorMsgValidation +=
         " (For password, please input atleast at least one uppercase letter, one lowercase letter and one number)";
@@ -179,12 +187,11 @@ export async function register(name, job, email, password, confirmPassword) {
 
   const auth = getAuth();
   await createUserWithEmailAndPassword(auth, email, password)
-    .then( async(userCredential) => {
+    .then(async (userCredential) => {
       result.data = userCredential.user;
       result.errorMessage = "";
       result.statusCode = 200;
-      const data = new UserData(result.data.uid, name, job).serialize();
-      await setDoc(doc(db, "userData", result.data.uid), data);
+      
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -194,6 +201,11 @@ export async function register(name, job, email, password, confirmPassword) {
       result.statusCode = 400;
     });
 
+  if (result.statusCode === 200) {
+    const data = new UserData(result.data.uid, name, job).serialize();
+    
+    await setDoc(doc(db, "userData", result.data.uid), data);
+  }
 
   return result;
 }

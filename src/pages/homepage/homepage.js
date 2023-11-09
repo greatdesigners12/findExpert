@@ -5,6 +5,7 @@ import { TestingRegisterExpert } from "../../testing backend/registerExpert";
 import { LiveChatPage } from "../../testing backend/livechat";
 import { Transaction } from "../../controller/transaction_controller/models/transactions";
 import { Link } from "react-router-dom";
+import { getCurrentUser } from "../../controller/auth_controller/auth_controller";
 export const HomePage = () => {
     const rtcProps = {
         appId: "9389c3640acc415295195dce74994e91",
@@ -17,6 +18,8 @@ export const HomePage = () => {
       const [expertsData, setExpertsData] = useState([])
       const [videoCall, setVideoCall] = useState(false);
       const [isLoading, setLoading] = useState(true);
+
+        
 
       const callbacks = {
         EndCall: () => setVideoCall(false),

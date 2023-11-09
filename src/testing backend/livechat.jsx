@@ -7,6 +7,7 @@ import { Chat } from "../controller/live_chat_controller/models/chat";
 import { getAllMessages, send_message, getTransactionById } from "../controller/live_chat_controller/live_chat_controller";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import { useParams } from "react-router-dom";
+import { getCurrentUser } from "../controller/auth_controller/auth_controller";
 
 export const LiveChatPage = () => {
     const auth = getAuth();
@@ -39,8 +40,10 @@ export const LiveChatPage = () => {
         
         const result = await send_message(chat)
         setCurrentImage(null)
-        console.log(result)
+        
     }
+
+   
 
     useEffect(() => {
         const getAllMessage = async () => {
@@ -81,7 +84,8 @@ export const LiveChatPage = () => {
     const uploadImage = async (event) => {
         setCurrentImage(event.target.files[0])
     }
-
+    
+    console.log(getCurrentUser())
     const getMinutes = (date) => {
         const d = new Date(date.seconds*1000)
         return d.getHours()
