@@ -179,10 +179,12 @@ export async function register(name, job, email, password, confirmPassword) {
 
   const auth = getAuth();
   await createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then( async(userCredential) => {
       result.data = userCredential.user;
       result.errorMessage = "";
       result.statusCode = 200;
+      const data = new UserData(result.data.uid, name, job).serialize();
+      await setDoc(doc(db, "userData", result.data.uid), data);
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -192,10 +194,6 @@ export async function register(name, job, email, password, confirmPassword) {
       result.statusCode = 400;
     });
 
-  if (result.statusCode === 200) {
-    const data = new UserData(result.data.uid, name, job).serialize();
-    await setDoc(doc(db, "userData", result.data.uid), data);
-  }
 
   return result;
 }
