@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
-// import { TransactionController } from "../../../controller/transaction_controller/transaction_controller";
+import { createTransaction } from "../../../controller/transaction_controller/transaction_controller";
+import {Transaction} from "../../../controller/transaction_controller/models/transactions"
 import { useParams } from "react-router-dom";
 import "./transaction.css";
 import { Link } from 'react-router-dom';
@@ -9,11 +10,15 @@ import { Link } from 'react-router-dom';
 export const TransactionArea = () => {
   const [expertsData, setExpertsData] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const [tanggalLahir, updateTanggalLahir] = useState(null);
+  
   const params = useParams();
   const id = params.id;
   const timeIntervals = params.timeIntervals;
-//   const tc = new TransactionController();
+  const handlePriceChange = (event) => {
+    console.log(event.value)
+    updateTanggalLahir(event.target.value);
+}
 
   useEffect(() => {
     const getData = async () => {
@@ -31,11 +36,29 @@ export const TransactionArea = () => {
     setSelectedImage(file);
   };
 
+  //   expert_id,
+  //   customer_id,
+  //   start_time,
+  //   end_time,
+  //   consultation_time,
+  //   payment_amount,
+  //   transaction_date,
+  //   transaction_image,
+  //   return_image
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
+    const data = new Transaction(expertsData.id, "1231212131","", "", "consultation_time", "Mandiri", "ktp", "ktp", handleImageChange, "profilePicture")
+    const result = await createTransaction(data)
+    console.log(result);
+}
+
   return (
     <div className="transaction-container">
       {expertsData == null ? (
         "Loading.."
       ) : (
+        <form>
         <div className="transaction-content">
           <div className="left-side">
             <img src="../../assets/img/logo/Group119.png" alt="logo" />
@@ -44,7 +67,7 @@ export const TransactionArea = () => {
           <div className="right-side">
             <h1>BCA Account</h1>
             <h1>123456789</h1>
-            <h1>{`Rp. ${expertsData.data.price * timeIntervals + 1000}`}</h1>
+            <h1 onChange={handlePriceChange} value="{expertsData.data.price * timeIntervals + 1000}">{`Rp. ${expertsData.data.price * timeIntervals + 1000}`}</h1>
             <h5>Consultation Fee: Rp {expertsData.data.price}</h5>
             <h5>Service Fee: Rp 1.000</h5>
             <input
@@ -66,13 +89,12 @@ export const TransactionArea = () => {
             )}
             <li>
               <div className="address-button">
-                <Link to={`/transaction/${expertsData.data.id}/${timeIntervals}`} className="z-btn">
-                  Confirm
-                </Link>
+              <button onClick={onSubmitHandler}>Confirm</button>
               </div>
             </li>
           </div>
         </div>
+        </form>
       )}
     </div>
   );

@@ -6,6 +6,7 @@ import {
 
 export const IsNotAuthenticated = ({ children }) => {
   const auth = getCurrentUser();
+  console.log(auth);
 
   if (auth != null) {
     return <Navigate to="/" />;
