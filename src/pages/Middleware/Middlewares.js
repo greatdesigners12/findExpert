@@ -3,12 +3,13 @@ import {
   getCurrentUser,
   checkRole,
 } from "../../controller/auth_controller/auth_controller";
+import { useContext } from "react";
+import { UserContext } from "../../context/authContext.js";
 
 export const IsNotAuthenticated = ({ children }) => {
-  const auth = getCurrentUser();
-  console.log(auth);
+  const { userData, setUser } = useContext(UserContext);
 
-  if (auth != null) {
+  if (userData != null) {
     return <Navigate to="/" />;
   } else {
     return children;
@@ -16,9 +17,9 @@ export const IsNotAuthenticated = ({ children }) => {
 };
 
 export const IsAuthenticated = ({ children }) => {
-  const auth = getCurrentUser();
+  const { userData, setUser } = useContext(UserContext);
 
-  if (auth != null) {
+  if (userData != null) {
     return children;
   } else {
     return <Navigate to="/login" />;
@@ -26,10 +27,10 @@ export const IsAuthenticated = ({ children }) => {
 };
 
 export const IsExpert = ({ children }) => {
-  const auth = getCurrentUser();
+  const { userData, setUser } = useContext(UserContext);
 
-  if (auth != null) {
-    if (checkRole(auth.uid) == "expert") {
+  if (userData != null) {
+    if (checkRole(userData.uid) == "expert") {
       return children;
     } else {
       return <Navigate to="/" />;
@@ -40,10 +41,10 @@ export const IsExpert = ({ children }) => {
 };
 
 export const IsAdmin = ({ children }) => {
-  const auth = getCurrentUser();
+  const { userData, setUser } = useContext(UserContext);
 
-  if (auth != null) {
-    if (checkRole(auth.uid) == "admin") {
+  if (userData != null) {
+    if (checkRole(userData.uid) == "admin") {
       return children;
     } else {
       return <Navigate to="/" />;

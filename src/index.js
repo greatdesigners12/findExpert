@@ -18,9 +18,8 @@ import { ExpertByField } from "./pages/ExpertByFields/ExpertByField";
 import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
 import { IsNotAuthenticated } from "./pages/Middleware/Middlewares";
-import { IsAuthenticated } from "./pages/Middleware/Middlewares";
 import { UserContextProvider } from "./context/authContext";
-
+import { RegisterExpert } from "./pages/Register/registerExpert";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +39,14 @@ const router = createBrowserRouter([
     element: (
       <IsNotAuthenticated>
         <RegisterUser />
+      </IsNotAuthenticated>
+    ),
+  },
+  {
+    path: "/register-expert/",
+    element: (
+      <IsNotAuthenticated>
+        <RegisterExpert />
       </IsNotAuthenticated>
     ),
   },
@@ -81,11 +88,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.Fragment>
-    
     <AllContext>
-        <UserContextProvider>
-          <RouterProvider router={router} />{" "}
-        </UserContextProvider>
+      <UserContextProvider>
+        <RouterProvider router={router} />{" "}
+      </UserContextProvider>
     </AllContext>{" "}
   </React.Fragment>
 );
