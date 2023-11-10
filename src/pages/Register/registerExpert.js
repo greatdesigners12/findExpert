@@ -41,22 +41,62 @@ export const RegisterExpert = () => {
 
   let handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const result = await registerExpert(
-        name,
-        phone,
-        email,
-        password,
-        confirmPassword
-      );
 
-      if (result.data != null) {
-        navigate("/login");
-      } else {
-        setMessage(result.errorMessage);
+    if (birthDate == "" || gender == "" || education == "" || field == "") {
+      var msg = "";
+
+      if (birthDate == "") {
+        if (msg != "") {
+          msg = msg + ", ";
+        }
+
+        msg = msg + "Birth Date";
       }
-    } catch (err) {
-      console.log(err);
+
+      if (gender == "") {
+        if (msg != "") {
+          msg = msg + ", ";
+        }
+
+        msg = msg + "Gender";
+      }
+
+      if (education == "") {
+        if (msg != "") {
+          msg = msg + ", ";
+        }
+
+        msg = msg + "Education";
+      }
+
+      if (field == "") {
+        if (msg != "") {
+          msg = msg + ", ";
+        }
+
+        msg = msg + "Field";
+      }
+
+      msg = "You must select " + msg;
+      setMessage(msg);
+    } else {
+      try {
+        const result = await registerExpert(
+          name,
+          phone,
+          email,
+          password,
+          confirmPassword
+        );
+
+        if (result.data != null) {
+          navigate("/login");
+        } else {
+          setMessage(result.errorMessage);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -169,7 +209,7 @@ export const RegisterExpert = () => {
                       setGender(e.target.value);
                     }}
                   >
-                    <option>Gender</option>
+                    <option value="">Gender</option>
                     <option value="Female">Female</option>
                     <option value="Male">Male</option>
                   </Form.Select>
@@ -194,7 +234,7 @@ export const RegisterExpert = () => {
                       setField(e.target.value);
                     }}
                   >
-                    <option>Field</option>
+                    <option value="">Field</option>
                     {fieldData.map((field) => (
                       <option value={field.id}>{field.name}</option>
                     ))}

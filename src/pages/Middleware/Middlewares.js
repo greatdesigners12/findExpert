@@ -18,21 +18,20 @@ export const IsNotAuthenticated = ({ children }) => {
 
 export const IsAuthenticated = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
-  if(userData != ""){
+  if (userData != "") {
     if (userData != null) {
       return children;
     } else {
       return <Navigate to="/login" />;
     }
   }
-  
 };
 
 export const IsExpert = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
   if (userData != null) {
-    if (checkRole(userData.uid) == "expert") {
+    if (userData.displayName == "expert") {
       return children;
     } else {
       return <Navigate to="/" />;
@@ -46,7 +45,7 @@ export const IsAdmin = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
   if (userData != null) {
-    if (checkRole(userData.uid) == "admin") {
+    if (userData.displayName == "admin") {
       return children;
     } else {
       return <Navigate to="/" />;
