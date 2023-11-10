@@ -53,7 +53,7 @@ export const HomePage = () => {
           </div>))}
        
         <button><Link to="register/expert">Ke halaman register expert</Link></button>
-        <button><Link to={`livechat/${transaction.id}`}>Ke halaman live chat</Link></button>
+        <button><Link to={`livechat/transaction_1699592443838`}>Ke halaman live chat</Link></button>
         
       </div>)
 }

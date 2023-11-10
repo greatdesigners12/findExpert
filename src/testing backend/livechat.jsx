@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import "./css/livechat.css"
 import { getAuth } from "firebase/auth";
 import { db as dbFirebase } from "../controller/firebaseApp";
@@ -8,12 +8,14 @@ import { getAllMessages, send_message, getTransactionById } from "../controller/
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { getCurrentUser } from "../controller/auth_controller/auth_controller";
+import { UserContext } from "../context/authContext";
 
 export const LiveChatPage = () => {
-    const auth = getAuth();
+    
+    const {userData, setUser} = useContext(UserContext)
     var uid = ""
-    if(auth.currentUser != null){
-        uid = auth.currentUser.uid;
+    if(userData != ""){
+        uid = userData.uid;
     }
     const p =  useParams()
     const transactionId = p.id
