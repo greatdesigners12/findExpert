@@ -14,6 +14,7 @@ export async function createTransaction(
     consultation_time,
     payment_amount,
     transaction_date,
+    transaction_status,
     transaction_image,
     return_image
 ) {
@@ -40,7 +41,7 @@ export async function createTransaction(
             consultation_time,
             payment_amount,
             transaction_date,
-            "waiting",
+            transaction_status,
             downloadURL, // Set download URL as the image name
             return_image
         );
