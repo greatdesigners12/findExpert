@@ -50,7 +50,7 @@ export const TransactionArea = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
-    const data = new Transaction(expertsData.id, "40eqXaqMBLTeBs7tx0ygFFQB2Zc2","", "", 30, 65000, "2018-07-22", profilePicture, "profilePicture")
+    const data = new Transaction(expertsData.id, "40eqXaqMBLTeBs7tx0ygFFQB2Zc2","", "", 30, 65000, "2018-07-22", profilePicture, "")
     const result = await createTransaction(data)
     console.log(result);
 }
