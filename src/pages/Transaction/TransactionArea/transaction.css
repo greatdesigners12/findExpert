@@ -14,10 +14,12 @@
   
   .left-side {
     width: 50%;
+    padding-left: 50px;
   }
   
   .right-side {
     width: 50%;
+    padding-left: 50px;
   }
   
   .left-side img {

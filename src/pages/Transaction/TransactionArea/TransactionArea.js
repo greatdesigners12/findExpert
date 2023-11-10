@@ -1,29 +1,24 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
 import { createTransaction } from "../../../controller/transaction_controller/transaction_controller";
-import {Transaction} from "../../../controller/transaction_controller/models/transactions"
+import { Transaction } from "../../../controller/transaction_controller/models/transactions";
 import { useParams } from "react-router-dom";
 import "./transaction.css";
-import { Link } from 'react-router-dom';
+import { getCurrentUser } from "../../../controller/auth_controller/auth_controller";
+
+// ... imports ...
 
 export const TransactionArea = () => {
-  //   expert_id,
-  //   customer_id,
-  //   start_time,
-  //   end_time,
-  //   consultation_time,
-  //   payment_amount,
-  //   transaction_date,
-  //   transaction_image,
-  //   return_image
   const [expertsData, setExpertsData] = useState(null);
-  // const [selectedImage, setSelectedImage] = useState(null);
-  const [invoicePicture, updateInvoicePicture] = useState(null)
-  
   const params = useParams();
   const id = params.id;
   const timeIntervals = params.timeIntervals;
+  const [invoicePicture, updateInvoicePicture] = useState(null);
+  const [totalPrices, updateTotalPrices] = useState(null);
+  const [expertStatus, updateStatus] = useState(null);
+  const currentUser = getCurrentUser.id;
+  const [confirmationDisabled, setConfirmationDisabled] = useState(false);
+  const [confirmationMessage, setConfirmationMessage] = useState("");
 
   useEffect(() => {
     const getData = async () => {
@@ -31,80 +26,114 @@ export const TransactionArea = () => {
       const data = await ec.getExpertById(id);
       console.log(data);
       setExpertsData(data);
+      const calculatedTotalPrices = data.data.price * timeIntervals + 1000;
+      const getStatus = data.data.status;
+      updateTotalPrices(calculatedTotalPrices);
+      updateStatus(getStatus);
+
+      // Check expert status here and disable confirmation if offline
+      if (getStatus === "offline") {
+        setConfirmationDisabled(true);
+        setConfirmationMessage("Expert currently not available");
+      }
     };
 
     getData();
-  }, []);
+  }, [id, timeIntervals]);
+
+  const totalPricesInputHandler = (event) => {
+    const price = parseFloat(event.target.value);
+    console.log(price);
+    updateTotalPrices(isNaN(price) ? null : price);
+  };
 
   const invoicePictureInputHandler = (event) => {
     updateInvoicePicture(event.target.files[0]);
     console.log(invoicePicture);
-}
+  };
 
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   setSelectedImage(file);
-  // };
-
-  
-  // id: any, expert_id: any, customer_id: any, start_time: any, end_time: any, 
-  // consultation_time: any, payment_amount: any, transaction_date: any, transaction_status: any, transaction_image: any, return_image: any
   const onSubmitHandler = async (event) => {
-    
-    event.preventDefault()
-    const data = new Transaction("", "40eqXaqMBLTeBs7tx0ygFFQB2Zc2", "57ATrg73k9PGRReXHFhavjuQgFa2","", "", 30, 65000, "2018-07-22", "unverified", invoicePicture, "")
-    const result = await createTransaction(data)
-    console.log(result)
-}
+    event.preventDefault();
+
+    if (confirmationDisabled) {
+      // Jika tombol konfirmasi dinonaktifkan, tampilkan pesan dan hentikan fungsi
+      console.log(confirmationMessage);
+      return;
+    }
+
+    // Mendapatkan tanggal saat ini
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    const data = new Transaction(
+      "",
+      id,
+      "57ATrg73k9PGRReXHFhavjuQgFa2",
+      "",
+      "",
+      timeIntervals * 30,
+      totalPrices,
+      formattedDate, // Menggunakan tanggal saat ini
+      expertStatus,
+      invoicePicture,
+      ""
+    );
+    const result = await createTransaction(data);
+    console.log("total harga ", totalPrices);
+    console.log(result);
+  };
 
   return (
     <form>
-        
-    <div className="transaction-container">
-      {expertsData == null ? (
-        "Loading.."
-      ) : (
-        <div className="transaction-content">
-          <div className="left-side">
-            <img src="../../assets/img/logo/Group119.png" alt="logo" />
-            <img src="../../assets/img/logo/logo.png" alt="logo" />
-          </div>
-          <div className="right-side">
-            <h1>BCA Account</h1>
-            <h1>123456789</h1>
-            {/* <h1 onChange={handlePriceChange} name="TotalPrices">{`Rp. ${expertsData.data.price * timeIntervals + 1000}`}</h1> */}
-            <h5>Consultation Fee: Rp {expertsData.data.price}</h5>
-            <h5>Service Fee: Rp 1.000</h5>
-            <input type="file" name="invoicePicture" onChange={invoicePictureInputHandler} accept=".png,.jpg,.jpeg" />
-            
-            {/* <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              id="input-image"
-              style={{ display: "none" }}
-            />
-            
-            <label htmlFor="input-image" className="custom-file-upload">
-              Upload Image
-            </label>
-            {selectedImage && (
-              <img
-                src={URL.createObjectURL(selectedImage)}
-                alt="Selected"
-                style={{ maxWidth: "100px" }}
+      <div className="transaction-container">
+        {expertsData == null ? (
+          "Loading.."
+        ) : (
+          <div className="transaction-content">
+            <div className="left-side">
+              <img src="../../assets/img/logo/Group119.png" alt="logo" />
+              <img src="../../assets/img/logo/logo.png" alt="logo" />
+            </div>
+            <div className="right-side">
+              <h1>BCA Account</h1>
+              <h1>123456789</h1>
+              <h1
+                onChange={totalPricesInputHandler}
+                name="totalPrices"
+                value={`Rp. ${totalPrices}`}
+              ></h1>
+              <h3>Total Prices : Rp. {totalPrices}</h3>
+              <h5>Consultation Duration : {timeIntervals*30} menit</h5>
+              <h5>Consultation Fee : Rp {expertsData.data.price} / 30 menit</h5>
+              <h5>Service Fee : Rp 1.000</h5>
+              <input
+                type="file"
+                name="invoicePicture"
+                onChange={invoicePictureInputHandler}
+                accept=".png,.jpg,.jpeg"
               />
-            )} */}
-            <li>
-              <div className="address-button">
-              <button onClick={onSubmitHandler}>Confirm</button>
-              </div>
-            </li>
+              {invoicePicture && (
+                <img
+                  src={URL.createObjectURL(invoicePicture)}
+                  alt="Invoice Preview"
+                  style={{ maxWidth: "200px", marginTop: "10px" }}
+                />
+              )}
+              <li>
+                <div className="address-button">
+                  <button className="z-btn" onClick={onSubmitHandler} disabled={confirmationDisabled}>
+                    Confirm
+                  </button>
+                  {confirmationMessage && <p style={{ color: 'red' }}>{confirmationMessage}</p>}
+                </div>
+              </li>
+            </div>
           </div>
-        </div>
-        
-      )}
-    </div>
+        )}
+      </div>
     </form>
   );
 };
