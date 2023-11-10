@@ -4,12 +4,26 @@
     font-family: "Montserrat";
 }
 
+.loading-container {
+    width: 100vw !important;
+    height: 100vh !important;
+}
+
 .font-montserrat {
     font-family: "Montserrat" !important;
 }
 
 .logreg-container {
     height: 100vh;
+}
+
+.login-register-form {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.login-register-form::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }
 
 .login-register-bg {
@@ -23,6 +37,12 @@
     width: 90%;
 }
 
+.login-register-form {
+    padding-top: 20px !important;
+    padding-top: 20px !important;
+    overflow-y: scroll;
+}
+
 .login-register-logo-container {
     width: 50vw;
     height: 100vh;
@@ -30,6 +50,19 @@
 
 .logologinregister {
     height: 100px;
+}
+
+.selected-register {
+    border-bottom: 3.5px solid #7044EB;
+}
+
+/* .unselected-register {
+    transition: font-size 1.5s;
+} */
+
+.unselected-register:hover {
+    /* font-size: 22px !important; */
+    border-bottom: 3.5px solid #7044EB;
 }
 
 .color-purple {
@@ -40,7 +73,7 @@
     display: block;
     height: 1px;
     border: 0;
-    border-top: 4px solid #690ED0;
+    border-top: 3.5px solid #7044EB;
     padding: 0;
     width: 30%;
 }
@@ -119,7 +152,7 @@ input[type="color"]:focus,
     .login-register-form-bg {
         width: 50%;
         border-radius: 0px 0px 0px 0px;
-        height: 100vh;
+        height: 100%;
         background-color: rgb(255, 255, 255);
     }
 }
