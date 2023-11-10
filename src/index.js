@@ -17,9 +17,13 @@ import { ExpertDetails } from "./pages/ExpertDetails/ExpertDetails";
 import { ExpertByField } from "./pages/ExpertByFields/ExpertByField";
 import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
-import { IsAuthenticated, IsNotAuthenticated } from "./pages/Middleware/Middlewares";
+import {
+  IsAuthenticated,
+  IsNotAuthenticated,
+} from "./pages/Middleware/Middlewares";
 import { UserContextProvider } from "./context/authContext";
 import { RegisterExpert } from "./pages/Register/registerExpert";
+import { TransactionList } from "./pages/Transaction/TransactionList";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +65,14 @@ const router = createBrowserRouter([
   {
     path: "/fields/",
     element: <ServicesPages />,
+  },
+  {
+    path: "/transaction-list/",
+    element: (
+      <IsAuthenticated>
+        <TransactionList />
+      </IsAuthenticated>
+    ),
   },
   {
     path: "/expert/",
