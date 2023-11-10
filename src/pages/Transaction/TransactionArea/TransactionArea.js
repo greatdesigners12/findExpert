@@ -18,8 +18,8 @@ export const TransactionArea = () => {
   //   transaction_image,
   //   return_image
   const [expertsData, setExpertsData] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [profilePicture, updateProfilePicture] = useState(null)
+  // const [selectedImage, setSelectedImage] = useState(null);
+  const [invoicePicture, updateInvoicePicture] = useState(null)
   
   const params = useParams();
   const id = params.id;
@@ -36,31 +36,31 @@ export const TransactionArea = () => {
     getData();
   }, []);
 
-  const profilePictureInputHandler = (event) => {
-    updateProfilePicture(event.target.files);
+  const invoicePictureInputHandler = (event) => {
+    updateInvoicePicture(event.target.files);
     console.log(event.target.files);
 }
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedImage(file);
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setSelectedImage(file);
+  // };
 
   
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
-    const data = new Transaction(expertsData.id, "40eqXaqMBLTeBs7tx0ygFFQB2Zc2","", "", 30, 65000, "2018-07-22", profilePicture, "")
+    const data = new Transaction("40eqXaqMBLTeBs7tx0ygFFQB2Zc2", "57ATrg73k9PGRReXHFhavjuQgFa2","", "", 30, 65000, "2018-07-22", invoicePicture, "")
     const result = await createTransaction(data)
-    console.log(result);
 }
 
   return (
+    <form>
+        
     <div className="transaction-container">
       {expertsData == null ? (
         "Loading.."
       ) : (
-        <form>
         <div className="transaction-content">
           <div className="left-side">
             <img src="../../assets/img/logo/Group119.png" alt="logo" />
@@ -72,7 +72,7 @@ export const TransactionArea = () => {
             {/* <h1 onChange={handlePriceChange} name="TotalPrices">{`Rp. ${expertsData.data.price * timeIntervals + 1000}`}</h1> */}
             <h5>Consultation Fee: Rp {expertsData.data.price}</h5>
             <h5>Service Fee: Rp 1.000</h5>
-            <input type="file" name="profilePicture" onChange={profilePictureInputHandler} accept=".png,.jpg,.jpeg" />
+            <input type="file" name="invoicePicture" onChange={invoicePictureInputHandler} accept=".png,.jpg,.jpeg" />
             
             {/* <input
               type="file"
@@ -99,9 +99,10 @@ export const TransactionArea = () => {
             </li>
           </div>
         </div>
-        </form>
+        
       )}
     </div>
+    </form>
   );
 };
 

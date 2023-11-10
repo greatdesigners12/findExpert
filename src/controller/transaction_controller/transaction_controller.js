@@ -19,7 +19,6 @@ export async function createTransaction(
     return_image
 ) {
     const result = new ResultData();
-
     try {
         const transactionsCollection = collection(db, "transactions");
 
@@ -27,13 +26,17 @@ export async function createTransaction(
         const storageRef = getStorage();
         const transactionImageName = new Date().getTime().toString() + ".png";
         const transactionImageRef = ref(storageRef, 'transaction_images/' + transactionImageName);
-        await uploadBytes(transactionImageRef, transaction_image);
-
+        var img = ""
+        await uploadBytes(transactionImageRef, transaction_image[0]).then(
+        async (snapshot) => {
+            await getDownloadURL(snapshot.ref).then((downloadURL) => {
+            img = downloadURL;
+            });
+        }
+        );
         // Get the download URL for the uploaded image
-        const downloadURL = await getDownloadURL(transactionImageRef);
-
         const newTransaction = new Transaction(
-            null,
+            "",
             expert_id,
             customer_id,
             start_time,
@@ -42,11 +45,11 @@ export async function createTransaction(
             payment_amount,
             transaction_date,
             transaction_status,
-            downloadURL, // Set download URL as the image name
+            img, // Set download URL as the image name
             return_image
         );
-
-        const docRef = await setDoc(transactionsCollection, newTransaction.serialize());
+        console.log(newTransaction.serialize())
+        const docRef = await setDoc(doc(transactionsCollection), newTransaction.serialize());
         const createdTransaction = { ...newTransaction, id: docRef.id };
         result.data = createdTransaction;
         result.errorMessage = "";
