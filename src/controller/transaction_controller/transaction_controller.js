@@ -7,18 +7,20 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 
 export async function createTransaction(
-    expert_id,
-    customer_id,
-    start_time,
-    end_time,
-    consultation_time,
-    payment_amount,
-    transaction_date,
-    transaction_status,
-    transaction_image,
-    return_image
+    transaction
 ) {
     const result = new ResultData();
+    const {id,
+        expert_id,
+        customer_id,
+        start_time,
+        end_time,
+        consultation_time,
+        payment_amount,
+        transaction_date,
+        transaction_status,
+        transaction_image,
+        return_image} = transaction
     try {
         const transactionsCollection = collection(db, "transactions");
 
@@ -27,6 +29,7 @@ export async function createTransaction(
         const transactionImageName = new Date().getTime().toString() + ".png";
         const transactionImageRef = ref(storageRef, 'transaction_images/' + transactionImageName);
         var img = ""
+        console.log(transaction_image)
         await uploadBytes(transactionImageRef, transaction_image[0]).then(
         async (snapshot) => {
             await getDownloadURL(snapshot.ref).then((downloadURL) => {
@@ -36,7 +39,7 @@ export async function createTransaction(
         );
         // Get the download URL for the uploaded image
         const newTransaction = new Transaction(
-            "",
+            "transaction_"+new Date().getTime().toString(),
             expert_id,
             customer_id,
             start_time,
@@ -48,9 +51,11 @@ export async function createTransaction(
             img, // Set download URL as the image name
             return_image
         );
-        console.log(newTransaction.serialize())
-        const docRef = await setDoc(doc(transactionsCollection), newTransaction.serialize());
-        const createdTransaction = { ...newTransaction, id: docRef.id };
+        
+        
+        const docRef = await setDoc( doc(db, "transactions", newTransaction.id), newTransaction.serialize());
+        console.log(docRef)
+        const createdTransaction = { ...newTransaction};
         result.data = createdTransaction;
         result.errorMessage = "";
         result.statusCode = 201;

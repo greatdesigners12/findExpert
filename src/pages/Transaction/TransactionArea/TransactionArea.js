@@ -37,8 +37,8 @@ export const TransactionArea = () => {
   }, []);
 
   const invoicePictureInputHandler = (event) => {
-    updateInvoicePicture(event.target.files);
-    console.log(event.target.files);
+    updateInvoicePicture(event.target.files[0]);
+    console.log(invoicePicture);
 }
 
   // const handleImageChange = (e) => {
@@ -47,11 +47,14 @@ export const TransactionArea = () => {
   // };
 
   
-
+  // id: any, expert_id: any, customer_id: any, start_time: any, end_time: any, 
+  // consultation_time: any, payment_amount: any, transaction_date: any, transaction_status: any, transaction_image: any, return_image: any
   const onSubmitHandler = async (event) => {
+    
     event.preventDefault()
-    const data = new Transaction("40eqXaqMBLTeBs7tx0ygFFQB2Zc2", "57ATrg73k9PGRReXHFhavjuQgFa2","", "", 30, 65000, "2018-07-22", invoicePicture, "")
+    const data = new Transaction("", "40eqXaqMBLTeBs7tx0ygFFQB2Zc2", "57ATrg73k9PGRReXHFhavjuQgFa2","", "", 30, 65000, "2018-07-22", "unverified", invoicePicture, "")
     const result = await createTransaction(data)
+    console.log(result)
 }
 
   return (
