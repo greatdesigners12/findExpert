@@ -38,7 +38,7 @@ export const RegisterUser = () => {
       <LoginRegisterPageHelmet pageTitle="Register" />
       <div className="login-register-bg">
         <div className="d-flex flex-row justify-content-lg-start justify-content-center py-lg-0 py-4 logreg-container">
-          <div className="login-register-form-bg d-flex align-items-center justify-content-center flex-column">
+          <div className="login-register-form-bg py-4 login-register-form d-flex align-items-center justify-content-center flex-column">
             <img
               src="assets/img/logo/logo-colored.png"
               className="logologinregister d-lg-none pb-5"
@@ -50,6 +50,16 @@ export const RegisterUser = () => {
               We Help <span className="color-purple">Clients</span> Meet The{" "}
               <span className="color-purple">Experts</span> They Need
             </h5>
+            <div className="px-5 mx-4 d-flex justify-content-evenly">
+              <h5 className="font-montserrat fw-bold mt-3 text-center mx-4 px-4 selected-register pb-2">
+                Client
+              </h5>
+              <a href="/register-expert" className="text-decoration-none">
+                <h5 className="font-montserrat fw-bold mt-3 text-center mx-4 px-4 unselected-register pb-2">
+                  Expert
+                </h5>
+              </a>
+            </div>
             <form onSubmit={handleSubmit} className="w-75">
               <div className="mb-3 mt-4">
                 <input
