@@ -88,11 +88,16 @@ export async function login(email, password) {
      
     })
     .catch((error) => {
-      const errorCode = error.code;
+      
       const errorMessage = error.message;
       result.data = null;
-      result.errorMessage = errorMessage;
-      result.statusCode = errorCode;
+      if(errorMessage.includes("invalid-login-credentials")){
+        result.errorMessage = "The user is not found";
+      }else{
+        result.errorMessage = errorMessage;
+      }
+      
+      result.statusCode = 400;
     });
 
   return result;
@@ -196,8 +201,13 @@ export async function register(name, job, email, password, confirmPassword) {
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
+      if(errorMessage.includes("email-already-in-use")){
+        result.errorMessage = "Email is already registered, please use another email";
+      }else{
+        result.errorMessage = errorMessage;
+      }
       result.data = errorCode;
-      result.errorMessage = errorMessage;
+      
       result.statusCode = 400;
     });
 
@@ -230,8 +240,13 @@ export async function registerExpert(expert) {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        if(errorMessage.includes("email-already-in-use")){
+          result.errorMessage = "Email is already registered, please use another email";
+        }else{
+          result.errorMessage = errorMessage;
+        }
         result.data = errorCode;
-        result.errorMessage = errorMessage;
+        
         result.statusCode = 400;
       });
 

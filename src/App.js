@@ -21,14 +21,14 @@ function App() {
     const tryLogin = async () => {
       // test akun user : "gg@gmail.com", "Awd123"
       // test akun expert : "ggbrooo@gmail.com ", "GGWP123awda" 
-      const data =  await login("gg@gmail.com", "Awd123");
+      const data =  await login("aa@gmail.com", "Awd123");
       
       // const result5 =  await register("haha", "student", "ggawdwaddd@gmail.com", "Awd123", "Awd123");
       // const result1 =  await getAllTransactions(1, 5)
       // const result2 =  await getAllUnverifiedWithdrawalRequest(1, 5)
       // const result3 =  await checkRole("57ATrg73k9PGRReXHFhavjuQgFa2")
       // const result4 =  getCurrentUser()
-    
+      
       
  
     }
