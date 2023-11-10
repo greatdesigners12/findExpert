@@ -18,12 +18,14 @@ export const IsNotAuthenticated = ({ children }) => {
 
 export const IsAuthenticated = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
-
-  if (userData != null) {
-    return children;
-  } else {
-    return <Navigate to="/login" />;
+  if(userData != ""){
+    if (userData != null) {
+      return children;
+    } else {
+      return <Navigate to="/login" />;
+    }
   }
+  
 };
 
 export const IsExpert = ({ children }) => {

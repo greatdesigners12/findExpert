@@ -17,7 +17,7 @@ import { ExpertDetails } from "./pages/ExpertDetails/ExpertDetails";
 import { ExpertByField } from "./pages/ExpertByFields/ExpertByField";
 import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
-import { IsNotAuthenticated } from "./pages/Middleware/Middlewares";
+import { IsAuthenticated, IsNotAuthenticated } from "./pages/Middleware/Middlewares";
 import { UserContextProvider } from "./context/authContext";
 import { RegisterExpert } from "./pages/Register/registerExpert";
 
@@ -64,7 +64,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/expert/",
-    element: <Expert />,
+    element: (
+      <IsAuthenticated>
+        <Expert />
+      </IsAuthenticated>
+    ),
   },
   {
     path: "/expertdetails/:id",
