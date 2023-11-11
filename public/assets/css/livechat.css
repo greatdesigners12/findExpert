@@ -4,6 +4,11 @@
   font-family: "Montserrat" !important;
 }
 
+html {
+  width: 100%;
+  height: 100%;
+}
+
 .page__title {
   min-height: 80px !important;
 }
@@ -93,14 +98,78 @@ input[type="color"]:focus,
 
 /* Style time text */
 .time-right {
-  float: right;
-  color: #aaa;
+  color: #858585;
 }
 
 /* Style time text */
 .time-left {
-  float: left;
-  color: #aaa;
+  color: #858585;
+}
+
+.livechat-receivername {
+  color: white;
+}
+
+.btn-primary {
+  color: #ffffff !important;
+  background-color: #7044eb !important;
+  border-color: #7044eb !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-primary:hover {
+  color: #ffffff !important;
+  background-color: #6136d7 !important;
+  border-color: #6136d7 !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-primary:focus,
+.btn-primary.focus {
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-primary.disabled,
+.btn-primary:disabled {
+  color: #ffffff !important;
+  background-color: #635881 !important;
+  border-color: #635881 !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: #ffffff !important;
+  background-color: #4d29b1 !important;
+  border-color: #4d29b1 !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 1px 4px 1px #b7b7b732 !important;
+}
+
+.btn-danger {
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-danger:hover {
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-danger:focus,
+.btn-danger.focus {
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-danger.disabled,
+.btn-danger:disabled {
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-danger:not(:disabled):not(.disabled):active,
+.btn-danger:not(:disabled):not(.disabled).active,
+.show > .btn-danger.dropdown-toggle {
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+}
+.btn-danger:not(:disabled):not(.disabled):active:focus,
+.btn-danger:not(:disabled):not(.disabled).active:focus,
+.show > .btn-danger.dropdown-toggle:focus {
+  box-shadow: 0 1px 4px 1px #b7b7b732 !important;
 }
 
 @media only screen and (min-width: 768px) {
