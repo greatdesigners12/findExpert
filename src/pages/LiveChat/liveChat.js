@@ -10,23 +10,29 @@ import {
 } from "../../controller/live_chat_controller/live_chat_controller";
 import { collection, query, onSnapshot, orderBy, where } from "firebase/firestore";
 import { useParams } from "react-router-dom";
-import { getCurrentUser } from "../../controller/auth_controller/auth_controller";
+import { getCurrentUser, getUserById } from "../../controller/auth_controller/auth_controller";
 import { useContext } from "react";
 import { UserContext } from "../../context/authContext";
+import { ExpertsController } from "../../controller/experts_controller/experts_controller";
 
 export const LiveChatPage = () => {
   const { userData, setUser } = useContext(UserContext);
-  var uid = "";
-  if (userData != "") {
-    uid = userData.uid;
-  }
+  
   const p = useParams();
   const transactionId = p.id;
   const [inputText, setInputText] = useState("");
   const [allMessages, setMessages] = useState([]);
   const [currentImage, setCurrentImage] = useState(null);
   const [transaction, setTransaction] = useState(null);
+  const [expertData, setExpertData] = useState(null);
+  const [userInformation, setUserInformation] = useState(null);
 
+  var uid = "";
+  var senderRole = "";
+  if (userData != "") {
+    uid = userData.uid;
+    senderRole = userData.displayName
+  }
   const inputTextListener = (event) => {
     setInputText(event.target.value);
   };
@@ -82,8 +88,14 @@ export const LiveChatPage = () => {
   useEffect(() => {
     const getTransaction = async () => {
       const result = await getTransactionById(transactionId);
-      console.log(result);
       setTransaction(result.data);
+      
+      const e = new ExpertsController()
+      const expertDataTemp = await e.getExpertById(result.data.expert_id)
+      setExpertData(expertDataTemp.data)
+      const userInfo = await getUserById(result.data.customer_id)
+      setUserInformation(userInfo.data)
+      
     };
     getTransaction();
   }, []);
@@ -121,12 +133,13 @@ export const LiveChatPage = () => {
     return d.getMinutes();
   };
 
-  return uid !== "" && transaction != null ? (
+  return uid !== "" && transaction != null && expertData != null && userData != null ? (
     <div>
+      <h1>You are chatting with {senderRole === "user" ? expertData.fullName : userData.fullName}</h1>
       {allMessages.map((dt) =>
         dt.receiver_id !== uid ? (
           <div key={dt.date} class="containerLivechat">
-            <img src="/w3images/bandmember.jpg" alt="Avatar" />
+            <img src={senderRole === "user" ? expertData.profilePicture : ""} alt="Avatar" />
             {dt.type === "text" ? (
               <p>{dt.sender_message}</p>
             ) : (
@@ -138,7 +151,7 @@ export const LiveChatPage = () => {
           </div>
         ) : (
           <div key={dt.date} class="containerLivechat darker">
-            <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right" />
+            <img src={senderRole != "user" ? expertData.profilePicture : ""} alt="Avatar" class="right" />
             {dt.type === "text" ? (
               <p>{dt.sender_message}</p>
             ) : (

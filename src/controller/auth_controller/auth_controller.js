@@ -103,6 +103,27 @@ export async function login(email, password) {
   return result;
 }
 
+export async function getUserById(id){
+  const result = new ResultData();
+
+  try {
+    const checkUser = doc(db, "userData", id);
+    const checkUserSnap = await getDoc(checkUser);
+
+    if (checkUserSnap.exists()) {
+      result.data = checkUserSnap.data()
+    }
+    result.statusCode = 200;
+    result.errorMessage = null;
+  } catch (e) {
+    result.data = e;
+    result.statusCode = 200;
+    result.errorMessage = e.message;
+  }
+
+  return result;
+}
+
 export async function getCurrentUser() {
   const auth = getAuth();
   return auth.currentUser;
