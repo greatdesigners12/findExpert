@@ -15,7 +15,7 @@ import {
   orderBy,
   where,
 } from "firebase/firestore";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   getCurrentUser,
   getUserById,
@@ -27,10 +27,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { useRef } from "react";
 import CommonPageHeader from "../../components/CommonPageHeader/CommonPageHeader";
+import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
+import { updateTransactionByExpert } from "../../controller/transaction_controller/transaction_controller";
 
 export const LiveChatPage = () => {
   const { userData, setUser } = useContext(UserContext);
 
+  const navigate = useNavigate();
   const p = useParams();
   const transactionId = p.id;
   const [inputText, setInputText] = useState("");
@@ -38,6 +41,9 @@ export const LiveChatPage = () => {
   const [transaction, setTransaction] = useState(null);
   const [expertData, setExpertData] = useState(null);
   const [userInformation, setUserInformation] = useState(null);
+
+  const [isLoadingMessages, setLoadingMessages] = useState(true);
+  const [isLoadingReceiverData, setLoadingReceiverData] = useState(true);
 
   var uid = "";
   var senderRole = "";
@@ -59,6 +65,14 @@ export const LiveChatPage = () => {
     chat = new Chat(target, currentUser, inputText, "text", transaction.id);
 
     const result = await send_message(chat);
+  };
+
+  const onClickEndChat = async (event) => {
+    setLoadingReceiverData(true);
+    const endChat = await updateTransactionByExpert(transactionId, "done");
+
+    // navigate("/");
+    console.log(endChat);
   };
 
   useEffect(() => {
@@ -85,6 +99,7 @@ export const LiveChatPage = () => {
       });
 
       setMessages(result);
+      setLoadingMessages(false);
     });
     return unsubscribe;
   }, []);
@@ -99,6 +114,8 @@ export const LiveChatPage = () => {
       setExpertData(expertDataTemp.data);
       const userInfo = await getUserById(result.data.customer_id);
       setUserInformation(userInfo.data);
+
+      setLoadingReceiverData(false);
     };
     getTransaction();
   }, []);
@@ -140,135 +157,179 @@ export const LiveChatPage = () => {
     inputField.current.click();
   };
 
-  return uid !== "" && transaction != null ? (
-    <>
-      <section
-        className="page__title p-relative d-flex align-items-center fix livechat-navbar"
-        style={{
-          background: `url(../../../assets/img/page-title/page-title-1.jpg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-      >
-        <div className="slider__shape">
-          <img
-            className="shape triangle"
-            src="../../assets/img/icon/slider/triangle.png"
-            alt="triangle"
-          />
-          <img
-            className="shape dotted-square"
-            src="../../assets/img/icon/slider/dotted-square.png"
-            alt="dotted-square"
-          />
-          <img
-            className="shape solid-square"
-            src="../../assets/img/icon/slider/solid-square.png"
-            alt="solid-square"
-          />
-          <img
-            className="shape circle-2"
-            src="../../assets/img/icon/slider/circle.png"
-            alt="circle"
-          />
-        </div>
-        <div className="container p-relative">
-          <div className="row">
-            <div className="">
-              <p>
-                {senderRole === "user"
-                  ? expertData.fullName
-                  : userData.fullName}
-              </p>
+  if (isLoadingReceiverData || isLoadingMessages) {
+    return <LoadingSpinner />;
+  } else {
+    return uid !== "" && transaction != null ? (
+      <>
+        <link rel="stylesheet" href="../../../../assets/css/livechat.css" />
+        <script
+          src="https://kit.fontawesome.com/240280eba1.js"
+          crossOrigin="anonymous"
+        ></script>
+        <section
+          className="page__title p-relative d-flex align-items-center fix livechat-navbar"
+          style={{
+            background: `url(../../../assets/img/page-title/page-title-1.jpg)`,
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="slider__shape">
+            <img
+              className="shape triangle"
+              src="../../assets/img/icon/slider/triangle.png"
+              alt="triangle"
+            />
+            <img
+              className="shape dotted-square"
+              src="../../assets/img/icon/slider/dotted-square.png"
+              alt="dotted-square"
+            />
+            <img
+              className="shape solid-square"
+              src="../../assets/img/icon/slider/solid-square.png"
+              alt="solid-square"
+            />
+            <img
+              className="shape circle-2"
+              src="../../assets/img/icon/slider/circle.png"
+              alt="circle"
+            />
+          </div>
+          <div className="container p-relative">
+            <div className="row">
+              <div className="d-flex flex-row justify-content-evenly align-items-center">
+                <div className="w-100"></div>
+                <div className="d-flex fled-row justify-content-center w-100">
+                  <p className="livechat-receivername fw-semibold mb-0 fs-5">
+                    {senderRole === "user"
+                      ? expertData.fullName
+                      : userData.fullName}
+                  </p>
+                </div>
+                <div className="d-flex fled-row justify-content-end w-100">
+                  <button
+                    onClick={onClickEndChat}
+                    className="btn btn-danger fw-medium"
+                  >
+                    End Chat
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-      <link rel="stylesheet" href="../../../../assets/css/livechat.css" />
-      <script
-        src="https://kit.fontawesome.com/240280eba1.js"
-        crossorigin="anonymous"
-      ></script>
-      <div className="pt-4">
-        <div className="px-4">
-          {allMessages.map((dt) =>
-            dt.receiver_id !== uid ? (
-              <div key={dt.date} className="d-flex flex-row">
-                <div className="containerLivechat d-flex flex-column w-100">
-                  <div className="d-flex flex-row w-100 justify-content-end">
-                    {dt.type === "text" ? (
-                      <p className="fw-medium">{dt.sender_message}</p>
-                    ) : (
-                      <img src={dt.sender_message} className="sent-img" />
-                    )}
-                  </div>
-                  <span className="time-left">
-                    {getMinutes(dt.date)} :{" "}
-                    {getSeconds(dt.date) > 9
-                      ? getSeconds(dt.date)
-                      : "0" + getSeconds(dt.date)}
-                  </span>
-                </div>
-                <img
-                  src="https://www.pacegallery.com/media/images/heroimage.width-2000.webp"
-                  alt="Avatar"
-                  className="chat-profile-picture ms-3 mt-2"
-                />
-              </div>
-            ) : (
-              <div key={dt.date} className="d-flex flex-row">
-                <img
-                  src="https://www.pacegallery.com/media/images/heroimage.width-2000.webp"
-                  alt="Avatar"
-                  className="chat-profile-picture me-3 mt-2"
-                />
-                <div className="containerLivechat d-flex flex-column w-100">
-                  <div className="d-flex flex-row w-100 justify-content-start">
-                    {dt.type === "text" ? (
-                      <p className="fw-medium">{dt.sender_message}</p>
-                    ) : (
-                      <img src={dt.sender_message} className="sent-img" />
-                    )}
-                  </div>
-                  <div className="d-flex flex-row justify-content-end">
-                    <span className="time-right">
+        </section>
+        <div className="pt-4">
+          <div className="px-4">
+            <div className="d-flex flex-row justify-content-center">
+              <h5>
+                {transaction.transaction_status === "ready"
+                  ? "This Consultation Session Will End At " +
+                    new Date(transaction.end_time).getHours() +
+                    " : " +
+                    new Date(transaction.end_time).getMinutes()
+                  : "This Consultation Session Ended At " +
+                    new Date(transaction.end_time).getHours() +
+                    " : " +
+                    new Date(transaction.end_time).getMinutes()}
+              </h5>
+            </div>
+            {allMessages.map((dt) =>
+              dt.receiver_id !== uid ? (
+                <div key={dt.date} className="d-flex flex-row">
+                  <div className="containerLivechat d-flex flex-column w-100">
+                    <div className="d-flex flex-row w-100 justify-content-end">
+                      {dt.type === "text" ? (
+                        <p className="fw-medium">{dt.sender_message}</p>
+                      ) : (
+                        <img src={dt.sender_message} className="sent-img" />
+                      )}
+                    </div>
+                    <span className="time-left">
                       {getMinutes(dt.date)} :{" "}
                       {getSeconds(dt.date) > 9
                         ? getSeconds(dt.date)
                         : "0" + getSeconds(dt.date)}
                     </span>
                   </div>
+                  <img
+                    src={
+                      senderRole !== "user"
+                        ? expertData.profilePicture
+                        : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+                    }
+                    alt="Avatar"
+                    className="chat-profile-picture ms-3 mt-2"
+                  />
                 </div>
-              </div>
-            )
-          )}
+              ) : (
+                <div key={dt.date} className="d-flex flex-row">
+                  <img
+                    src={
+                      senderRole === "user"
+                        ? expertData.profilePicture
+                        : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+                    }
+                    alt="Avatar"
+                    className="chat-profile-picture me-3 mt-2"
+                  />
+                  <div className="containerLivechat d-flex flex-column w-100">
+                    <div className="d-flex flex-row w-100 justify-content-start">
+                      {dt.type === "text" ? (
+                        <p className="fw-medium">{dt.sender_message}</p>
+                      ) : (
+                        <img src={dt.sender_message} className="sent-img" />
+                      )}
+                    </div>
+                    <div className="d-flex flex-row justify-content-end">
+                      <span className="time-right">
+                        {getMinutes(dt.date)} :{" "}
+                        {getSeconds(dt.date) > 9
+                          ? getSeconds(dt.date)
+                          : "0" + getSeconds(dt.date)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+          <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
+            {transaction.transaction_status === "ready" ? (
+              <>
+                <FontAwesomeIcon
+                  icon={faPaperclip}
+                  size="xl"
+                  onClick={paperclipClick}
+                  className="clipButton"
+                />
+                <input
+                  ref={imageRef}
+                  type="file"
+                  onChange={uploadImage}
+                  className="d-none"
+                />
+                <input
+                  value={inputText}
+                  type="text"
+                  onChange={inputTextListener}
+                  className="form-control ms-3"
+                />
+                <button onClick={onClickBtn} className="btn fw-bold">
+                  Send
+                </button>
+              </>
+            ) : (
+              <h5 className="time-left w-100 text-center mb-0 fw-semibold">
+                This Consultation Session Has Ended
+              </h5>
+            )}
+          </div>
         </div>
-        <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
-          <FontAwesomeIcon
-            icon={faPaperclip}
-            size="xl"
-            onClick={paperclipClick}
-            className="clipButton"
-          />
-          <input
-            ref={imageRef}
-            type="file"
-            onChange={uploadImage}
-            className="d-none"
-          />
-          <input
-            value={inputText}
-            type="text"
-            onChange={inputTextListener}
-            className="form-control ms-3"
-          />
-          <button onClick={onClickBtn} className="btn fw-bold">
-            Send
-          </button>
-        </div>
-      </div>
-    </>
-  ) : (
-    "Please login first"
-  );
+      </>
+    ) : (
+      "Please login first"
+    );
+  }
 };
