@@ -13,6 +13,9 @@ import { useParams } from "react-router-dom";
 import { getCurrentUser } from "../../controller/auth_controller/auth_controller";
 import { useContext } from "react";
 import { UserContext } from "../../context/authContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
+import { useRef } from "react";
 
 export const LiveChatPage = () => {
   const { userData, setUser } = useContext(UserContext);
@@ -24,7 +27,6 @@ export const LiveChatPage = () => {
   const transactionId = p.id;
   const [inputText, setInputText] = useState("");
   const [allMessages, setMessages] = useState([]);
-  const [currentImage, setCurrentImage] = useState(null);
   const [transaction, setTransaction] = useState(null);
 
   const inputTextListener = (event) => {
@@ -37,21 +39,10 @@ export const LiveChatPage = () => {
       transaction.expert_id === uid
         ? transaction.customer_id
         : transaction.expert_id;
-    console.log(currentImage);
-    if (currentImage !== null) {
-      chat = new Chat(
-        target,
-        currentUser,
-        currentImage,
-        "images",
-        transaction.id
-      );
-    } else {
-      chat = new Chat(target, currentUser, inputText, "text", transaction.id);
-    }
+
+    chat = new Chat(target, currentUser, inputText, "text", transaction.id);
 
     const result = await send_message(chat);
-    setCurrentImage(null);
   };
 
   useEffect(() => {
@@ -88,8 +79,6 @@ export const LiveChatPage = () => {
   }, []);
 
   const uploadImage = async (event) => {
-    setCurrentImage(event.target.files[0]);
-
     var chat = null;
     const currentUser = uid;
     const target =
@@ -100,13 +89,12 @@ export const LiveChatPage = () => {
     chat = new Chat(
       target,
       currentUser,
-      currentImage,
+      event.target.files[0],
       "images",
       transaction.id
     );
 
     const result = await send_message(chat);
-    setCurrentImage(null);
     event.target.value = "";
   };
 
@@ -120,42 +108,98 @@ export const LiveChatPage = () => {
     return d.getMinutes();
   };
 
-  return uid !== "" && transaction != null ? (
-    <div>
-      {allMessages.map((dt) =>
-        dt.receiver_id !== uid ? (
-          <div key={dt.date} class="containerLivechat">
-            <img src="/w3images/bandmember.jpg" alt="Avatar" />
-            {dt.type === "text" ? (
-              <p>{dt.sender_message}</p>
-            ) : (
-              <img src={dt.sender_message} />
-            )}
-            <span class="time-right">
-              {getMinutes(dt.date)} : {getSeconds(dt.date)}
-            </span>
-          </div>
-        ) : (
-          <div key={dt.date} class="containerLivechat darker">
-            <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right" />
-            {dt.type === "text" ? (
-              <p>{dt.sender_message}</p>
-            ) : (
-              <img src={dt.sender_message} />
-            )}
-            <span class="time-left">
-              {getMinutes(dt.date)} : {getSeconds(dt.date)}
-            </span>
-          </div>
-        )
-      )}
+  const imageRef = useRef();
 
-      <div>
-        <input type="file" onChange={uploadImage} />
-        <input value={inputText} type="text" onChange={inputTextListener} />
-        <button onClick={onClickBtn}>Send</button>
+  const paperclipClick = (e) => {
+    var inputField = imageRef;
+    inputField.current.click();
+  };
+
+  return uid !== "" && transaction != null ? (
+    <>
+      <link rel="stylesheet" href="../../../../assets/css/livechat.css" />
+      <script
+        src="https://kit.fontawesome.com/240280eba1.js"
+        crossorigin="anonymous"
+      ></script>
+      <div className="pt-4">
+        <div className="px-4">
+          {allMessages.map((dt) =>
+            dt.receiver_id !== uid ? (
+              <div key={dt.date} className="d-flex flex-row">
+                <div className="containerLivechat d-flex flex-column w-100">
+                  <div className="d-flex flex-row w-100 justify-content-end">
+                    {dt.type === "text" ? (
+                      <p className="fw-medium">{dt.sender_message}</p>
+                    ) : (
+                      <img src={dt.sender_message} className="sent-img" />
+                    )}
+                  </div>
+                  <span className="time-left">
+                    {getMinutes(dt.date)} :{" "}
+                    {getSeconds(dt.date) > 9
+                      ? getSeconds(dt.date)
+                      : "0" + getSeconds(dt.date)}
+                  </span>
+                </div>
+                <img
+                  src="https://www.pacegallery.com/media/images/heroimage.width-2000.webp"
+                  alt="Avatar"
+                  className="chat-profile-picture ms-3 mt-2"
+                />
+              </div>
+            ) : (
+              <div key={dt.date} className="d-flex flex-row">
+                <img
+                  src="https://www.pacegallery.com/media/images/heroimage.width-2000.webp"
+                  alt="Avatar"
+                  className="chat-profile-picture me-3 mt-2"
+                />
+                <div className="containerLivechat d-flex flex-column w-100">
+                  <div className="d-flex flex-row w-100 justify-content-start">
+                    {dt.type === "text" ? (
+                      <p className="fw-medium">{dt.sender_message}</p>
+                    ) : (
+                      <img src={dt.sender_message} className="sent-img" />
+                    )}
+                  </div>
+                  <div className="d-flex flex-row justify-content-end">
+                    <span className="time-right">
+                      {getMinutes(dt.date)} :{" "}
+                      {getSeconds(dt.date) > 9
+                        ? getSeconds(dt.date)
+                        : "0" + getSeconds(dt.date)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+        <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
+          <FontAwesomeIcon
+            icon={faPaperclip}
+            size="xl"
+            onClick={paperclipClick}
+          />
+          <input
+            ref={imageRef}
+            type="file"
+            onChange={uploadImage}
+            className="d-none"
+          />
+          <input
+            value={inputText}
+            type="text"
+            onChange={inputTextListener}
+            className="form-control ms-3"
+          />
+          <button onClick={onClickBtn} className="btn fw-bold">
+            Send
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   ) : (
     "Please login first"
   );

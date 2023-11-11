@@ -1,59 +1,59 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 @import "bootstrap";
 * {
-    font-family: "Montserrat" !important;
+  font-family: "Montserrat" !important;
 }
 
 .loading-container {
-    width: 100vw !important;
-    height: 100vh !important;
+  width: 100vw !important;
+  height: 100vh !important;
 }
 
 .font-montserrat {
-    font-family: "Montserrat" !important;
+  font-family: "Montserrat" !important;
 }
 
 .logreg-container {
-    height: 100vh;
+  height: 100vh;
 }
 
 .login-register-form {
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
 
-.login-register-form::-webkit-scrollbar { 
-    display: none;  /* Safari and Chrome */
+.login-register-form::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 .login-register-bg {
-    background-color: #1F1841;
+  background-color: #1f1841;
 }
 
 .login-register-form-bg {
-    background-color: rgba(255, 255, 255, 0.896);
-    height: 100%;
-    border-radius: 25px;
-    width: 90%;
+  background-color: rgba(255, 255, 255, 0.896);
+  height: 100%;
+  border-radius: 25px;
+  width: 90%;
 }
 
 .login-register-form {
-    padding-top: 20px !important;
-    padding-top: 20px !important;
-    overflow-y: scroll;
+  padding-top: 20px !important;
+  padding-top: 20px !important;
+  overflow-y: scroll;
 }
 
 .login-register-logo-container {
-    width: 50vw;
-    height: 100vh;
+  width: 50vw;
+  height: 100vh;
 }
 
 .logologinregister {
-    height: 100px;
+  height: 100px;
 }
 
 .selected-register {
-    border-bottom: 3.5px solid #7044EB;
+  border-bottom: 3.5px solid #7044eb;
 }
 
 /* .unselected-register {
@@ -61,25 +61,25 @@
 } */
 
 .unselected-register:hover {
-    /* font-size: 22px !important; */
-    border-bottom: 3.5px solid #7044EB;
+  /* font-size: 22px !important; */
+  border-bottom: 3.5px solid #7044eb;
 }
 
 .color-purple {
-    color: #690ED0;
+  color: #690ed0;
 }
 
 .line1 {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 3.5px solid #7044EB;
-    padding: 0;
-    width: 30%;
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 3.5px solid #7044eb;
+  padding: 0;
+  width: 30%;
 }
 
 a:hover {
-    color: #3e067e !important;
+  color: #3e067e !important;
 }
 
 .form-select:focus,
@@ -99,60 +99,60 @@ input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="color"]:focus,
 .uneditable-input:focus {
-    border-color: #dcdcdcba !important;
-    box-shadow: 0 0px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(197, 197, 197, 0.6) !important;
-    outline: 0 none !important;
+  border-color: #dcdcdcba !important;
+  box-shadow: 0 0px 1px rgba(0, 0, 0, 0.075) inset,
+    0 0 8px rgba(197, 197, 197, 0.6) !important;
+  outline: 0 none !important;
 }
 .btn-primary {
-    color: #ffffff !important;
-    background-color: #7044EB !important;
-    border-color: #7044EB !important;
-    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+  color: #ffffff !important;
+  background-color: #7044eb !important;
+  border-color: #7044eb !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
 }
 .btn-primary:hover {
-    color: #ffffff !important;
-    background-color: #6136d7 !important;
-    border-color: #6136d7 !important;
-    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+  color: #ffffff !important;
+  background-color: #6136d7 !important;
+  border-color: #6136d7 !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
 }
 .btn-primary:focus,
 .btn-primary.focus {
-    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
 }
 .btn-primary.disabled,
 .btn-primary:disabled {
-    color: #ffffff !important;
-    background-color: #635881 !important;
-    border-color: #635881 !important;
-    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+  color: #ffffff !important;
+  background-color: #635881 !important;
+  border-color: #635881 !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
 }
 .btn-primary:not(:disabled):not(.disabled):active,
 .btn-primary:not(:disabled):not(.disabled).active,
-.show>.btn-primary.dropdown-toggle {
-    color: #ffffff !important;
-    background-color: #4d29b1 !important;
-    border-color: #4d29b1 !important;
-    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+.show > .btn-primary.dropdown-toggle {
+  color: #ffffff !important;
+  background-color: #4d29b1 !important;
+  border-color: #4d29b1 !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
 }
 .btn-primary:not(:disabled):not(.disabled):active:focus,
 .btn-primary:not(:disabled):not(.disabled).active:focus,
-.show>.btn-primary.dropdown-toggle:focus {
-    box-shadow: 0 1px 4px 1px #b7b7b7 !important;
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 1px 4px 1px #b7b7b7 !important;
 }
 
 @media only screen and (min-width: 768px) {
-    .login-register-form-bg {
-        width: 75%;
-        border-radius: 50px;
-    }
+  .login-register-form-bg {
+    width: 75%;
+    border-radius: 50px;
+  }
 }
 
-
 @media only screen and (min-width: 1024px) {
-    .login-register-form-bg {
-        width: 50%;
-        border-radius: 0px 0px 0px 0px;
-        height: 100%;
-        background-color: rgb(255, 255, 255);
-    }
+  .login-register-form-bg {
+    width: 50%;
+    border-radius: 0px 0px 0px 0px;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+  }
 }
