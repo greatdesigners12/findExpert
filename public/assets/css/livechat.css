@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+@import "bootstrap";
+* {
+  font-family: "Montserrat" !important;
+}
+
+.page__title {
+  min-height: 80px !important;
+}
+
+.livechat-navbar {
+  height: 50px !important;
+}
+
+.clipButton:hover {
+  cursor: pointer;
+}
+
+.form-select:focus,
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.uneditable-input:focus {
+  border-color: #dcdcdcba !important;
+  box-shadow: 0 0px 1px rgba(0, 0, 0, 0.075) inset,
+    0 0 8px rgba(197, 197, 197, 0.6) !important;
+  outline: 0 none !important;
+}
+
+.chat-profile-picture {
+  width: 75px;
+  height: 75px;
+}
+.containerLivechat {
+  border: 1px solid #dedede;
+  background-color: #f7f7f7;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.send-msg-container {
+  border: 0.5px solid #dedede;
+  background-color: #f1f1f1;
+}
+
+/* Darker chat container */
+.darker {
+  border-color: #ccc;
+  background-color: #ddd;
+}
+
+/* Clear floats */
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Style images */
+.chat-profile-picture {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  height: 60px;
+  border-radius: 50%;
+}
+
+/* Style images */
+.containerLivechat img.sent-img {
+  width: 300px;
+  border-radius: 5%;
+}
+
+/* Style the right image */
+.containerLivechat img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right: 0;
+}
+
+/* Style time text */
+.time-right {
+  float: right;
+  color: #aaa;
+}
+
+/* Style time text */
+.time-left {
+  float: left;
+  color: #aaa;
+}
+
+@media only screen and (min-width: 768px) {
+  .containerLivechat img.sent-img {
+    width: 400px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .containerLivechat img.sent-img {
+    width: 500px;
+  }
+}
