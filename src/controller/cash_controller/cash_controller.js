@@ -2,16 +2,30 @@ import { db } from "../firebaseApp";
 import { collection, doc, getDocs, setDoc, updateDoc, query, where, getDoc } from "firebase/firestore";
 import { Cash } from "./models/cash";
 import { ResultData } from "../structureJson/resultData";
-
 export class CashController {
-    async getAllCashRecords(expertId) {
+    async getLastDocumentFromPage(expertId, pageSize, pageNumber) {
+        const cashCollection = collection(db, "cash");
+        const query = query(cashCollection, where("expert_id", "==", expertId));
+        const startAfterDoc = await getDocumentToStartAfter(query, pageSize, pageNumber);
+        return startAfterDoc;
+    }
+
+    async getAllCashRecordsWithPagination(expertId, pageSize, pageNumber) {
         const result = new ResultData();
-    
+
         try {
             const cashCollection = collection(db, "cash");
-            const cashQuery = query(cashCollection, where("expert_id", "==", expertId));
+            let cashQuery = query(cashCollection, where("expert_id", "==", expertId));
+
+            // Menggunakan limit untuk paginasi
+            const startAtDoc = pageNumber > 1 ? await this.getLastDocumentFromPage(expertId, pageSize, pageNumber - 1) : null;
+            if (startAtDoc) {
+                cashQuery = query(cashQuery, startAfter(startAtDoc));
+            }
+            cashQuery = query(cashQuery, limit(pageSize));
+
             const cashSnapshot = await getDocs(cashQuery);
-    
+
             const cashRecords = [];
             cashSnapshot.forEach((cashDoc) => {
                 const cashData = cashDoc.data();
@@ -27,7 +41,7 @@ export class CashController {
                     )
                 );
             });
-    
+
             result.data = cashRecords;
             result.errorMessage = "";
             result.statusCode = 200;
@@ -36,7 +50,7 @@ export class CashController {
             result.errorMessage = "Failed to get cash records: " + error.message;
             result.statusCode = 500;
         }
-    
+
         return result;
     }
     

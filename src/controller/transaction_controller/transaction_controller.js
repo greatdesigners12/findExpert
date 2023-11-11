@@ -133,19 +133,20 @@ export async function updateTransactionStatusToOngoing(transactionId) {
     if (transactionSnapshot.exists()) {
       // Check if the current transaction status is "waiting" to update it to "ongoing"
       if (transactionSnapshot.data().transaction_status === "waiting") {
-        // Calculate the start time and end time based on the amount in minutes
-        const currentTimestamp = new Date().toISOString();
+        // Use new Date() for current time (local time)
+        const currentTimestamp = new Date();
         const amount = transactionSnapshot.data().amount;
-        const startTime = currentTimestamp;
+
+        // Calculate the end time based on the amount in minutes
         const endTime = new Date(
-          new Date(startTime).getTime() + amount * 60000
+          currentTimestamp.getTime() + amount * 30 * 60000
         );
 
         // Update the transaction status to "ongoing" and update start_time and end_time
         await updateDoc(transactionRef, {
           transaction_status: "ongoing",
-          start_time: startTime,
-          end_time: endTime.toISOString(),
+          start_time: currentTimestamp,
+          end_time: endTime,
         });
 
         result.data = "ongoing";
@@ -305,8 +306,9 @@ export async function updateTransactionByExpert(id, newStatus) {
     const transactionsCollection = collection(db, "transactions");
     const transactionRef = doc(transactionsCollection, id);
 
-    // Get the current timestamp
-    const currentTimestamp = new Date().toISOString();
+    // Get the current local timestamp
+    const currentTimestamp = new Date();
+   
 
     if (newStatus === "Accept") {
       // Retrieve the amount from the transaction data
@@ -315,63 +317,66 @@ export async function updateTransactionByExpert(id, newStatus) {
 
       // Calculate the end time based on the start time and amount
       const startTime = currentTimestamp;
-      const minutesToAdd = amount; // Assume amount is the number of minutes to add
-      const endTime = new Date(
-        new Date(startTime).getTime() + minutesToAdd * 60000
-      );
+      const endTime = new Date(startTime.getTime() + amount * 30 * 60000);
+      // Calculate the end time based on the start time and amount
+    
 
       // Update the 'transaction_status', 'start_time', and 'end_time' fields
       await updateDoc(transactionRef, {
         transaction_status: "ready",
         start_time: startTime,
-        end_time: endTime.toISOString(),
+        end_time: endTime
       });
 
-      // Update the expert status to "Busy"
+      // Assuming you have access to the expert document or data
       const expertId = transactionData.expert_id;
-      await this.updateExpertStatus(expertId, "busy"); // Assuming there's a function to update expert status
+      const expertRef = doc(collection(db, "expertData"), expertId);
+
+      // Update the expert status directly
+      await updateDoc(expertRef, {
+        status: "busy" // Change "busy" to the desired status
+      });
     } else if (newStatus === "done") {
       // Retrieve the transaction data
       const transactionData = (await getDoc(transactionRef)).data();
 
       // Check if it has been at least 15 minutes since the transaction started
       const startTime = new Date(transactionData.start_time.seconds * 1000);
-      
       const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
 
-      if (new Date(currentTimestamp) >= fifteenMinutesLater) {
+      if (currentTimestamp >= fifteenMinutesLater) {
         // Update the 'transaction_status' to "done"
         await updateDoc(transactionRef, {
-          transaction_status: "done",
+          transaction_status: "done"
         });
 
-        // Update the expert status to "Online"
+        // Assuming you have access to the expert document or data
         const expertId = transactionData.expert_id;
-        await this.updateExpertStatus(expertId, "online"); // Assuming there's a function to update expert status
+        const expertRef = doc(collection(db, "expertData"), expertId);
+
+        // Update the expert status directly
+        await updateDoc(expertRef, {
+          status: "online" // Change "online" to the desired status
+        });
 
         result.data = newStatus;
         result.errorMessage = "";
         result.statusCode = 200;
       } else {
         result.data = null;
-        result.errorMessage =
-          "Transaction must be at least 15 minutes to be marked as 'done'.";
+        result.errorMessage = "Transaction must be at least 15 minutes to be marked as 'done'.";
         result.statusCode = 400;
       }
     } else if (newStatus === "cancel") {
       // Update the 'transaction_status' to "cancel"
       await updateDoc(transactionRef, {
-        transaction_status: "cancel",
+        transaction_status: "cancel"
       });
     } else {
       result.data = null;
       result.errorMessage = "Invalid status provided.";
       result.statusCode = 400;
     }
-
-    result.data = newStatus;
-    result.errorMessage = "";
-    result.statusCode = 200;
   } catch (error) {
     result.data = null;
     result.errorMessage = "Failed to update transaction: " + error.message;
@@ -380,6 +385,7 @@ export async function updateTransactionByExpert(id, newStatus) {
 
   return result;
 }
+
 
 export async function getExpertByHistory(user_id) {
   const result = new ResultData();
@@ -446,7 +452,7 @@ export async function deleteTransaction(id) {
   return result;
 }
 
-export async function getExpertTransactionsById(expertId) {
+export async function getExpertTransactionsById(expertId, currentPage, pageSize) {
   const result = new ResultData();
 
   try {
@@ -454,25 +460,28 @@ export async function getExpertTransactionsById(expertId) {
     const expertTransactionsQuery = query(
       transactionsCollection,
       where("expert_id", "==", expertId),
-      where("transaction_status", "in", ["ready", "paid", "ongoing"])
+      where("transaction_status", "in", ["ready", "paid", "ongoing"]),
+      orderBy("transaction_date", "desc") // Optional: Order the transactions by date
     );
 
-    // Subscribe to real-time updates
-    const unsubscribe = onSnapshot(expertTransactionsQuery, (snapshot) => {
-      const transactions = [];
-      snapshot.forEach((transactionDoc) => {
-        const transactionData = transactionDoc.data();
-        transactions.push(transactionData);
-      });
+    const startAfterDocument = currentPage > 1 ? await getDocumentToStartAfter(expertTransactionsQuery, pageSize, currentPage) : null;
 
-      // Handle the updated data, e.g., update your UI with the new transactions
-      result.data = transactions;
-      result.errorMessage = "";
-      result.statusCode = 200;
+    let queryWithPagination = expertTransactionsQuery;
+    if (startAfterDocument) {
+      queryWithPagination = startAfter(queryWithPagination, startAfterDocument);
+    }
+
+    const transactionsSnapshot = await getDocs(queryWithPagination);
+
+    const transactions = [];
+    transactionsSnapshot.forEach((transactionDoc) => {
+      const transactionData = transactionDoc.data();
+      transactions.push(transactionData);
     });
 
-    // Save the unsubscribe function so you can stop receiving updates later
-    result.unsubscribe = unsubscribe;
+    result.data = transactions;
+    result.errorMessage = "";
+    result.statusCode = 200;
   } catch (error) {
     result.data = null;
     result.errorMessage = "Failed to get expert transactions: " + error.message;
@@ -480,4 +489,19 @@ export async function getExpertTransactionsById(expertId) {
   }
 
   return result;
+}
+
+async function getDocumentToStartAfter(query, pageSize, currentPage) {
+  const snapshot = await getDocs(query.limit(pageSize));
+  const documents = snapshot.docs;
+
+  if (documents.length === pageSize) {
+    const lastDocument = documents[pageSize - 1];
+    return lastDocument;
+  } else if (currentPage > 1) {
+    // If the current page is greater than 1, there's no more data to fetch
+    return null;
+  } else {
+    return null;
+  }
 }
