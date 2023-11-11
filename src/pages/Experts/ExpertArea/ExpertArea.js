@@ -6,12 +6,17 @@ import { ExpertsController} from '../../../controller/experts_controller/experts
 
 export const ExpertArea = () => {
     const [expertsData, setExpertsData] = useState([])
+    const [id, updateId] = useState(null);
+  
     // const params = useParams();
     // const id = params.id
     useEffect(() => {
         const getData = async () => {
             const ec = new ExpertsController()
             const data = await ec.getAllVerifiedExperts();
+            const expertField = await ec.getExpertById(id);
+            console.log(data);
+            updateId(data);
             console.log(data);
             setExpertsData(data);
         } 
