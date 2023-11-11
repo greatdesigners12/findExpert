@@ -15,16 +15,22 @@ export async function getExpertsByFieldAndStatus(fieldId) {
         const expertsList = expertSnapshot.docs.map((expertDoc) => {
             const expertData = expertDoc.data();
             return new Expert(
-                expertData.id,
                 expertData.full_name,
-                expertData.fieldId,
-                expertData.education,
-                expertData.KTP,
-                expertData.NIK,
-                expertData.certificate_images,
                 expertData.no_telp,
-                expertData.status,
-                expertData.cash_amount
+                expertData.email,
+                expertData.password,
+                expertData.birthDate,
+                expertData.gender,
+                expertData.education,
+                expertData.fieldId,
+                expertData.NIK,
+                expertData.jobExperience,
+                expertData.KTP,
+                expertData.certificate_images,
+                expertData.profilePicture,
+                expertData.cash_amount,
+                expertData.price,
+                expertData.id
             );
         });
 
