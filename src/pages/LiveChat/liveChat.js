@@ -26,19 +26,24 @@ export const LiveChatPage = () => {
   const [transaction, setTransaction] = useState(null);
   const [expertData, setExpertData] = useState(null);
   const [userInformation, setUserInformation] = useState(null);
-
-  var uid = "";
-  var senderRole = "";
-  if (userData != "") {
-    uid = userData.uid;
-    senderRole = userData.displayName
-  }
+  const [senderRole, setUserRole] = useState(null)
+  const {uid} = userData
+  
   const inputTextListener = (event) => {
     setInputText(event.target.value);
   };
+
+  useEffect(() => {
+    if(userData != ""){
+      setUserRole(userData.displayName)
+    }
+  }, [userData])
+
   const onClickBtn = async (event) => {
     var chat = null;
+    
     const currentUser = uid;
+    
     const target =
       transaction.expert_id === uid
         ? transaction.customer_id
@@ -61,11 +66,14 @@ export const LiveChatPage = () => {
   };
 
   useEffect(() => {
+    
     const getAllMessage = async () => {
       const result = await getAllMessages(transactionId);
       console.log(result)
+
       if (result.statusCode === 200) {
-        
+        console.log(result.data)
+        console.log(uid)
         setMessages(result.data);
       }
     };
@@ -100,6 +108,8 @@ export const LiveChatPage = () => {
     getTransaction();
   }, []);
 
+  
+
   const uploadImage = async (event) => {
     setCurrentImage(event.target.files[0]);
 
@@ -123,7 +133,7 @@ export const LiveChatPage = () => {
     event.target.value = "";
   };
 
-  console.log(getCurrentUser());
+
   const getMinutes = (date) => {
     const d = new Date(date.seconds * 1000);
     return d.getHours();
@@ -133,13 +143,13 @@ export const LiveChatPage = () => {
     return d.getMinutes();
   };
 
-  return uid !== "" && transaction != null && expertData != null && userData != null ? (
+  return uid !== null && transaction != null && expertData != null && userData != null && senderRole != null ? (
     <div>
       <h1>You are chatting with {senderRole === "user" ? expertData.fullName : userData.fullName}</h1>
       {allMessages.map((dt) =>
-        dt.receiver_id !== uid ? (
+        dt.receiver_id === uid ? (
           <div key={dt.date} class="containerLivechat">
-            <img src={senderRole === "user" ? expertData.profilePicture : ""} alt="Avatar" />
+            <img src={senderRole !== "user" ? expertData.profilePicture : ""} alt="Avatar" />
             {dt.type === "text" ? (
               <p>{dt.sender_message}</p>
             ) : (
@@ -151,7 +161,7 @@ export const LiveChatPage = () => {
           </div>
         ) : (
           <div key={dt.date} class="containerLivechat darker">
-            <img src={senderRole != "user" ? expertData.profilePicture : ""} alt="Avatar" class="right" />
+            <img src={senderRole === "user" ? expertData.profilePicture : ""} alt="Avatar" class="right" />
             {dt.type === "text" ? (
               <p>{dt.sender_message}</p>
             ) : (
