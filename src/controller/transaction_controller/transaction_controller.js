@@ -452,7 +452,7 @@ export async function deleteTransaction(id) {
   return result;
 }
 
-export async function getExpertTransactionsById(expertId) {
+export async function getExpertTransactionsById(expertId, currentPage, pageSize) {
   const result = new ResultData();
 
   try {
@@ -460,25 +460,28 @@ export async function getExpertTransactionsById(expertId) {
     const expertTransactionsQuery = query(
       transactionsCollection,
       where("expert_id", "==", expertId),
-      where("transaction_status", "in", ["ready", "paid", "ongoing"])
+      where("transaction_status", "in", ["ready", "paid", "ongoing"]),
+      orderBy("transaction_date", "desc") // Optional: Order the transactions by date
     );
 
-    // Subscribe to real-time updates
-    const unsubscribe = onSnapshot(expertTransactionsQuery, (snapshot) => {
-      const transactions = [];
-      snapshot.forEach((transactionDoc) => {
-        const transactionData = transactionDoc.data();
-        transactions.push(transactionData);
-      });
+    const startAfterDocument = currentPage > 1 ? await getDocumentToStartAfter(expertTransactionsQuery, pageSize, currentPage) : null;
 
-      // Handle the updated data, e.g., update your UI with the new transactions
-      result.data = transactions;
-      result.errorMessage = "";
-      result.statusCode = 200;
+    let queryWithPagination = expertTransactionsQuery;
+    if (startAfterDocument) {
+      queryWithPagination = startAfter(queryWithPagination, startAfterDocument);
+    }
+
+    const transactionsSnapshot = await getDocs(queryWithPagination);
+
+    const transactions = [];
+    transactionsSnapshot.forEach((transactionDoc) => {
+      const transactionData = transactionDoc.data();
+      transactions.push(transactionData);
     });
 
-    // Save the unsubscribe function so you can stop receiving updates later
-    result.unsubscribe = unsubscribe;
+    result.data = transactions;
+    result.errorMessage = "";
+    result.statusCode = 200;
   } catch (error) {
     result.data = null;
     result.errorMessage = "Failed to get expert transactions: " + error.message;
@@ -486,4 +489,19 @@ export async function getExpertTransactionsById(expertId) {
   }
 
   return result;
+}
+
+async function getDocumentToStartAfter(query, pageSize, currentPage) {
+  const snapshot = await getDocs(query.limit(pageSize));
+  const documents = snapshot.docs;
+
+  if (documents.length === pageSize) {
+    const lastDocument = documents[pageSize - 1];
+    return lastDocument;
+  } else if (currentPage > 1) {
+    // If the current page is greater than 1, there's no more data to fetch
+    return null;
+  } else {
+    return null;
+  }
 }
