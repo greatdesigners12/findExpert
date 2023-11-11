@@ -13,8 +13,8 @@ export const Login = () => {
   const [isLoading, setLoading] = useState(false);
 
   let handleSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
 
     try {
       const result = await login(email, password);

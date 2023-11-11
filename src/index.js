@@ -9,7 +9,7 @@ import AllContext from "./context/AllContext";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { TestingRegisterExpert } from "./testing backend/registerExpert";
-import { LiveChatPage } from "./testing backend/livechat";
+import { LiveChatPage } from "./pages/LiveChat/liveChat";
 import { RegisterUser } from "./pages/Register/registerUser";
 import { ServicesPages } from "./pages/Services/servicesPage";
 import { Expert } from "./pages/Experts/Expert";
@@ -88,7 +88,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/transaction/:id/:timeIntervals",
-    element: <Transaction />,
+    element: (
+      <IsAuthenticated>
+    <Transaction />
+    </IsAuthenticated>),
   },
   {
     path: "/expertbyfield/:id",
