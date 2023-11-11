@@ -59,7 +59,7 @@ export async function createTransaction(transaction) {
       consultation_time,
       payment_amount,
       transaction_date,
-      "unverified",
+      transaction_status,
       img, // Set download URL as the image name
       return_image
     );
