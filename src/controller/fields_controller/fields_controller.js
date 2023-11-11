@@ -1,8 +1,8 @@
 import { db } from "../firebaseApp";
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
-import { Field } from "./models/field"; 
-import { Expert } from "../experts_controller/models/expert"; 
+import { Field } from "./models/field";
+import { Expert } from "../experts_controller/models/expert";
 
 export async function getExpertsByFieldAndStatus(fieldId) {
     const result = new ResultData();
@@ -15,18 +15,18 @@ export async function getExpertsByFieldAndStatus(fieldId) {
         const expertsList = expertSnapshot.docs.map((expertDoc) => {
             const expertData = expertDoc.data();
             return new Expert(
-                expertData.full_name,
-                expertData.no_telp,
+                expertData.fullName,
+                expertData.phoneNumber,
                 expertData.email,
                 expertData.password,
                 expertData.birthDate,
                 expertData.gender,
                 expertData.education,
                 expertData.fieldId,
-                expertData.NIK,
+                expertData.nik,
                 expertData.jobExperience,
-                expertData.KTP,
-                expertData.certificate_images,
+                expertData.ktp,
+                expertData.certificates,
                 expertData.profilePicture,
                 expertData.cash_amount,
                 expertData.price,
@@ -116,7 +116,7 @@ export async function searchFieldsAndExperts(queryText) {
             const fieldExpertsQuery = query(collection(db, "expertData"),
                 where("fieldId", "==", fieldData.id),
                 where("verified", "==", "true"),
-                where("full_name", "array-contains", queryText) 
+                where("full_name", "array-contains", queryText)
             );
 
             const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
@@ -124,18 +124,18 @@ export async function searchFieldsAndExperts(queryText) {
             for (const expertDoc of fieldExpertsSnapshot.docs) {
                 const expertData = expertDoc.data();
                 const expert = new Expert(
-                    expertData.full_name,
-                    expertData.no_telp,
+                    expertData.fullName,
+                    expertData.phoneNumber,
                     expertData.email,
                     expertData.password,
                     expertData.birthDate,
                     expertData.gender,
                     expertData.education,
                     expertData.fieldId,
-                    expertData.NIK,
+                    expertData.nik,
                     expertData.jobExperience,
-                    expertData.KTP,
-                    expertData.certificate_images,
+                    expertData.ktp,
+                    expertData.certificates,
                     expertData.profilePicture,
                     expertData.cash_amount,
                     expertData.price,
@@ -231,18 +231,18 @@ export async function searchExpertsInField(fieldId, queryText) {
 
             // Create an instance of the Expert class
             const expert = new Expert(
-                expertData.full_name,
-                expertData.no_telp,
+                expertData.fullName,
+                expertData.phoneNumber,
                 expertData.email,
                 expertData.password,
                 expertData.birthDate,
                 expertData.gender,
                 expertData.education,
                 expertData.fieldId,
-                expertData.NIK,
+                expertData.nik,
                 expertData.jobExperience,
-                expertData.KTP,
-                expertData.certificate_images,
+                expertData.ktp,
+                expertData.certificates,
                 expertData.profilePicture,
                 expertData.cash_amount,
                 expertData.price,
