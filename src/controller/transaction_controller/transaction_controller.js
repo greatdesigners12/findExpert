@@ -301,72 +301,83 @@ export async function updateTransactionByExpert(id, newStatus) {
     const transactionsCollection = collection(db, "transactions");
     const transactionRef = doc(transactionsCollection, id);
 
-        // Get the current local timestamp
-        const currentTimestamp = new Date();
+    // Get the current local timestamp
+    const currentTimestamp = new Date();
 
     if (newStatus === "Accept") {
       // Retrieve the amount from the transaction data
       const transactionData = (await getDoc(transactionRef)).data();
       const amount = transactionData.amount;
 
-            // Calculate the end time based on the start time and amount
-            const startTime = currentTimestamp;
-            const endTime = new Date(startTime.getTime() + amount *30* 60000);
+      // Calculate the end time based on the start time and amount
+      const startTime = currentTimestamp;
+      const endTime = new Date(startTime.getTime() + amount * 30 * 60000);
 
-            // Update the 'transaction_status', 'start_time', and 'end_time' fields
-            await updateDoc(transactionRef, {
-                transaction_status: "ready",
-                start_time: startTime,
-                end_time: endTime
-            });
+      // Update the 'transaction_status', 'start_time', and 'end_time' fields
+      await updateDoc(transactionRef, {
+        transaction_status: "ready",
+        start_time: startTime,
+        end_time: endTime
+      });
 
-      // Update the expert status to "Busy"
+      // Assuming you have access to the expert document or data
       const expertId = transactionData.expert_id;
-      await this.updateExpertStatus(expertId, "busy"); // Assuming there's a function to update expert status
+      const expertRef = doc(collection(db, "expertData"), expertId);
+
+      // Update the expert status directly
+      await updateDoc(expertRef, {
+        status: "busy" // Change "busy" to the desired status
+      });
     } else if (newStatus === "done") {
       // Retrieve the transaction data
       const transactionData = (await getDoc(transactionRef)).data();
 
-            // Check if it has been at least 15 minutes since the transaction started
-            const startTime = transactionData.start_time;
-            const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
+      // Check if it has been at least 15 minutes since the transaction started
+      const startTime = new Date(transactionData.start_time.seconds * 1000);
+      const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
 
-            if (currentTimestamp >= fifteenMinutesLater) {
-                // Update the 'transaction_status' to "done"
-                await updateDoc(transactionRef, {
-                    transaction_status: "done"
-                });
+      if (currentTimestamp >= fifteenMinutesLater) {
+        // Update the 'transaction_status' to "done"
+        await updateDoc(transactionRef, {
+          transaction_status: "done"
+        });
 
-        // Update the expert status to "Online"
+        // Assuming you have access to the expert document or data
         const expertId = transactionData.expert_id;
-        await this.updateExpertStatus(expertId, "online"); // Assuming there's a function to update expert status
+        const expertRef = doc(collection(db, "expertData"), expertId);
 
-                result.data = newStatus;
-                result.errorMessage = "";
-                result.statusCode = 200;
-            } else {
-                result.data = null;
-                result.errorMessage = "Transaction must be at least 15 minutes to be marked as 'done'.";
-                result.statusCode = 400;
-            }
-        } else if (newStatus === "cancel") {
-            // Update the 'transaction_status' to "cancel"
-            await updateDoc(transactionRef, {
-                transaction_status: "cancel"
-            });
-        } else {
-            result.data = null;
-            result.errorMessage = "Invalid status provided.";
-            result.statusCode = 400;
-        }
-    } catch (error) {
+        // Update the expert status directly
+        await updateDoc(expertRef, {
+          status: "online" // Change "online" to the desired status
+        });
+
+        result.data = newStatus;
+        result.errorMessage = "";
+        result.statusCode = 200;
+      } else {
         result.data = null;
-        result.errorMessage = "Failed to update transaction: " + error.message;
-        result.statusCode = 500;
+        result.errorMessage = "Transaction must be at least 15 minutes to be marked as 'done'.";
+        result.statusCode = 400;
+      }
+    } else if (newStatus === "cancel") {
+      // Update the 'transaction_status' to "cancel"
+      await updateDoc(transactionRef, {
+        transaction_status: "cancel"
+      });
+    } else {
+      result.data = null;
+      result.errorMessage = "Invalid status provided.";
+      result.statusCode = 400;
     }
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to update transaction: " + error.message;
+    result.statusCode = 500;
+  }
 
   return result;
 }
+
 
 export async function getExpertByHistory(user_id) {
   const result = new ResultData();
