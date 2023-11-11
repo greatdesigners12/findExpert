@@ -226,13 +226,13 @@ export const LiveChatPage = () => {
               <h5>
                 {transaction.transaction_status === "ready"
                   ? "This Consultation Session Will End At " +
-                    new Date(transaction.end_time).getHours() +
+                    new Date(transaction.end_time.seconds * 1000).getHours() +
                     " : " +
-                    new Date(transaction.end_time).getMinutes()
+                    new Date(transaction.end_time.seconds * 1000).getMinutes()
                   : "This Consultation Session Ended At " +
-                    new Date(transaction.end_time).getHours() +
+                    new Date(transaction.end_time.seconds * 1000).getHours() +
                     " : " +
-                    new Date(transaction.end_time).getMinutes()}
+                    new Date(transaction.end_time.seconds * 1000).getMinutes()}
               </h5>
             </div>
             {allMessages.map((dt) =>
