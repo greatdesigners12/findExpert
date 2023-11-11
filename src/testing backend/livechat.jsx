@@ -5,7 +5,7 @@ import { db as dbFirebase } from "../controller/firebaseApp";
 
 import { Chat } from "../controller/live_chat_controller/models/chat";
 import { getAllMessages, send_message, getTransactionById } from "../controller/live_chat_controller/live_chat_controller";
-import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import { collection, query, onSnapshot, where, orderBy } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { getCurrentUser } from "../controller/auth_controller/auth_controller";
 import { UserContext } from "../context/authContext";
@@ -59,7 +59,8 @@ export const LiveChatPage = () => {
     }, [])
 
     useEffect(() => {
-        const q = query(collection(dbFirebase, "livechat"), orderBy("date"));
+       
+        const q = query(collection(dbFirebase, "livechat"), where("transaction_id", "==", transactionId), orderBy("date"));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const result = [];
             querySnapshot.forEach((doc) => {
@@ -104,7 +105,7 @@ export const LiveChatPage = () => {
             <img src="/w3images/bandmember.jpg" alt="Avatar" />
             {dt.type === "text" ? <p>{dt.sender_message}</p> : <img src={dt.sender_message} />} 
             <span class="time-right">{getMinutes(dt.date)} : {getSeconds(dt.date)}</span>
-        </div>) : (<div key={dt.date}  class="containerLivechat darker">
+        </div>) : (<div key={dt.date}  class="containerLivechat darker-darker">
             <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right" />
             {dt.type === "text" ? <p>{dt.sender_message}</p> : <img src={dt.sender_message} />} 
             <span class="time-left">{getMinutes(dt.date)} : {getSeconds(dt.date)}</span>
