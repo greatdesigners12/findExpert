@@ -18,6 +18,7 @@ export class Expert {
         this.cash_amount = 0;
         this.price = price;
         this.id = id;
+        this.registered_date = new Date()
     }
 
     serialize() {
@@ -39,7 +40,8 @@ export class Expert {
             "status": this.status,
             "cash_amount": this.cash_amount,
             "price": this.price,
-            "id": this.id
+            "id": this.id,
+            "registered_date" : this.registered_date
         };
     }
 

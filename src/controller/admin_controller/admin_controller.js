@@ -33,12 +33,12 @@ export async function updateTransactionWithdrawStatus(id, isSuccess=true) {
 
     try {
         
-        const transactionsCollection = collection(db, "transactions");
-        const transactionRef = doc(transactionsCollection, id);
+        const cashCollection = collection(db, "cash");
+        const cashRef = doc(cashCollection, id);
 
-        const r = await updateDoc(transactionRef, {
+        const r = await updateDoc(cashRef, {
             
-            transaction_status:  isSuccess ? "withdraw success" : "withdraw failed"
+            status:  isSuccess ? "done" : "failed"
         });
 
         result.data = r;
@@ -47,7 +47,7 @@ export async function updateTransactionWithdrawStatus(id, isSuccess=true) {
         
     } catch (error) {
         result.data = null;
-        result.errorMessage = "Failed to update transaction: " + error.message;
+        result.errorMessage = error.message;
         result.statusCode = 500;
     }
 
@@ -57,11 +57,19 @@ export async function updateTransactionWithdrawStatus(id, isSuccess=true) {
 export async function getTotalEquity(){
     const result = new ResultData();
     const cols = collection(db, 'transactions');
+    const coll = collection(db, 'cash');
+    const q = query(coll, where('status', '==', "done"));
+
     const snapshot = await getAggregateFromServer(cols, {
         totalEquity: sum('payment_amount')
     });
 
-    result.data = snapshot.data().totalEquity
+    const snapshot1 = await getAggregateFromServer(q, {
+        totalWithdrawal: sum('amount')
+    });
+
+
+    result.data = snapshot.data().totalEquity - snapshot1.data().totalWithdrawal
     result.statusCode = 200
     result.errorMessage = null
     return result
@@ -262,7 +270,7 @@ export async function getAllUnverifiedExperts(start_at_page_num, limitNums=5) {
         result.statusCode = 200;
     } catch (error) {
         result.data = null;
-        result.errorMessage = "Failed to update transaction: " + error.message;
+        result.errorMessage = error.message;
         result.statusCode = 400;
     }
 
@@ -277,7 +285,7 @@ export async function getAllUnverifiedWithdrawalRequest(start_at_page_num, limit
         
         
         if(start_at_page_num === 1){
-            const first = query(collection(db, "transactions"), where("transaction_status", "==", "withdraw request"), orderBy("transaction_date"), limit(limitNums));
+            const first = query(collection(db, "cash"), where("status", "==", "unverified"), orderBy("withdraw_time"), limit(limitNums));
             
             const querySnapshot = await getDocs(first);
             const data = []
@@ -291,13 +299,13 @@ export async function getAllUnverifiedWithdrawalRequest(start_at_page_num, limit
             result.statusCode = 200;
             return result
         }
-        const first = query(collection(db, "transactions"), where("transaction_status", "==", "withdraw request"), orderBy("transaction_date"), limit((start_at_page_num - 1) * limitNums));
+        const first = query(collection(db, "cash"), where("status", "==", "unverified"), orderBy("withdraw_time"), limit((start_at_page_num - 1) * limitNums));
         const documentSnapshots = await getDocs(first);
         
         // Get the last visible document
         const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
-        const next = query(collection(db, "transactions"), where("transaction_status", "==", "withdraw request"),
-            orderBy("transaction_date"),
+        const next = query(collection(db, "cash"), where("status", "==", "unverified"),
+            orderBy("withdraw_time"),
             startAfter(lastVisible),
             limit(limitNums));
         
@@ -313,7 +321,7 @@ export async function getAllUnverifiedWithdrawalRequest(start_at_page_num, limit
         result.statusCode = 200;
     } catch (error) {
         result.data = null;
-        result.errorMessage = "Failed to update transaction: " + error.message;
+        result.errorMessage = error.message;
         result.statusCode = 400;
     }
 
@@ -363,7 +371,7 @@ export async function getAllFields(start_at_page_num, limitNums=5) {
         
     } catch (error) {
         result.data = null;
-        result.errorMessage = "Failed to update transaction: " + error.message;
+        result.errorMessage = error.message;
         result.statusCode = 400;
     }
 

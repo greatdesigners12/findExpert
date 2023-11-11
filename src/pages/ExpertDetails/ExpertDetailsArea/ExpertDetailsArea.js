@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
 import { useParams } from "react-router-dom";
 import "./expertdetail.css";
+import { LoadingSpinner } from "../../../components/shared/LoadingSpinner";
 
 export const ExpertDetailsArea = () => {
   const [expertsData, setExpertsData] = useState(null);
@@ -41,7 +42,7 @@ export const ExpertDetailsArea = () => {
   return (
     <>
       {expertsData == null ? (
-        "Loading.."
+        <LoadingSpinner/>
       ) : (
         <section className="team__details pt-120 pb-160">
           <div className="container">

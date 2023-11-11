@@ -245,7 +245,7 @@ export async function searchExpertsInField(fieldId, queryText) {
         );
 
         const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
-
+        console.log("query",fieldExpertsQuery)
         const searchResults = [];
         fieldExpertsSnapshot.forEach((expertDoc) => {
             const expertData = expertDoc.data();
@@ -295,6 +295,7 @@ export async function searchExpertsInField(fieldId, queryText) {
         result.errorMessage = "Failed to search for experts in the field: " + error.message;
         result.statusCode = 500;
     }
-
+console.log("result", result)
     return result;
+    
 }
