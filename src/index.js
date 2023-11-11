@@ -24,6 +24,7 @@ import {
 import { UserContextProvider } from "./context/authContext";
 import { RegisterExpert } from "./pages/Register/registerExpert";
 import { TransactionList } from "./pages/Transaction/TransactionList";
+import { HomeExpert } from "./pages/homepage/homeExpert";
 
 const router = createBrowserRouter([
   {
@@ -96,6 +97,10 @@ const router = createBrowserRouter([
   {
     path: "/expertbyfield/:id",
     element: <ExpertByField />,
+  },
+  {
+    path: "/homeexpert/",
+    element: <HomeExpert/>,
   },
 ]);
 

@@ -8,6 +8,7 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  startAfter,
 } from "firebase/firestore";
 import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
