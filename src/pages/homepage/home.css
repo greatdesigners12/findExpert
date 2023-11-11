@@ -1,0 +1,66 @@
+  .home-expert-page .span {
+    font-size: 30px;
+    color: #1f1841;
+  }
+
+  .home-expert-page .white {
+    font-size: 25px;
+    color: #ffffff;
+  }
+  
+  .home-expert-page .textdeco{
+    text-decoration: none;
+    background-color: #423D7C !important;
+    border-color: #423D7C !important;
+    padding: 20px;
+    margin-bottom:8px;
+    border-radius: 20px;
+  }
+
+  .home-expert-page .text-wrapper-3 {
+    font-size: 30px;
+    color: #8923ff;
+  }
+  
+  .btn-primary {
+    color: #ffffff !important;
+    background-color: #7044eb !important;
+    border-color: #7044eb !important;
+    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+  }
+  .btn-primary:hover {
+    color: #ffffff !important;
+    background-color: #6136d7 !important;
+    border-color: #6136d7 !important;
+    box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b7 !important;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+th {
+    background-color: #f2f2f2;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.page-link {
+    padding: 8px 16px;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid #dddddd;
+    margin: 0 5px;
+    color: #333;
+}
+.page-link:hover {
+    background-color: #f2f2f2;
+}
