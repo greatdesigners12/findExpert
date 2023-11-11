@@ -8,7 +8,7 @@ import {
   send_message,
   getTransactionById,
 } from "../../controller/live_chat_controller/live_chat_controller";
-import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import { collection, query, onSnapshot, orderBy, where } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { getCurrentUser } from "../../controller/auth_controller/auth_controller";
 import { useContext } from "react";
@@ -57,8 +57,9 @@ export const LiveChatPage = () => {
   useEffect(() => {
     const getAllMessage = async () => {
       const result = await getAllMessages(transactionId);
-
+      console.log(result)
       if (result.statusCode === 200) {
+        
         setMessages(result.data);
       }
     };
@@ -66,7 +67,7 @@ export const LiveChatPage = () => {
   }, []);
 
   useEffect(() => {
-    const q = query(collection(dbFirebase, "livechat"), orderBy("date"));
+    const q = query(collection(dbFirebase, "livechat"),  where("transaction_id", "==", transactionId), orderBy("date"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const result = [];
       querySnapshot.forEach((doc) => {

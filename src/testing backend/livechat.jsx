@@ -50,8 +50,10 @@ export const LiveChatPage = () => {
     useEffect(() => {
         const getAllMessage = async () => {
             const result = await getAllMessages(transactionId)
-
+            
+            
             if(result.statusCode === 200 ){
+                
                 setMessages(result.data)
             }
         }
@@ -88,7 +90,7 @@ export const LiveChatPage = () => {
         setCurrentImage(event.target.files[0])
     }
     
-    console.log(getCurrentUser())
+    
     const getMinutes = (date) => {
         const d = new Date(date.seconds*1000)
         return d.getHours()
@@ -100,20 +102,23 @@ export const LiveChatPage = () => {
     
     return (uid !== "" && transaction != null ? (<div>
 
-        {allMessages.map((dt) => dt.receiver_id !== uid ? (<div key={dt.date} class="containerLivechat">
+        {allMessages.map((dt) => dt.receiver_id !== uid ? (<div key={dt.date} className="containerLivechat">
            
             <img src="/w3images/bandmember.jpg" alt="Avatar" />
+            {dt.transaction_id}
             {dt.type === "text" ? <p>{dt.sender_message}</p> : <img src={dt.sender_message} />} 
-            <span class="time-right">{getMinutes(dt.date)} : {getSeconds(dt.date)}</span>
+            <span className="time-right">{getMinutes(dt.date)} : {getSeconds(dt.date)}</span>
         </div>) : (<div key={dt.date}  class="containerLivechat darker-darker">
-            <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right" />
+            <img src="/w3images/avatar_g2.jpg" alt="Avatar" className="right" />
+            <p>Hello world</p>
             {dt.type === "text" ? <p>{dt.sender_message}</p> : <img src={dt.sender_message} />} 
-            <span class="time-left">{getMinutes(dt.date)} : {getSeconds(dt.date)}</span>
+            <span className="time-left">{getMinutes(dt.date)} : {getSeconds(dt.date)}</span>
         </div>))}
         
         
         <input  type="file" onChange={uploadImage} />
         <input value={inputText} type="text" onChange={inputTextListener} />
         <button onClick={onClickBtn}>Send</button>
+        
     </div>) : "Please login first")
 }

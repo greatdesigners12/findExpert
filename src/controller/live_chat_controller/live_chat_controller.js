@@ -13,8 +13,10 @@ export async function getAllMessages(id_transaction){
         
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
+            
             allMessages.push(doc.data())
         });
+        
         result.data = allMessages
         result.statusCode = 200
         result.errorMessage = null
