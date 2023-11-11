@@ -14,65 +14,69 @@ import { collection, getDocs, setDoc } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
+export async function createTransaction(transaction) {
+  const result = new ResultData();
+  const {
+    id,
+    expert_id,
+    customer_id,
+    start_time,
+    end_time,
+    consultation_time,
+    payment_amount,
+    transaction_date,
+    transaction_status,
+    transaction_image,
+    return_image,
+  } = transaction;
+  try {
+    const transactionsCollection = collection(db, "transactions");
 
-export async function createTransaction(
-    transaction
-) {
-    const result = new ResultData();
-    const { id,
-        expert_id,
-        customer_id,
-        start_time,
-        end_time,
-        consultation_time,
-        payment_amount,
-        transaction_date,
-        transaction_status,
-        transaction_image,
-        return_image } = transaction
-    try {
-        const transactionsCollection = collection(db, "transactions");
+    // Upload transaction_image to Firebase Storage
+    const storageRef = getStorage();
+    const transactionImageName = new Date().getTime().toString() + ".png";
+    const transactionImageRef = ref(
+      storageRef,
+      "transaction_images/" + transactionImageName
+    );
+    var img = "";
+    console.log(transaction_image);
+    await uploadBytes(transactionImageRef, transaction_image[0]).then(
+      async (snapshot) => {
+        await getDownloadURL(snapshot.ref).then((downloadURL) => {
+          img = downloadURL;
+        });
+      }
+    );
+    // Get the download URL for the uploaded image
+    const newTransaction = new Transaction(
+      "transaction_" + new Date().getTime().toString(),
+      expert_id,
+      customer_id,
+      start_time,
+      end_time,
+      consultation_time,
+      payment_amount,
+      transaction_date,
+      transaction_status,
+      img, // Set download URL as the image name
+      return_image
+    );
 
-        // Upload transaction_image to Firebase Storage
-        const storageRef = getStorage();
-        const transactionImageName = new Date().getTime().toString() + ".png";
-        const transactionImageRef = ref(storageRef, 'transaction_images/' + transactionImageName);
-        var img = ""
-        console.log(transaction_image)
-        await uploadBytes(transactionImageRef, transaction_image[0]).then(
-            async (snapshot) => {
-                await getDownloadURL(snapshot.ref).then((downloadURL) => {
-                    img = downloadURL;
-                });
-            }
-        );
-        // Get the download URL for the uploaded image
-        const newTransaction = new Transaction(
-            "transaction_" + new Date().getTime().toString(),
-            expert_id,
-            customer_id,
-            start_time,
-            end_time,
-            consultation_time,
-            payment_amount,
-            transaction_date,
-            transaction_status,
-            img, // Set download URL as the image name
-            return_image
-        );
-
-
-        const docRef = await setDoc(doc(db, "transactions", newTransaction.id), newTransaction.serialize());
-        console.log(docRef)
-        const createdTransaction = { ...newTransaction };
-        result.data = createdTransaction;
-        result.errorMessage = "";
-        result.statusCode = 201;
-    } catch (error) {
-        result.data = null;
-        result.errorMessage = "Failed to create a transaction: " + error.message;
-        result.statusCode = 500;
-    }
+    const docRef = await setDoc(
+      doc(db, "transactions", newTransaction.id),
+      newTransaction.serialize()
+    );
+    console.log(docRef);
+    const createdTransaction = { ...newTransaction };
+    result.data = createdTransaction;
+    result.errorMessage = "";
+    result.statusCode = 201;
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to create a transaction: " + error.message;
+    result.statusCode = 500;
+  }
 
   return result;
 }
@@ -126,22 +130,24 @@ export async function updateTransactionStatusToOngoing(transactionId) {
     const transactionRef = doc(transactionsCollection, transactionId);
     const transactionSnapshot = await getDoc(transactionRef);
 
-        if (transactionSnapshot.exists()) {
-            // Check if the current transaction status is "waiting" to update it to "ongoing"
-            if (transactionSnapshot.data().transaction_status === "waiting") {
-                // Use new Date() for current time (local time)
-                const currentTimestamp = new Date();
-                const amount = transactionSnapshot.data().amount;
+    if (transactionSnapshot.exists()) {
+      // Check if the current transaction status is "waiting" to update it to "ongoing"
+      if (transactionSnapshot.data().transaction_status === "waiting") {
+        // Use new Date() for current time (local time)
+        const currentTimestamp = new Date();
+        const amount = transactionSnapshot.data().amount;
 
-                // Calculate the end time based on the amount in minutes
-                const endTime = new Date(currentTimestamp.getTime() + amount *30* 60000);
+        // Calculate the end time based on the amount in minutes
+        const endTime = new Date(
+          currentTimestamp.getTime() + amount * 30 * 60000
+        );
 
-                // Update the transaction status to "ongoing" and update start_time and end_time
-                await updateDoc(transactionRef, {
-                    transaction_status: "ongoing",
-                    start_time: currentTimestamp,
-                    end_time: endTime
-                });
+        // Update the transaction status to "ongoing" and update start_time and end_time
+        await updateDoc(transactionRef, {
+          transaction_status: "ongoing",
+          start_time: currentTimestamp,
+          end_time: endTime,
+        });
 
         result.data = "ongoing";
         result.errorMessage = "";
@@ -169,12 +175,12 @@ export async function updateTransactionStatusToOngoing(transactionId) {
 export async function getAdminTransactions() {
   const result = new ResultData();
 
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const adminTransactionsQuery = query(
-            transactionsCollection,
-            where("transaction_status", "in", ["waiting", "paid", "cancel", "done"])
-        );
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const adminTransactionsQuery = query(
+      transactionsCollection,
+      where("transaction_status", "in", ["waiting", "paid", "cancel", "done"])
+    );
 
     const transactionSnapshot = await getDocs(adminTransactionsQuery);
 
@@ -293,7 +299,6 @@ export async function updateTransactionByAdmin(id, newData) {
   return result;
 }
 
-
 export async function updateTransactionByExpert(id, newStatus) {
   const result = new ResultData();
 
@@ -301,24 +306,24 @@ export async function updateTransactionByExpert(id, newStatus) {
     const transactionsCollection = collection(db, "transactions");
     const transactionRef = doc(transactionsCollection, id);
 
-        // Get the current local timestamp
-        const currentTimestamp = new Date();
+    // Get the current local timestamp
+    const currentTimestamp = new Date();
 
     if (newStatus === "Accept") {
       // Retrieve the amount from the transaction data
       const transactionData = (await getDoc(transactionRef)).data();
       const amount = transactionData.amount;
 
-            // Calculate the end time based on the start time and amount
-            const startTime = currentTimestamp;
-            const endTime = new Date(startTime.getTime() + amount *30* 60000);
+      // Calculate the end time based on the start time and amount
+      const startTime = currentTimestamp;
+      const endTime = new Date(startTime.getTime() + amount * 30 * 60000);
 
-            // Update the 'transaction_status', 'start_time', and 'end_time' fields
-            await updateDoc(transactionRef, {
-                transaction_status: "ready",
-                start_time: startTime,
-                end_time: endTime
-            });
+      // Update the 'transaction_status', 'start_time', and 'end_time' fields
+      await updateDoc(transactionRef, {
+        transaction_status: "ready",
+        start_time: startTime,
+        end_time: endTime,
+      });
 
       // Update the expert status to "Busy"
       const expertId = transactionData.expert_id;
@@ -327,43 +332,45 @@ export async function updateTransactionByExpert(id, newStatus) {
       // Retrieve the transaction data
       const transactionData = (await getDoc(transactionRef)).data();
 
-            // Check if it has been at least 15 minutes since the transaction started
-            const startTime = transactionData.start_time;
-            const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
+      // Check if it has been at least 15 minutes since the transaction started
+      const startTime = new Date(transactionData.start_time.seconds * 1000);
+      const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
+      console.log(startTime);
 
-            if (currentTimestamp >= fifteenMinutesLater) {
-                // Update the 'transaction_status' to "done"
-                await updateDoc(transactionRef, {
-                    transaction_status: "done"
-                });
+      if (currentTimestamp >= fifteenMinutesLater) {
+        // Update the 'transaction_status' to "done"
+        await updateDoc(transactionRef, {
+          transaction_status: "done",
+        });
 
         // Update the expert status to "Online"
         const expertId = transactionData.expert_id;
         await this.updateExpertStatus(expertId, "online"); // Assuming there's a function to update expert status
 
-                result.data = newStatus;
-                result.errorMessage = "";
-                result.statusCode = 200;
-            } else {
-                result.data = null;
-                result.errorMessage = "Transaction must be at least 15 minutes to be marked as 'done'.";
-                result.statusCode = 400;
-            }
-        } else if (newStatus === "cancel") {
-            // Update the 'transaction_status' to "cancel"
-            await updateDoc(transactionRef, {
-                transaction_status: "cancel"
-            });
-        } else {
-            result.data = null;
-            result.errorMessage = "Invalid status provided.";
-            result.statusCode = 400;
-        }
-    } catch (error) {
+        result.data = newStatus;
+        result.errorMessage = "";
+        result.statusCode = 200;
+      } else {
         result.data = null;
-        result.errorMessage = "Failed to update transaction: " + error.message;
-        result.statusCode = 500;
+        result.errorMessage =
+          "Transaction must be at least 15 minutes to be marked as 'done'.";
+        result.statusCode = 400;
+      }
+    } else if (newStatus === "cancel") {
+      // Update the 'transaction_status' to "cancel"
+      await updateDoc(transactionRef, {
+        transaction_status: "cancel",
+      });
+    } else {
+      result.data = null;
+      result.errorMessage = "Invalid status provided.";
+      result.statusCode = 400;
     }
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to update transaction: " + error.message;
+    result.statusCode = 500;
+  }
 
   return result;
 }
@@ -387,13 +394,13 @@ export async function getExpertByHistory(user_id) {
       const transactionData = transactionDoc.data();
       const expert_id = transactionData.expert_id;
 
-            if (!uniqueExpertIds.has(expert_id) && experts.length < 4) {
-                const expert = await this.getExpertById(expert_id);
-                if (expert.statusCode === 200) {
-                    experts.push(expert.data);
-                    uniqueExpertIds.add(expert_id);
-                }
-            }
+      if (!uniqueExpertIds.has(expert_id) && experts.length < 4) {
+        const expert = await this.getExpertById(expert_id);
+        if (expert.statusCode === 200) {
+          experts.push(expert.data);
+          uniqueExpertIds.add(expert_id);
+        }
+      }
 
       if (experts.length >= 4) {
         break;
