@@ -3,11 +3,8 @@ import React from "react";
 import HomeOneHeader from "../Home/HomeOneHeader/HomeOneHeader";
 import CommonPageHeader from "../../components/CommonPageHeader/CommonPageHeader";
 import { Link } from "react-router-dom";
-import HomeCapabilities from "../Home/HomeCapabilities/HomeCapabilities";
 import { useEffect, useState } from "react";
 import PageHelmet from "../../components/shared/PageHelmet";
-import HomeThreeSecondServices from "../Home/HomeThreeSingleService/HomeThreeSingleService";
-import CommonCtaArea from "../../components/CommonCtaArea/CommonCtaArea";
 import Footer from "../../components/shared/Footer";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 
