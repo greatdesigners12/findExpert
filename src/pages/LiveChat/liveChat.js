@@ -16,6 +16,7 @@ import { UserContext } from "../../context/authContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { useRef } from "react";
+import CommonPageHeader from "../../components/CommonPageHeader/CommonPageHeader";
 
 export const LiveChatPage = () => {
   const { userData, setUser } = useContext(UserContext);
@@ -117,6 +118,44 @@ export const LiveChatPage = () => {
 
   return uid !== "" && transaction != null ? (
     <>
+      <section
+        className="page__title p-relative d-flex align-items-center fix livechat-navbar"
+        style={{
+          background: `url(../../../assets/img/page-title/page-title-1.jpg)`,
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+        }}
+      >
+        <div className="slider__shape">
+          <img
+            className="shape triangle"
+            src="../../assets/img/icon/slider/triangle.png"
+            alt="triangle"
+          />
+          <img
+            className="shape dotted-square"
+            src="../../assets/img/icon/slider/dotted-square.png"
+            alt="dotted-square"
+          />
+          <img
+            className="shape solid-square"
+            src="../../assets/img/icon/slider/solid-square.png"
+            alt="solid-square"
+          />
+          <img
+            className="shape circle-2"
+            src="../../assets/img/icon/slider/circle.png"
+            alt="circle"
+          />
+        </div>
+        <div className="container p-relative">
+          <div className="row">
+            <div className="">
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </section>
       <link rel="stylesheet" href="../../../../assets/css/livechat.css" />
       <script
         src="https://kit.fontawesome.com/240280eba1.js"
@@ -181,6 +220,7 @@ export const LiveChatPage = () => {
             icon={faPaperclip}
             size="xl"
             onClick={paperclipClick}
+            className="clipButton"
           />
           <input
             ref={imageRef}
