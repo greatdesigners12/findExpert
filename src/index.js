@@ -88,7 +88,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/transaction/:id/:timeIntervals",
-    element: <Transaction />,
+    element: (
+      <IsAuthenticated>
+    <Transaction />
+    </IsAuthenticated>),
   },
   {
     path: "/expertbyfield/:id",
