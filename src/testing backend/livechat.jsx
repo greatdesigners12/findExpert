@@ -83,7 +83,7 @@ export const LiveChatPage = () => {
         
     }, [])
 
-    const uploadImage = async (event) => {
+    const uploadImage = (event) => {
         setCurrentImage(event.target.files[0])
     }
     
@@ -111,7 +111,7 @@ export const LiveChatPage = () => {
         </div>))}
         
         
-        <input  type="file" onClick={uploadImage} />
+        <input  type="file" onChange={uploadImage} />
         <input value={inputText} type="text" onChange={inputTextListener} />
         <button onClick={onClickBtn}>Send</button>
     </div>) : "Please login first")
