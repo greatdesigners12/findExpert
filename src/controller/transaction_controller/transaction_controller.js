@@ -10,7 +10,7 @@ export async function createTransaction(
     transaction
 ) {
     const result = new ResultData();
-    const {id,
+    const { id,
         expert_id,
         customer_id,
         start_time,
@@ -20,7 +20,7 @@ export async function createTransaction(
         transaction_date,
         transaction_status,
         transaction_image,
-        return_image} = transaction
+        return_image } = transaction
     try {
         const transactionsCollection = collection(db, "transactions");
 
@@ -31,15 +31,15 @@ export async function createTransaction(
         var img = ""
         console.log(transaction_image)
         await uploadBytes(transactionImageRef, transaction_image[0]).then(
-        async (snapshot) => {
-            await getDownloadURL(snapshot.ref).then((downloadURL) => {
-            img = downloadURL;
-            });
-        }
+            async (snapshot) => {
+                await getDownloadURL(snapshot.ref).then((downloadURL) => {
+                    img = downloadURL;
+                });
+            }
         );
         // Get the download URL for the uploaded image
         const newTransaction = new Transaction(
-            "transaction_"+new Date().getTime().toString(),
+            "transaction_" + new Date().getTime().toString(),
             expert_id,
             customer_id,
             start_time,
@@ -51,11 +51,11 @@ export async function createTransaction(
             img, // Set download URL as the image name
             return_image
         );
-        
-        
-        const docRef = await setDoc( doc(db, "transactions", newTransaction.id), newTransaction.serialize());
+
+
+        const docRef = await setDoc(doc(db, "transactions", newTransaction.id), newTransaction.serialize());
         console.log(docRef)
-        const createdTransaction = { ...newTransaction};
+        const createdTransaction = { ...newTransaction };
         result.data = createdTransaction;
         result.errorMessage = "";
         result.statusCode = 201;
@@ -120,17 +120,18 @@ export async function updateTransactionStatusToOngoing(transactionId) {
         if (transactionSnapshot.exists()) {
             // Check if the current transaction status is "waiting" to update it to "ongoing"
             if (transactionSnapshot.data().transaction_status === "waiting") {
-                // Calculate the start time and end time based on the amount in minutes
-                const currentTimestamp = new Date().toISOString();
+                // Use new Date() for current time (local time)
+                const currentTimestamp = new Date();
                 const amount = transactionSnapshot.data().amount;
-                const startTime = currentTimestamp;
-                const endTime = new Date(new Date(startTime).getTime() + amount * 60000);
+
+                // Calculate the end time based on the amount in minutes
+                const endTime = new Date(currentTimestamp.getTime() + amount *30* 60000);
 
                 // Update the transaction status to "ongoing" and update start_time and end_time
                 await updateDoc(transactionRef, {
                     transaction_status: "ongoing",
-                    start_time: startTime,
-                    end_time: endTime.toISOString()
+                    start_time: currentTimestamp,
+                    end_time: endTime
                 });
 
                 result.data = "ongoing";
@@ -162,7 +163,7 @@ export async function getAdminTransactions() {
         const transactionsCollection = collection(db, "transactions");
         const adminTransactionsQuery = query(
             transactionsCollection,
-            where("transaction_status", "in", ["waiting", "paid","cancel", "done"])
+            where("transaction_status", "in", ["waiting", "paid", "cancel", "done"])
         );
 
         const transactionSnapshot = await getDocs(adminTransactionsQuery);
@@ -279,7 +280,6 @@ export async function updateTransactionByAdmin(id, newData) {
 }
 
 
-
 export async function updateTransactionByExpert(id, newStatus) {
     const result = new ResultData();
 
@@ -287,8 +287,8 @@ export async function updateTransactionByExpert(id, newStatus) {
         const transactionsCollection = collection(db, "transactions");
         const transactionRef = doc(transactionsCollection, id);
 
-        // Get the current timestamp
-        const currentTimestamp = new Date().toISOString();
+        // Get the current local timestamp
+        const currentTimestamp = new Date();
 
         if (newStatus === "Accept") {
             // Retrieve the amount from the transaction data
@@ -297,14 +297,13 @@ export async function updateTransactionByExpert(id, newStatus) {
 
             // Calculate the end time based on the start time and amount
             const startTime = currentTimestamp;
-            const minutesToAdd = amount; // Assume amount is the number of minutes to add
-            const endTime = new Date(new Date(startTime).getTime() + minutesToAdd * 60000);
+            const endTime = new Date(startTime.getTime() + amount *30* 60000);
 
             // Update the 'transaction_status', 'start_time', and 'end_time' fields
             await updateDoc(transactionRef, {
                 transaction_status: "ready",
                 start_time: startTime,
-                end_time: endTime.toISOString()
+                end_time: endTime
             });
 
             // Update the expert status to "Busy"
@@ -315,10 +314,10 @@ export async function updateTransactionByExpert(id, newStatus) {
             const transactionData = (await getDoc(transactionRef)).data();
 
             // Check if it has been at least 15 minutes since the transaction started
-            const startTime = new Date(transactionData.start_time);
+            const startTime = transactionData.start_time;
             const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
 
-            if (new Date(currentTimestamp) >= fifteenMinutesLater) {
+            if (currentTimestamp >= fifteenMinutesLater) {
                 // Update the 'transaction_status' to "done"
                 await updateDoc(transactionRef, {
                     transaction_status: "done"
@@ -346,10 +345,6 @@ export async function updateTransactionByExpert(id, newStatus) {
             result.errorMessage = "Invalid status provided.";
             result.statusCode = 400;
         }
-
-        result.data = newStatus;
-        result.errorMessage = "";
-        result.statusCode = 200;
     } catch (error) {
         result.data = null;
         result.errorMessage = "Failed to update transaction: " + error.message;
@@ -376,7 +371,7 @@ export async function getExpertByHistory(user_id) {
             const expert_id = transactionData.expert_id;
 
             if (!uniqueExpertIds.has(expert_id) && experts.length < 4) {
-                const expert = await this.getExpertById(expert_id); 
+                const expert = await this.getExpertById(expert_id);
                 if (expert.statusCode === 200) {
                     experts.push(expert.data);
                     uniqueExpertIds.add(expert_id);
