@@ -118,16 +118,22 @@ export async function searchFieldsAndExperts(queryText) {
             for (const expertDoc of fieldExpertsSnapshot.docs) {
                 const expertData = expertDoc.data();
                 const expert = new Expert(
-                    expertData.id,
                     expertData.full_name,
-                    expertData.fieldId,
-                    expertData.education,
-                    expertData.KTP,
-                    expertData.NIK,
-                    expertData.certificate_images,
                     expertData.no_telp,
-                    expertData.status,
-                    expertData.cash_amount
+                    expertData.email,
+                    expertData.password,
+                    expertData.birthDate,
+                    expertData.gender,
+                    expertData.education,
+                    expertData.fieldId,
+                    expertData.NIK,
+                    expertData.jobExperience,
+                    expertData.KTP,
+                    expertData.certificate_images,
+                    expertData.profilePicture,
+                    expertData.cash_amount,
+                    expertData.price,
+                    expertData.id
                 );
 
                 searchResults.push({ type: 'expert', data: expert });
@@ -216,17 +222,25 @@ export async function searchExpertsInField(fieldId, queryText) {
         const searchResults = [];
         fieldExpertsSnapshot.forEach((expertDoc) => {
             const expertData = expertDoc.data();
+
+            // Create an instance of the Expert class
             const expert = new Expert(
-                expertData.id,
                 expertData.full_name,
-                expertData.fieldId,
-                expertData.education,
-                expertData.KTP,
-                expertData.NIK,
-                expertData.certificate_images,
                 expertData.no_telp,
-                expertData.status,
-                expertData.cash_amount
+                expertData.email,
+                expertData.password,
+                expertData.birthDate,
+                expertData.gender,
+                expertData.education,
+                expertData.fieldId,
+                expertData.NIK,
+                expertData.jobExperience,
+                expertData.KTP,
+                expertData.certificate_images,
+                expertData.profilePicture,
+                expertData.cash_amount,
+                expertData.price,
+                expertData.id
             );
 
             searchResults.push({ type: 'expert', data: expert });
