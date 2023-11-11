@@ -4,9 +4,8 @@ import { createTransaction } from "../../../controller/transaction_controller/tr
 import { Transaction } from "../../../controller/transaction_controller/models/transactions";
 import { useParams } from "react-router-dom";
 import "./transaction.css";
-import { getCurrentUser } from "../../../controller/auth_controller/auth_controller";
 import { UserContext } from "../../../context/authContext";
-
+import { LoadingSpinner } from "../../../components/shared/LoadingSpinner";
 
 export const TransactionArea = () => {
   const {userData, setUser} = useContext(UserContext);
@@ -17,10 +16,9 @@ export const TransactionArea = () => {
   const [invoicePicture, updateInvoicePicture] = useState(null);
   const [totalPrices, updateTotalPrices] = useState(null);
   const [expertStatus, updateStatus] = useState(null);
-  const currentUser = getCurrentUser.id;
   const [confirmationDisabled, setConfirmationDisabled] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState("");
-  console.log(userData.uid)
+  
   useEffect(() => {
     const getData = async () => {
       const ec = new ExpertsController();
@@ -105,7 +103,7 @@ return (
   <form>
     <div className="transaction-container">
       {expertsData == null ? (
-        "Loading.."
+        <LoadingSpinner/>
       ) : (
         <div className="transaction-content">
           <div className="left-side">

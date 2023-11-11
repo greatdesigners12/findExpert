@@ -2,7 +2,7 @@ import React from 'react';
 import SingleTeam from '../../../components/SingleTeam/SingleTeam';
 import { useEffect, useState } from 'react';
 import { ExpertsController} from '../../../controller/experts_controller/experts_controller';
-// import { useParams } from 'react-router-dom';
+import { LoadingSpinner } from "../../../components/shared/LoadingSpinner";
 
 export const ExpertArea = () => {
     const [expertsData, setExpertsData] = useState([])
@@ -27,7 +27,7 @@ export const ExpertArea = () => {
       }, []);
    return (
       <>
-      {expertsData.length == 0 ? "Loading.." : (
+      {expertsData.length == 0 ? <LoadingSpinner/> : (
          <section className="team__area pt-115 pb-110">
             <div className="container">
                <div className="row align-items-center mb-55">
