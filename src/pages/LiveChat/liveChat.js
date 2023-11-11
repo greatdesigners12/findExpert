@@ -1,3 +1,4 @@
+import AgoraUIKit from "agora-react-uikit";
 import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { db as dbFirebase } from "../../controller/firebaseApp";
@@ -29,8 +30,16 @@ import { useRef } from "react";
 import CommonPageHeader from "../../components/CommonPageHeader/CommonPageHeader";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 import { updateTransactionByExpert } from "../../controller/transaction_controller/transaction_controller";
+import { FaVideo } from "react-icons/fa";
 
 export const LiveChatPage = () => {
+  const rtcProps = {
+    appId: "9389c3640acc415295195dce74994e91",
+    channel: "jack",
+    token: null,
+    enableScreensharing: true,
+  };
+
   const { userData, setUser } = useContext(UserContext);
 
   const navigate = useNavigate();
@@ -41,6 +50,12 @@ export const LiveChatPage = () => {
   const [transaction, setTransaction] = useState(null);
   const [expertData, setExpertData] = useState(null);
   const [userInformation, setUserInformation] = useState(null);
+
+  const [videoCall, setVideoCall] = useState(false);
+
+  const callbacks = {
+    EndCall: () => setVideoCall(false),
+  };
 
   const [isLoadingMessages, setLoadingMessages] = useState(true);
   const [isLoadingReceiverData, setLoadingReceiverData] = useState(true);
@@ -71,8 +86,7 @@ export const LiveChatPage = () => {
     setLoadingReceiverData(true);
     const endChat = await updateTransactionByExpert(transactionId, "done");
 
-    // navigate("/");
-    console.log(endChat);
+    navigate("/");
   };
 
   useEffect(() => {
@@ -160,7 +174,11 @@ export const LiveChatPage = () => {
   if (isLoadingReceiverData || isLoadingMessages) {
     return <LoadingSpinner />;
   } else {
-    return uid !== "" && transaction != null ? (
+    return videoCall ? (
+      <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
+        <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
+      </div>
+    ) : (
       <>
         <link rel="stylesheet" href="../../../../assets/css/livechat.css" />
         <script
@@ -186,11 +204,11 @@ export const LiveChatPage = () => {
               src="../../assets/img/icon/slider/dotted-square.png"
               alt="dotted-square"
             />
-            <img
+            {/* <img
               className="shape solid-square"
               src="../../assets/img/icon/slider/solid-square.png"
               alt="solid-square"
-            />
+            /> */}
             <img
               className="shape circle-2"
               src="../../assets/img/icon/slider/circle.png"
@@ -201,7 +219,7 @@ export const LiveChatPage = () => {
             <div className="row">
               <div className="d-flex flex-row justify-content-evenly align-items-center">
                 <div className="w-100"></div>
-                <div className="d-flex fled-row justify-content-center w-100">
+                <div className="d-flex flex-row justify-content-center w-100">
                   <p className="livechat-receivername fw-semibold mb-0 fs-5">
                     {senderRole === "user"
                       ? expertData.fullName
@@ -209,12 +227,27 @@ export const LiveChatPage = () => {
                   </p>
                 </div>
                 <div className="d-flex fled-row justify-content-end w-100">
-                  <button
-                    onClick={onClickEndChat}
-                    className="btn btn-danger fw-medium"
-                  >
-                    End Chat
-                  </button>
+                  {transaction.transaction_status === "done" ? (
+                    <></>
+                  ) : (
+                    <button
+                      onClick={() => setVideoCall(true)}
+                      className="btn btn-primary fw-medium me-3"
+                    >
+                      Join Video Call
+                      <FaVideo className="ms-2" />
+                    </button>
+                  )}
+                  {senderRole === "user" ? (
+                    <></>
+                  ) : (
+                    <button
+                      onClick={onClickEndChat}
+                      className="btn btn-danger fw-medium"
+                    >
+                      End Chat
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -227,18 +260,26 @@ export const LiveChatPage = () => {
                 {transaction.transaction_status === "ready"
                   ? "This Consultation Session Will End At " +
                     new Date(transaction.end_time.seconds * 1000).getHours() +
-                    " : " +
+                    ":" +
                     new Date(transaction.end_time.seconds * 1000).getMinutes()
                   : "This Consultation Session Ended At " +
                     new Date(transaction.end_time.seconds * 1000).getHours() +
-                    " : " +
-                    new Date(transaction.end_time.seconds * 1000).getMinutes()}
+                    ":" +
+                    new Date(transaction.end_time.seconds * 1000).getMinutes() +
+                    " " +
+                    new Date(transaction.end_time.seconds * 1000).getDate() +
+                    " " +
+                    new Date(
+                      transaction.end_time.seconds * 1000
+                    ).toLocaleString("default", { month: "long" }) +
+                    " " +
+                    new Date(transaction.end_time.seconds * 1000).getFullYear()}
               </h5>
             </div>
             {allMessages.map((dt) =>
               dt.receiver_id !== uid ? (
                 <div key={dt.date} className="d-flex flex-row">
-                  <div className="containerLivechat d-flex flex-column w-100">
+                  <div className="containerLivechat d-flex flex-column w-100 px-4">
                     <div className="d-flex flex-row w-100 justify-content-end">
                       {dt.type === "text" ? (
                         <p className="fw-medium">{dt.sender_message}</p>
@@ -274,7 +315,7 @@ export const LiveChatPage = () => {
                     alt="Avatar"
                     className="chat-profile-picture me-3 mt-2"
                   />
-                  <div className="containerLivechat d-flex flex-column w-100">
+                  <div className="containerLivechat d-flex flex-column w-100 px-4">
                     <div className="d-flex flex-row w-100 justify-content-start">
                       {dt.type === "text" ? (
                         <p className="fw-medium">{dt.sender_message}</p>
@@ -328,8 +369,6 @@ export const LiveChatPage = () => {
           </div>
         </div>
       </>
-    ) : (
-      "Please login first"
     );
   }
 };
