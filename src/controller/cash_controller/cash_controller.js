@@ -86,6 +86,51 @@ export class CashController {
     
         return result;
     }
+
+    async getAllCashRecordsWithStatusRequest(pageSize, pageNumber) {
+        const result = new ResultData();
+    
+        try {
+            const cashCollection = collection(db, "cash");
+            let cashQuery = query(cashCollection, where("status", "==", "request"));
+    
+            // Using limit for pagination
+            const startAtDoc = pageNumber > 1 ? await this.getLastDocumentFromPage(pageSize, pageNumber - 1) : null;
+            if (startAtDoc) {
+                cashQuery = query(cashQuery, startAfter(startAtDoc));
+            }
+            cashQuery = query(cashQuery, limit(pageSize));
+    
+            const cashSnapshot = await getDocs(cashQuery);
+    
+            const cashRecords = [];
+            cashSnapshot.forEach((cashDoc) => {
+                const cashData = cashDoc.data();
+                cashRecords.push(
+                    new Cash(
+                        cashData.amount,
+                        cashData.id,
+                        cashData.expert_id,
+                        cashData.no_rek,
+                        cashData.status,
+                        cashData.withdraw_time,
+                        cashData.account
+                    )
+                );
+            });
+    
+            result.data = cashRecords;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get cash records: " + error.message;
+            result.statusCode = 500;
+        }
+    
+        return result;
+    }
+    
     
     async updateCashRequest(cashRequestId, requestedAmount, image) {
         const result = new ResultData();

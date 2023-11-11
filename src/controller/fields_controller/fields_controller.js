@@ -106,25 +106,39 @@ export async function searchFieldsAndExperts(queryText) {
         const fieldSnapshot = await getDocs(fieldsCollection);
 
         const searchResults = [];
+
         for (const fieldDoc of fieldSnapshot.docs) {
             const fieldData = fieldDoc.data();
             const field = new Field(fieldData.id, fieldData.name, fieldData.icon, fieldData.description);
 
             // Add fields to search results if their names contain the queryText
             if (field.name.toLowerCase().includes(queryText.toLowerCase())) {
-                searchResults.push({ type: 'field', data: field });
+                // Query to check if there's a verified expert with the current field
+                const expertQuery = query(collection(db, "expertData"),
+                    where("fieldId", "==", fieldData.id),
+                    where("verified", "==", "true")
+                );
+
+                const expertSnapshot = await getDocs(expertQuery);
+
+                // If there's at least one verified expert with the current field, include the field in search results
+                if (!expertSnapshot.empty) {
+                    searchResults.push({ type: 'field', data: field });
+                }
             }
 
             const fieldExpertsQuery = query(collection(db, "expertData"),
                 where("fieldId", "==", fieldData.id),
                 where("verified", "==", "true"),
-                where("full_name", "array-contains", queryText)
+                where("full_name", "array-contains", queryText.toLowerCase())
             );
 
             const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
 
             for (const expertDoc of fieldExpertsSnapshot.docs) {
                 const expertData = expertDoc.data();
+
+                // Create an instance of the Expert class
                 const expert = new Expert(
                     expertData.fullName,
                     expertData.phoneNumber,
@@ -168,6 +182,7 @@ export async function searchFieldsAndExperts(queryText) {
     return result;
 }
 
+
 export async function searchFieldsWithExperts(queryText) {
     const result = new ResultData();
 
@@ -181,18 +196,21 @@ export async function searchFieldsWithExperts(queryText) {
             const fieldData = fieldDoc.data();
             const field = new Field(fieldData.id, fieldData.name, fieldData.icon, fieldData.description);
 
-            // Add fields to search results if their names contain the queryText
-            if (field.name.toLowerCase().includes(queryText.toLowerCase())) {
-                // Query to check if there's a verified expert with the current field
-                const expertQuery = query(collection(db, "expertData"),
-                    where("fieldId", "==", fieldData.id),
-                    where("verified", "==", "true")
-                );
+            // Query to check if there's a verified expert with the current field
+            const expertQuery = query(collection(db, "expertData"),
+                where("fieldId", "==", fieldData.id),
+                where("verified", "==", "true")
+            );
 
-                const expertSnapshot = await getDocs(expertQuery);
+            const expertSnapshot = await getDocs(expertQuery);
 
-                // If there's at least one verified expert with the current field, include the field in search results
-                if (!expertSnapshot.empty) {
+            // If there's at least one verified expert with the current field, include the field in search results
+            if (!expertSnapshot.empty) {
+                // Compare lowercase field name with lowercase queryText
+                const fieldNameLowerCase = field.name.toLowerCase();
+                const queryTextLowerCase = queryText.toLowerCase();
+
+                if (fieldNameLowerCase.includes(queryTextLowerCase)) {
                     searchResults.push({ type: 'field', data: field });
                 }
             }
@@ -209,7 +227,7 @@ export async function searchFieldsWithExperts(queryText) {
         }
     } catch (error) {
         result.data = null;
-        result.errorMessage = "Failed to search for fields and experts: " + error.message;
+        result.errorMessage = "Failed to search for fields with experts: " + error.message;
         result.statusCode = 500;
     }
 
@@ -223,8 +241,7 @@ export async function searchExpertsInField(fieldId, queryText) {
     try {
         const fieldExpertsQuery = query(collection(db, "expertData"),
             where("fieldId", "==", fieldId),
-            where("verified", "==", "true"),
-            where("full_name", "array-contains", queryText.toLowerCase())
+            where("verified", "==", "true")
         );
 
         const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
@@ -233,29 +250,35 @@ export async function searchExpertsInField(fieldId, queryText) {
         fieldExpertsSnapshot.forEach((expertDoc) => {
             const expertData = expertDoc.data();
 
-            // Create an instance of the Expert class
-            const expert = new Expert(
-                expertData.fullName,
-                expertData.phoneNumber,
-                expertData.email,
-                expertData.password,
-                expertData.birthDate,
-                expertData.gender,
-                expertData.education,
-                expertData.fieldId,
-                expertData.nik,
-                expertData.status,
-                expertData.verified,
-                expertData.jobExperience,
-                expertData.ktp,
-                expertData.certificates,
-                expertData.profilePicture,
-                expertData.cash_amount,
-                expertData.price,
-                expertData.id
-            );
+            // Compare lowercase fullName with lowercase queryText
+            const fullNameLowerCase = expertData.full_name.toLowerCase();
+            const queryTextLowerCase = queryText.toLowerCase();
 
-            searchResults.push({ type: 'expert', data: expert });
+            if (fullNameLowerCase.includes(queryTextLowerCase)) {
+                // Create an instance of the Expert class
+                const expert = new Expert(
+                    expertData.fullName,
+                    expertData.phoneNumber,
+                    expertData.email,
+                    expertData.password,
+                    expertData.birthDate,
+                    expertData.gender,
+                    expertData.education,
+                    expertData.fieldId,
+                    expertData.nik,
+                    expertData.status,
+                    expertData.verified,
+                    expertData.jobExperience,
+                    expertData.ktp,
+                    expertData.certificates,
+                    expertData.profilePicture,
+                    expertData.cash_amount,
+                    expertData.price,
+                    expertData.id
+                );
+
+                searchResults.push({ type: 'expert', data: expert });
+            }
         });
 
         if (searchResults.length > 0) {
