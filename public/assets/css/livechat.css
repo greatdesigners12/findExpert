@@ -4,6 +4,11 @@
   font-family: "Montserrat" !important;
 }
 
+html {
+  width: 100%;
+  height: 100%;
+}
+
 .page__title {
   min-height: 80px !important;
 }
@@ -93,14 +98,16 @@ input[type="color"]:focus,
 
 /* Style time text */
 .time-right {
-  float: right;
-  color: #aaa;
+  color: #858585;
 }
 
 /* Style time text */
 .time-left {
-  float: left;
-  color: #aaa;
+  color: #858585;
+}
+
+.livechat-receivername {
+  color: white;
 }
 
 @media only screen and (min-width: 768px) {

@@ -1,5 +1,14 @@
 import { db } from "../firebaseApp";
-import { onSnapshot, orderBy, getDoc, query, where, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import {
+  onSnapshot,
+  orderBy,
+  getDoc,
+  query,
+  where,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
@@ -65,57 +74,57 @@ export async function createTransaction(
         result.statusCode = 500;
     }
 
-    return result;
+  return result;
 }
 
 export async function getTransactionById(id) {
-    const result = new ResultData();
+  const result = new ResultData();
 
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const transactionSnapshot = await getDocs(transactionsCollection);
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const transactionSnapshot = await getDocs(transactionsCollection);
 
-        for (const transactionDoc of transactionSnapshot.docs) {
-            const transactionData = transactionDoc.data();
-            if (transactionData.id === id) {
-                result.data = new Transaction(
-                    transactionData.id,
-                    transactionData.expert_id,
-                    transactionData.customer_id,
-                    transactionData.start_time,
-                    transactionData.end_time,
-                    transactionData.consultation_time,
-                    transactionData.payment_amount,
-                    transactionData.transaction_date,
-                    transactionData.transaction_status,
-                    transactionData.transaction_image,
-                    transactionData.return_image
-                );
-                result.errorMessage = "";
-                result.statusCode = 200;
-                return result;
-            }
-        }
-
-        result.data = null;
-        result.errorMessage = "Transaction not found";
-        result.statusCode = 404;
-    } catch (error) {
-        result.data = null;
-        result.errorMessage = "Failed to get transaction: " + error.message;
-        result.statusCode = 500;
+    for (const transactionDoc of transactionSnapshot.docs) {
+      const transactionData = transactionDoc.data();
+      if (transactionData.id === id) {
+        result.data = new Transaction(
+          transactionData.id,
+          transactionData.expert_id,
+          transactionData.customer_id,
+          transactionData.start_time,
+          transactionData.end_time,
+          transactionData.consultation_time,
+          transactionData.payment_amount,
+          transactionData.transaction_date,
+          transactionData.transaction_status,
+          transactionData.transaction_image,
+          transactionData.return_image
+        );
+        result.errorMessage = "";
+        result.statusCode = 200;
+        return result;
+      }
     }
 
-    return result;
+    result.data = null;
+    result.errorMessage = "Transaction not found";
+    result.statusCode = 404;
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to get transaction: " + error.message;
+    result.statusCode = 500;
+  }
+
+  return result;
 }
 
 export async function updateTransactionStatusToOngoing(transactionId) {
-    const result = new ResultData();
+  const result = new ResultData();
 
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const transactionRef = doc(transactionsCollection, transactionId);
-        const transactionSnapshot = await getDoc(transactionRef);
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const transactionRef = doc(transactionsCollection, transactionId);
+    const transactionSnapshot = await getDoc(transactionRef);
 
         if (transactionSnapshot.exists()) {
             // Check if the current transaction status is "waiting" to update it to "ongoing"
@@ -134,30 +143,31 @@ export async function updateTransactionStatusToOngoing(transactionId) {
                     end_time: endTime
                 });
 
-                result.data = "ongoing";
-                result.errorMessage = "";
-                result.statusCode = 200;
-            } else {
-                result.data = null;
-                result.errorMessage = "Transaction is not in 'waiting' status.";
-                result.statusCode = 400;
-            }
-        } else {
-            result.data = null;
-            result.errorMessage = "Transaction not found";
-            result.statusCode = 404;
-        }
-    } catch (error) {
+        result.data = "ongoing";
+        result.errorMessage = "";
+        result.statusCode = 200;
+      } else {
         result.data = null;
-        result.errorMessage = "Failed to update transaction status to 'ongoing': " + error.message;
-        result.statusCode = 500;
+        result.errorMessage = "Transaction is not in 'waiting' status.";
+        result.statusCode = 400;
+      }
+    } else {
+      result.data = null;
+      result.errorMessage = "Transaction not found";
+      result.statusCode = 404;
     }
+  } catch (error) {
+    result.data = null;
+    result.errorMessage =
+      "Failed to update transaction status to 'ongoing': " + error.message;
+    result.statusCode = 500;
+  }
 
-    return result;
+  return result;
 }
 
 export async function getAdminTransactions() {
-    const result = new ResultData();
+  const result = new ResultData();
 
     try {
         const transactionsCollection = collection(db, "transactions");
@@ -166,134 +176,138 @@ export async function getAdminTransactions() {
             where("transaction_status", "in", ["waiting", "paid", "cancel", "done"])
         );
 
-        const transactionSnapshot = await getDocs(adminTransactionsQuery);
+    const transactionSnapshot = await getDocs(adminTransactionsQuery);
 
-        const transactions = [];
-        transactionSnapshot.forEach((transactionDoc) => {
-            const transactionData = transactionDoc.data();
-            transactions.push(transactionData);
-        });
+    const transactions = [];
+    transactionSnapshot.forEach((transactionDoc) => {
+      const transactionData = transactionDoc.data();
+      transactions.push(transactionData);
+    });
 
-        result.data = transactions;
-        result.errorMessage = "";
-        result.statusCode = 200;
-    } catch (error) {
-        result.data = null;
-        result.errorMessage = "Failed to get admin transactions: " + error.message;
-        result.statusCode = 500;
-    }
+    result.data = transactions;
+    result.errorMessage = "";
+    result.statusCode = 200;
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to get admin transactions: " + error.message;
+    result.statusCode = 500;
+  }
 
-    return result;
+  return result;
 }
 
-
 export async function updateTransactionByAdmin(id, newData) {
-    const result = new ResultData();
-    const storage = getStorage()
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const transactionRef = doc(transactionsCollection, id);
+  const result = new ResultData();
+  const storage = getStorage();
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const transactionRef = doc(transactionsCollection, id);
 
-        if (newData.transaction_status) {
-            if (newData.transaction_status === "paid" || newData.transaction_status === "unvalid") {
-                // Update the 'transaction_status' field
-                const updateData = {
-                    transaction_status: newData.transaction_status
-                };
+    if (newData.transaction_status) {
+      if (
+        newData.transaction_status === "paid" ||
+        newData.transaction_status === "unvalid"
+      ) {
+        // Update the 'transaction_status' field
+        const updateData = {
+          transaction_status: newData.transaction_status,
+        };
 
-                await updateDoc(transactionRef, updateData);
+        await updateDoc(transactionRef, updateData);
 
-                result.data = newData;
-                result.errorMessage = "";
-                result.statusCode = 200;
-            } else if (newData.transaction_status === "refund") {
-                // Check if 'return_image' is provided in newData
-                if (newData.return_image) {
-                    const imageType = "refund";
-                    const imageName = new Date().getTime().toString() + `_${imageType}.png`;
-                    const imageRef = ref(storage, `transaction_images/${imageName}`);
-                    await uploadBytes(imageRef, newData.return_image);
+        result.data = newData;
+        result.errorMessage = "";
+        result.statusCode = 200;
+      } else if (newData.transaction_status === "refund") {
+        // Check if 'return_image' is provided in newData
+        if (newData.return_image) {
+          const imageType = "refund";
+          const imageName =
+            new Date().getTime().toString() + `_${imageType}.png`;
+          const imageRef = ref(storage, `transaction_images/${imageName}`);
+          await uploadBytes(imageRef, newData.return_image);
 
-                    const updateData = {
-                        transaction_status: newData.transaction_status,
-                        refund_image: imageName
-                    };
+          const updateData = {
+            transaction_status: newData.transaction_status,
+            refund_image: imageName,
+          };
 
-                    await updateDoc(transactionRef, updateData);
+          await updateDoc(transactionRef, updateData);
 
-                    result.data = newData;
-                    result.errorMessage = "";
-                    result.statusCode = 200;
-                } else {
-                    result.data = null;
-                    result.errorMessage = `Missing 'return_image' for 'refund' status.`;
-                    result.statusCode = 400;
-                }
-            } else if (newData.transaction_status === "end") {
-                // Update the 'transaction_status' field to "end"
-                const updateData = {
-                    transaction_status: newData.transaction_status
-                };
-
-                // You should also update the expert's cash_amount here by adding the payment_amount
-                const transactionSnapshot = await getDoc(transactionRef);
-                const transactionData = transactionSnapshot.data();
-                const expertId = transactionData.expert_id;
-
-                const expertsCollection = collection(db, "expertData");
-                const expertRef = doc(expertsCollection, expertId);
-                const expertSnapshot = await getDoc(expertRef);
-                const expertData = expertSnapshot.data();
-
-                if (expertData) {
-                    const newCashAmount = expertData.cash_amount + transactionData.payment_amount;
-                    await updateDoc(expertRef, { cash_amount: newCashAmount });
-                } else {
-                    result.data = null;
-                    result.errorMessage = "Expert not found.";
-                    result.statusCode = 400;
-                    return result;
-                }
-
-                await updateDoc(transactionRef, updateData);
-
-                result.data = newData;
-                result.errorMessage = "";
-                result.statusCode = 200;
-            } else {
-                result.data = null;
-                result.errorMessage = "Invalid 'transaction_status' provided.";
-                result.statusCode = 400;
-            }
+          result.data = newData;
+          result.errorMessage = "";
+          result.statusCode = 200;
         } else {
-            result.data = null;
-            result.errorMessage = "Missing 'transaction_status' in the update data.";
-            result.statusCode = 400;
+          result.data = null;
+          result.errorMessage = `Missing 'return_image' for 'refund' status.`;
+          result.statusCode = 400;
         }
-    } catch (error) {
-        result.data = null;
-        result.errorMessage = "Failed to update transaction: " + error.message;
-        result.statusCode = 500;
-    }
+      } else if (newData.transaction_status === "end") {
+        // Update the 'transaction_status' field to "end"
+        const updateData = {
+          transaction_status: newData.transaction_status,
+        };
 
-    return result;
+        // You should also update the expert's cash_amount here by adding the payment_amount
+        const transactionSnapshot = await getDoc(transactionRef);
+        const transactionData = transactionSnapshot.data();
+        const expertId = transactionData.expert_id;
+
+        const expertsCollection = collection(db, "expertData");
+        const expertRef = doc(expertsCollection, expertId);
+        const expertSnapshot = await getDoc(expertRef);
+        const expertData = expertSnapshot.data();
+
+        if (expertData) {
+          const newCashAmount =
+            expertData.cash_amount + transactionData.payment_amount;
+          await updateDoc(expertRef, { cash_amount: newCashAmount });
+        } else {
+          result.data = null;
+          result.errorMessage = "Expert not found.";
+          result.statusCode = 400;
+          return result;
+        }
+
+        await updateDoc(transactionRef, updateData);
+
+        result.data = newData;
+        result.errorMessage = "";
+        result.statusCode = 200;
+      } else {
+        result.data = null;
+        result.errorMessage = "Invalid 'transaction_status' provided.";
+        result.statusCode = 400;
+      }
+    } else {
+      result.data = null;
+      result.errorMessage = "Missing 'transaction_status' in the update data.";
+      result.statusCode = 400;
+    }
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to update transaction: " + error.message;
+    result.statusCode = 500;
+  }
+
+  return result;
 }
 
 
 export async function updateTransactionByExpert(id, newStatus) {
-    const result = new ResultData();
+  const result = new ResultData();
 
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const transactionRef = doc(transactionsCollection, id);
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const transactionRef = doc(transactionsCollection, id);
 
         // Get the current local timestamp
         const currentTimestamp = new Date();
 
-        if (newStatus === "Accept") {
-            // Retrieve the amount from the transaction data
-            const transactionData = (await getDoc(transactionRef)).data();
-            const amount = transactionData.amount;
+    if (newStatus === "Accept") {
+      // Retrieve the amount from the transaction data
+      const transactionData = (await getDoc(transactionRef)).data();
+      const amount = transactionData.amount;
 
             // Calculate the end time based on the start time and amount
             const startTime = currentTimestamp;
@@ -306,12 +320,12 @@ export async function updateTransactionByExpert(id, newStatus) {
                 end_time: endTime
             });
 
-            // Update the expert status to "Busy"
-            const expertId = transactionData.expert_id;
-            await this.updateExpertStatus(expertId, "busy"); // Assuming there's a function to update expert status
-        } else if (newStatus === "done") {
-            // Retrieve the transaction data
-            const transactionData = (await getDoc(transactionRef)).data();
+      // Update the expert status to "Busy"
+      const expertId = transactionData.expert_id;
+      await this.updateExpertStatus(expertId, "busy"); // Assuming there's a function to update expert status
+    } else if (newStatus === "done") {
+      // Retrieve the transaction data
+      const transactionData = (await getDoc(transactionRef)).data();
 
             // Check if it has been at least 15 minutes since the transaction started
             const startTime = transactionData.start_time;
@@ -323,9 +337,9 @@ export async function updateTransactionByExpert(id, newStatus) {
                     transaction_status: "done"
                 });
 
-                // Update the expert status to "Online"
-                const expertId = transactionData.expert_id;
-                await this.updateExpertStatus(expertId, "online"); // Assuming there's a function to update expert status
+        // Update the expert status to "Online"
+        const expertId = transactionData.expert_id;
+        await this.updateExpertStatus(expertId, "online"); // Assuming there's a function to update expert status
 
                 result.data = newStatus;
                 result.errorMessage = "";
@@ -351,24 +365,27 @@ export async function updateTransactionByExpert(id, newStatus) {
         result.statusCode = 500;
     }
 
-    return result;
+  return result;
 }
 
-
 export async function getExpertByHistory(user_id) {
-    const result = new ResultData();
+  const result = new ResultData();
 
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const userTransactionsQuery = query(transactionsCollection, where("customer_id", "==", user_id), orderBy("transaction_date", "desc"));
-        const transactionSnapshot = await getDocs(userTransactionsQuery);
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const userTransactionsQuery = query(
+      transactionsCollection,
+      where("customer_id", "==", user_id),
+      orderBy("transaction_date", "desc")
+    );
+    const transactionSnapshot = await getDocs(userTransactionsQuery);
 
-        const experts = [];
-        const uniqueExpertIds = new Set();
+    const experts = [];
+    const uniqueExpertIds = new Set();
 
-        for (const transactionDoc of transactionSnapshot.docs) {
-            const transactionData = transactionDoc.data();
-            const expert_id = transactionData.expert_id;
+    for (const transactionDoc of transactionSnapshot.docs) {
+      const transactionData = transactionDoc.data();
+      const expert_id = transactionData.expert_id;
 
             if (!uniqueExpertIds.has(expert_id) && experts.length < 4) {
                 const expert = await this.getExpertById(expert_id);
@@ -378,77 +395,76 @@ export async function getExpertByHistory(user_id) {
                 }
             }
 
-            if (experts.length >= 4) {
-                break;
-            }
-        }
-
-        result.data = experts;
-        result.errorMessage = "";
-        result.statusCode = 200;
-    } catch (error) {
-        result.data = null;
-        result.errorMessage = "Failed to get experts by history: " + error.message;
-        result.statusCode = 500;
+      if (experts.length >= 4) {
+        break;
+      }
     }
 
-    return result;
+    result.data = experts;
+    result.errorMessage = "";
+    result.statusCode = 200;
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to get experts by history: " + error.message;
+    result.statusCode = 500;
+  }
+
+  return result;
 }
 
-
 export async function deleteTransaction(id) {
-    const result = new ResultData();
+  const result = new ResultData();
 
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const transactionRef = doc(transactionsCollection, id);
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const transactionRef = doc(transactionsCollection, id);
 
-        await deleteDoc(transactionRef);
+    await deleteDoc(transactionRef);
 
-        result.data = null;
-        result.errorMessage = "";
-        result.statusCode = 200;
-    } catch (error) {
-        result.data = null;
-        result.errorMessage = "Failed to delete transaction: " + error.message;
-        result.statusCode = 500;
-    }
+    result.data = null;
+    result.errorMessage = "";
+    result.statusCode = 200;
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to delete transaction: " + error.message;
+    result.statusCode = 500;
+  }
 
-    return result;
+  return result;
 }
 
 export async function getExpertTransactionsById(expertId) {
-    const result = new ResultData();
+  const result = new ResultData();
 
-    try {
-        const transactionsCollection = collection(db, "transactions");
-        const expertTransactionsQuery = query(
-            transactionsCollection,
-            where("expert_id", "==", expertId),
-            where("transaction_status", "in", ["ready", "paid", "ongoing"])
-        );
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const expertTransactionsQuery = query(
+      transactionsCollection,
+      where("expert_id", "==", expertId),
+      where("transaction_status", "in", ["ready", "paid", "ongoing"])
+    );
 
-        // Subscribe to real-time updates
-        const unsubscribe = onSnapshot(expertTransactionsQuery, (snapshot) => {
-            const transactions = [];
-            snapshot.forEach((transactionDoc) => {
-                const transactionData = transactionDoc.data();
-                transactions.push(transactionData);
-            });
+    // Subscribe to real-time updates
+    const unsubscribe = onSnapshot(expertTransactionsQuery, (snapshot) => {
+      const transactions = [];
+      snapshot.forEach((transactionDoc) => {
+        const transactionData = transactionDoc.data();
+        transactions.push(transactionData);
+      });
 
-            // Handle the updated data, e.g., update your UI with the new transactions
-            result.data = transactions;
-            result.errorMessage = "";
-            result.statusCode = 200;
-        });
+      // Handle the updated data, e.g., update your UI with the new transactions
+      result.data = transactions;
+      result.errorMessage = "";
+      result.statusCode = 200;
+    });
 
-        // Save the unsubscribe function so you can stop receiving updates later
-        result.unsubscribe = unsubscribe;
-    } catch (error) {
-        result.data = null;
-        result.errorMessage = "Failed to get expert transactions: " + error.message;
-        result.statusCode = 500;
-    }
+    // Save the unsubscribe function so you can stop receiving updates later
+    result.unsubscribe = unsubscribe;
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to get expert transactions: " + error.message;
+    result.statusCode = 500;
+  }
 
-    return result;
+  return result;
 }
