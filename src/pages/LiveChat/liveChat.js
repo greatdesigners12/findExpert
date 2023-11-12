@@ -31,6 +31,7 @@ import CommonPageHeader from "../../components/CommonPageHeader/CommonPageHeader
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 import { updateTransactionByExpert } from "../../controller/transaction_controller/transaction_controller";
 import { FaVideo } from "react-icons/fa";
+import PageHelmet from "../../components/shared/PageHelmet";
 
 export const LiveChatPage = () => {
   const rtcProps = {
@@ -180,6 +181,7 @@ export const LiveChatPage = () => {
       </div>
     ) : (
       <>
+        <PageHelmet pageTitle="Live Chat" />
         <link rel="stylesheet" href="../../../../assets/css/livechat.css" />
         <script
           src="https://kit.fontawesome.com/240280eba1.js"

@@ -182,7 +182,7 @@ export async function getAllUnverifiedTransactions(start_at_page_num, limitNums=
       
 
         if(start_at_page_num === 1){
-            const first = query(collection(db, "transactions"), where("transaction_status", "==", "unverified"), orderBy("transaction_date"), limit(limitNums));
+            const first = query(collection(db, "transactions"), where("transaction_status", "==", "unverified"), orderBy("transaction_date"));
             
             const querySnapshot = await getDocs(first);
             const data = []
@@ -196,7 +196,7 @@ export async function getAllUnverifiedTransactions(start_at_page_num, limitNums=
             result.statusCode = 200;
             return result
         }
-        const first = query(collection(db, "transactions"), where("transaction_status", "==", "unverified"), orderBy("transaction_date"), limit((start_at_page_num - 1) * limitNums));
+        const first = query(collection(db, "transactions"), where("transaction_status", "==", "unverified"), orderBy("transaction_date"));
         const documentSnapshots = await getDocs(first);
         
         // Get the last visible document
@@ -285,7 +285,7 @@ export async function getAllUnverifiedWithdrawalRequest(start_at_page_num, limit
         
         
         if(start_at_page_num === 1){
-            const first = query(collection(db, "cash"), where("status", "==", "unverified"), orderBy("withdraw_time"), limit(limitNums));
+            const first = query(collection(db, "cash"), where("status", "==", "unverified"), orderBy("withdraw_time"));
             
             const querySnapshot = await getDocs(first);
             const data = []
@@ -299,7 +299,7 @@ export async function getAllUnverifiedWithdrawalRequest(start_at_page_num, limit
             result.statusCode = 200;
             return result
         }
-        const first = query(collection(db, "cash"), where("status", "==", "unverified"), orderBy("withdraw_time"), limit((start_at_page_num - 1) * limitNums));
+        const first = query(collection(db, "cash"), where("status", "==", "unverified"), orderBy("withdraw_time"));
         const documentSnapshots = await getDocs(first);
         
         // Get the last visible document
