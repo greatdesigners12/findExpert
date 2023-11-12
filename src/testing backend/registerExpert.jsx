@@ -34,7 +34,8 @@ export const TestingRegisterExpert = () => {
 
     const onSubmitHandler = async (event) => {
         event.preventDefault()
-        const data = new Expert("Micheila", "1231212131","eve123123@gmail.com", "GGWP123awda", tanggalLahir, "male", "SMA", "02uTj3FZzbhDVd7dOiH1", "2132132131", "Mandiri", ktp, certificates, profilePicture)
+        // fullName: any, phoneNumber: any, email: any, password: any, birthDate: any, gender: any, education: any, fieldId: any, nik: any, jobExperience: any, ktp: any, certificates: any, profilePicture: any, cash_amount: any, price: any, id?: string
+        const data = new Expert("Micheila", "1231212131","ggwp12@gmail.com", "GGWP123awda", tanggalLahir, "male", "SMA", "02uTj3FZzbhDVd7dOiH1", "2132132131", "Mandiri", ktp, certificates, profilePicture, 0, 50000, "")
         const result = await registerExpert(data)
         console.log(result);
     }
