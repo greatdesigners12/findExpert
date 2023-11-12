@@ -27,13 +27,16 @@ function App() {
       // const result1 = await updateTransactionWithdrawStatus("Rwr5SUfpTptLMrdGArpI", false)
       // const result1 = await getAllUnverifiedTransactions(1, 5)
       // const result5 =  await register("haha", "student", "ggawdwaddd@gmail.com", "Awd123", "Awd123");
-       const result1 =  await getAllTransactions(1, 5)
-        const result2 =  await getAllUnverifiedWithdrawalRequest()
+       // const result1 =  await getAllTransactions(1, 5)
+      //  const result1 =  await getAllUnverifiedExperts()
+      //   const result2 =  await getAllUnverifiedTransactions()
+      //   const result3 =  await getAllUnverifiedWithdrawalRequest()
       // const result3 =  await checkRole("57ATrg73k9PGRReXHFhavjuQgFa2")
       // const result4 =  getCurrentUser()
       
-      console.log(result1)
-      console.log(result2)
+      // console.log(result1)
+      // console.log(result2)
+      // console.log(result3)
  
     }
     tryLogin();

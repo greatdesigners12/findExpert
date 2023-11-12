@@ -107,10 +107,11 @@ export const RegisterExpert = () => {
           KTP,
           certificates,
           profilePicture,
-          0, price
+          0, price, ""
         );
+        console.log("bro")
         const result = await registerExpert(newExpert);
-
+        
         if (result.data != null) {
           navigate("/");
         } else {

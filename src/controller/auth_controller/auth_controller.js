@@ -1,4 +1,4 @@
-import { db, app } from "../firebaseApp";
+import { db, app, authApp } from "../firebaseApp";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
 import {
@@ -239,6 +239,10 @@ export async function register(name, job, email, password, confirmPassword) {
   }
 
   return result;
+}
+
+export async function logout(){
+  return await authApp.signOut()
 }
 
 export async function registerExpert(expert) {

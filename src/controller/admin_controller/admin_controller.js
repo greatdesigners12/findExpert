@@ -198,13 +198,13 @@ export async function getAllUnverifiedTransactions() {
             const expertSnap = await getDoc(expertRef);
             const userRef = doc(db, "userData", transactionDoc.data().customer_id)
             const userSnap = await getDoc(userRef);
-            const fieldRef = doc(db, "field", expertSnap.fieldId)
+            const fieldRef = doc(db, "field", expertSnap.data().fieldId)
             const fieldSnap = await getDoc(fieldRef);
             const curData = transactionDoc.data()
             curData["expertData"] = expertSnap.data()
             curData.expertData["fieldData"] = fieldSnap.data() 
             curData["customerData"] = userSnap.data()
-            data.push(doc.data())
+            data.push(curData)
         });
 
         result.data = data;
@@ -325,22 +325,22 @@ export async function getAllUnverifiedExpertsWithPagination(start_at_page_num, l
        
 }
 
-export async function getAllUnverifiedExperts(start_at_page_num, limitNums=5) {
+export async function getAllUnverifiedExperts() {
     const result = new ResultData();
 
     try {
         
-        const first = query(collection(db, "expertData"), where("verified", "==", "false"), orderBy("fullName"), limit(limitNums));
+        const first = query(collection(db, "expertData"), where("verified", "==", "false"), orderBy("registered_date"));
             
             const querySnapshot = await getDocs(first);
             const data = []
             querySnapshot.forEach(async (expertDoc) => {
-                const fieldRef = doc(db, "expertData", expertDoc.data().fieldId)
+                const fieldRef = doc(db, "field", expertDoc.data().fieldId)
                 const fieldSnap = await getDoc(fieldRef);
-                const curData = doc.data()
+                const curData = expertDoc.data()
                 curData["fieldData"] = fieldSnap.data()
             // doc.data() is never undefined for query doc snapshots
-                data.push()
+                data.push(curData)
             });
 
             result.data = data;
@@ -348,9 +348,7 @@ export async function getAllUnverifiedExperts(start_at_page_num, limitNums=5) {
             result.statusCode = 200;
             return result
         
-        result.data = data;
-        result.errorMessage = null;
-        result.statusCode = 200;
+       
     } catch (error) {
         result.data = null;
         result.errorMessage = error.message;
@@ -421,6 +419,7 @@ export async function getAllUnverifiedWithdrawalRequest() {
         querySnapshot.forEach(async (cashDoc) => {
         // doc.data() is never undefined for query doc snapshots
             const expertData = await getDoc(cashDoc.data().expert_id);
+            
             const curData = cashDoc.data()
             curData["expertData"] = expertData.data()
             data.push(curData)

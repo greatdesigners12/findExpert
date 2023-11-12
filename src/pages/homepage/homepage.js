@@ -5,7 +5,7 @@ import { TestingRegisterExpert } from "../../testing backend/registerExpert";
 import { LiveChatPage } from "../../testing backend/livechat";
 import { Transaction } from "../../controller/transaction_controller/models/transactions";
 import { Link } from "react-router-dom";
-import { getCurrentUser } from "../../controller/auth_controller/auth_controller";
+import { getCurrentUser, logout } from "../../controller/auth_controller/auth_controller";
 export const HomePage = () => {
     const rtcProps = {
         appId: "9389c3640acc415295195dce74994e91",
@@ -24,6 +24,11 @@ export const HomePage = () => {
       const callbacks = {
         EndCall: () => setVideoCall(false),
       };
+
+      const logOutHandler = async () => {
+        const data = await logout()
+        console.log(data)
+      }
       
 
       useEffect(() => {
@@ -52,8 +57,9 @@ export const HomePage = () => {
             <h1>{expert.name}</h1>
           </div>))}
        
-        <button><Link to="register/expert">Ke halaman register expert</Link></button>
-        <button><Link to={`livechat/transaction_1699592443838`}>Ke halaman live chat</Link></button>
+        <button style={{whiteSpace: "pre-line"}}><Link to="register/expert">Ke halaman register expert</Link></button>
+        <button style={{whiteSpace: "pre-line"}} onClick={logOutHandler}> logout</button>
+        <button style={{whiteSpace: "pre-line"}}><Link to={`livechat/transaction_1699592443838`}>Ke halaman live chat</Link></button>
         
       </div>)
 }
