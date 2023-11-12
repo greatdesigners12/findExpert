@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700&display=swap");
+@import "bootstrap";
+
+.font-montserrat {
+  font-family: "Montserrat" !important;
+}
+
+.font-frankruhllibre {
+  font-family: "Frank Ruhl Libre" !important;
+}
+
+.admin-page-bg {
+  background-color: #f1f1f7;
+}
+
+.admin-navbar {
+  height: 50px;
+  background-color: white;
+  box-shadow: 0 0px 1px rgba(0, 0, 0, 0.075) inset,
+    0 0 8px rgba(197, 197, 197, 0.6) !important;
+}
+
+.admin-info-card {
+  background-color: white;
+  box-shadow: 0 0px 1px rgba(0, 0, 0, 0.075) inset,
+    0 0 8px rgba(197, 197, 197, 0.6) !important;
+  border-radius: 6px;
+}
+
+.admin-logo {
+  margin-top: 7px;
+  height: 36px;
+}
+
+.admin-navbar-logo-container {
+  background-color: #1f1841;
+  width: fit-content;
+}
+
+.color-purple {
+  color: #690ed0;
+}
+
+.admin-table {
+  overflow-x: scroll;
+}
+
+.th-col {
+  background-color: #f8f9fa;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+tr,
+td,
+.th-row {
+  background-color: #f1f1f7 !important;
+}

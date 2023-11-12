@@ -1,0 +1,493 @@
+import { useState } from "react";
+import {
+  getAllTransactions,
+  getAllUnverifiedExperts,
+  getAllUnverifiedTransactions,
+  getAllUnverifiedWithdrawalRequest,
+  getTotalEquity,
+  getTotalNumberConsultans,
+  getTotalNumberTransactions,
+  updateExpertStatus,
+  updateTransactionStatus,
+  updateTransactionWithdrawStatus,
+} from "../../controller/admin_controller/admin_controller";
+import { useEffect } from "react";
+import PageHelmet from "../../components/shared/PageHelmet";
+import { Link } from "react-router-dom";
+import { useMemo } from "react";
+import Pagination from "../../components/Pagination/Pagination";
+import { Form } from "react-bootstrap";
+import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
+
+export const AdminPage = () => {
+  const [equity, setEquity] = useState("");
+  const [transactionCount, setTransactionCount] = useState(0);
+  const [consultantCount, setConsultantCount] = useState(0);
+  const [withdrawRequests, setWithdrawRequests] = useState([]);
+  const [expertVerifications, setExpertVerifications] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [paymentVerifications, setPaymentVerfications] = useState([]);
+
+  const [isLoadingPaymentVerifications, setIsLoadingPaymentVerifications] =
+    useState(true);
+  const [currentPagePaymentVerifications, setCurrentPagePaymentVerifications] =
+    useState(1);
+  const [pageSizePaymentVerifications, setPageSizePaymentVerifications] =
+    useState(0);
+
+  const currentTableDataPaymentVerifications = useMemo(() => {
+    const firstPageIndex =
+      (currentPagePaymentVerifications - 1) * pageSizePaymentVerifications;
+    const lastPageIndex = firstPageIndex + pageSizePaymentVerifications;
+
+    return paymentVerifications.slice(firstPageIndex, lastPageIndex);
+  }, [currentPagePaymentVerifications, pageSizePaymentVerifications]);
+
+  const [isLoadingWithdrawRequests, setIsLoadingWithdrawRequests] =
+    useState(true);
+  const [currentPageWithdrawRequests, setCurrentPageWithdrawRequests] =
+    useState(1);
+  const [pageSizeWithdrawRequests, setPageSizeWithdrawRequests] = useState(0);
+
+  const currentTableDataWithdrawRequests = useMemo(() => {
+    const firstPageIndex =
+      (currentPageWithdrawRequests - 1) * pageSizeWithdrawRequests;
+    const lastPageIndex = firstPageIndex + pageSizeWithdrawRequests;
+
+    return withdrawRequests.slice(firstPageIndex, lastPageIndex);
+  }, [currentPageWithdrawRequests, pageSizeWithdrawRequests]);
+
+  const [isLoadingExpertVerifications, setIsLoadingExpertVerifications] =
+    useState(true);
+  const [currentPageExpertVerifications, setCurrentPageExpertVerifications] =
+    useState(1);
+  const [pageSizeExpertVerifications, setPageSizeExpertVerifications] =
+    useState(0);
+
+  const currentTableDataExpertVerifications = useMemo(() => {
+    const firstPageIndex =
+      (currentPageExpertVerifications - 1) * pageSizeExpertVerifications;
+    const lastPageIndex = firstPageIndex + pageSizeExpertVerifications;
+
+    return expertVerifications.slice(firstPageIndex, lastPageIndex);
+  }, [currentPageExpertVerifications, pageSizeExpertVerifications]);
+
+  const [isLoadingTransactions, setIsLoadingTransactions] = useState(true);
+  const [currentPageTransactions, setCurrentPageTransactions] = useState(1);
+  const [pageSizeTransactions, setPageSizeTransactions] = useState(0);
+
+  const currentTableDataTransactions = useMemo(() => {
+    const firstPageIndex = (currentPageTransactions - 1) * pageSizeTransactions;
+    const lastPageIndex = firstPageIndex + pageSizeTransactions;
+
+    return transactions.slice(firstPageIndex, lastPageIndex);
+  }, [currentPageTransactions, pageSizeTransactions]);
+
+  function currencyFormat(num) {
+    return "Rp. " + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+  }
+
+  useEffect(() => {
+    const getEquityTransactionsConsultants = async () => {
+      const result1 = await getTotalEquity();
+      const result2 = await getTotalNumberTransactions();
+      const result3 = await getTotalNumberConsultans();
+
+      if (result1.statusCode === 200) {
+        setEquity(currencyFormat(result1.data));
+      }
+
+      if (result2.statusCode === 200) {
+        setTransactionCount(result2.data);
+      }
+
+      if (result3.statusCode === 200) {
+        setConsultantCount(result3.data);
+      }
+    };
+
+    getEquityTransactionsConsultants();
+  }, []);
+
+  useEffect(() => {
+    const getWithdrawRequests = async () => {
+      const result = await getAllUnverifiedWithdrawalRequest(1);
+
+      setWithdrawRequests(result.data);
+      setPageSizeWithdrawRequests(5);
+      setIsLoadingWithdrawRequests(false);
+    };
+
+    getWithdrawRequests();
+  }, []);
+
+  useEffect(() => {
+    const getExpertVerifications = async () => {
+      const result = await getAllUnverifiedExperts(1);
+
+      setExpertVerifications(result.data);
+      setPageSizeExpertVerifications(5);
+      setIsLoadingExpertVerifications(false);
+    };
+
+    getExpertVerifications();
+  }, []);
+
+  useEffect(() => {
+    const getPaymentVerifications = async () => {
+      const result = await getAllUnverifiedTransactions(1);
+
+      setPaymentVerfications(result.data);
+      setPageSizePaymentVerifications(5);
+      setIsLoadingPaymentVerifications(false);
+    };
+
+    getPaymentVerifications();
+  }, []);
+
+  return (
+    <div className="admin-page-bg">
+      <PageHelmet pageTitle="Admin Panel" />
+      <link rel="stylesheet" href="../../../../assets/css/admin.css" />
+      <div className="admin-navbar w-100">
+        <div className="align-items-center admin-navbar-logo-container h-100 px-5">
+          <img
+            src="assets/img/logo/logo-white.png"
+            className="admin-logo"
+            alt=""
+          />
+        </div>
+      </div>
+      <div className="container py-5">
+        <div className="row d-flex flex-row justify-content-evenly">
+          <div className="col-lg-4 col-12">
+            <div className="admin-info-card px-5 py-4">
+              <h2 className="font-frankruhllibre">Equity</h2>
+              <h3 className="font-montserrat color-purple mt-2">{equity}</h3>
+            </div>
+          </div>
+          <div className="col-lg-4 col-12 my-4 my-lg-0">
+            <div className="admin-info-card px-5 py-4">
+              <h2 className="font-frankruhllibre">Transactions</h2>
+              <h3 className="font-montserrat color-purple mt-2">
+                {transactionCount}
+              </h3>
+            </div>
+          </div>
+          <div className="col-lg-4 col-12">
+            <div className="admin-info-card px-5 py-4">
+              <h2 className="font-frankruhllibre">Consultants</h2>
+              <h3 className="font-montserrat color-purple mt-2">
+                {consultantCount}
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div className="pt-5 d-flex flex-column justify-content-center align-items-center">
+          <h2 className="font-frankruhllibre w-100 mb-3">
+            Withdrawal Requests
+          </h2>
+          {isLoadingWithdrawRequests ? (
+            <div className="py-5">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <>
+              <div className="d-flex justify-content-start w-100">
+                <div className="d-flex flex-row align-items-center">
+                  <p className="mb-0 me-3">Show </p>
+                  <Form.Select
+                    className="mb-3 mt-4"
+                    value={pageSizeWithdrawRequests}
+                    onChange={(e) => {
+                      setPageSizeWithdrawRequests(e.target.value);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                  </Form.Select>
+                  <p className="mb-0 ms-3">Entries</p>
+                </div>
+              </div>
+              <table className="table admin-table w-100">
+                <thead>
+                  <tr>
+                    <th scope="col" className="th-col">
+                      ID
+                    </th>
+                    <th scope="col" className="th-col">
+                      Date
+                    </th>
+                    <th scope="col" className="th-col">
+                      Bank
+                    </th>
+                    <th scope="col" className="th-col">
+                      Account No
+                    </th>
+                    <th scope="col" className="th-col">
+                      Expert ID
+                    </th>
+                    <th scope="col" className="th-col">
+                      Total
+                    </th>
+                    <th scope="col" className="th-col">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentTableDataWithdrawRequests.map((cash) => (
+                    <tr key={cash.id}>
+                      <th scope="row" className="th-row">
+                        {cash.id}
+                      </th>
+                      <td>
+                        {new Date(cash.withdraw_time.seconds).toUTCString()}
+                      </td>
+                      <td>{cash.account}</td>
+                      <td>{cash.no_rek}</td>
+                      <td>{"cash.expert_id"}</td>
+                      <td>{cash.amount}</td>
+                      <td>
+                        <div>
+                          <button
+                            onClick={() =>
+                              updateTransactionWithdrawStatus(cash.id, true)
+                            }
+                            className="btn btn-success"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() =>
+                              updateTransactionWithdrawStatus(cash.id, false)
+                            }
+                            className="btn btn-danger ms-2"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Pagination
+                className="pagination-bar"
+                currentPage={currentPageWithdrawRequests}
+                totalCount={withdrawRequests.length}
+                pageSize={pageSizeWithdrawRequests}
+                onPageChange={(page) => setCurrentPageWithdrawRequests(page)}
+              />
+            </>
+          )}
+        </div>
+        <div className="pt-5 d-flex flex-column justify-content-center align-items-center">
+          <h2 className="font-frankruhllibre w-100 mb-3">
+            Expert Verifications
+          </h2>
+          {isLoadingExpertVerifications ? (
+            <div className="py-5">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <>
+              <div className="d-flex justify-content-start w-100">
+                <div className="d-flex flex-row align-items-center">
+                  <p className="mb-0 me-3">Show </p>
+                  <Form.Select
+                    className="mb-3 mt-4"
+                    value={pageSizeExpertVerifications}
+                    onChange={(e) => {
+                      setPageSizeExpertVerifications(e.target.value);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                  </Form.Select>
+                  <p className="mb-0 ms-3">Entries</p>
+                </div>
+              </div>
+              <table className="table admin-table w-100">
+                <thead>
+                  <tr>
+                    <th scope="col" className="th-col">
+                      ID
+                    </th>
+                    <th scope="col" className="th-col">
+                      Full Name
+                    </th>
+                    <th scope="col" className="th-col">
+                      Email
+                    </th>
+                    <th scope="col" className="th-col">
+                      Field
+                    </th>
+                    <th scope="col" className="th-col">
+                      Phone Number
+                    </th>
+                    <th scope="col" className="th-col">
+                      More Information
+                    </th>
+                    <th scope="col" className="th-col">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentTableDataExpertVerifications.map((expert) => (
+                    <tr key={expert.id}>
+                      <th scope="row" className="th-row">
+                        {expert.id}
+                      </th>
+                      <td>{expert.fullName}</td>
+                      <td>{expert.email}</td>
+                      <td>{expert.fieldId}</td>
+                      <td>{expert.phoneNumber}</td>
+                      <td>{"More Info"}</td>
+                      <td>
+                        <div>
+                          <button
+                            onClick={() => updateExpertStatus(expert.id, true)}
+                            className="btn btn-success"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => updateExpertStatus(expert.id, false)}
+                            className="btn btn-danger ms-2"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Pagination
+                className="pagination-bar"
+                currentPage={currentPageExpertVerifications}
+                totalCount={expertVerifications.length}
+                pageSize={pageSizeExpertVerifications}
+                onPageChange={(page) => setCurrentPageExpertVerifications(page)}
+              />
+            </>
+          )}
+        </div>
+        <div className="pt-5 d-flex flex-column justify-content-center align-items-center">
+          <h2 className="font-frankruhllibre w-100 mb-3">
+            Payment Verifications
+          </h2>
+          {isLoadingPaymentVerifications ? (
+            <div className="py-5">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <>
+              <div className="d-flex justify-content-start w-100">
+                <div className="d-flex flex-row align-items-center">
+                  <p className="mb-0 me-3">Show </p>
+                  <Form.Select
+                    className="mb-3 mt-4"
+                    value={pageSizePaymentVerifications}
+                    onChange={(e) => {
+                      setPageSizePaymentVerifications(e.target.value);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                  </Form.Select>
+                  <p className="mb-0 ms-3">Entries</p>
+                </div>
+              </div>
+              <table className="table admin-table w-100">
+                <thead>
+                  <tr>
+                    <th scope="col" className="th-col">
+                      ID
+                    </th>
+                    <th scope="col" className="th-col">
+                      Date
+                    </th>
+                    <th scope="col" className="th-col">
+                      Expert ID
+                    </th>
+                    <th scope="col" className="th-col">
+                      Payment Prove
+                    </th>
+                    <th scope="col" className="th-col">
+                      Customer ID
+                    </th>
+                    <th scope="col" className="th-col">
+                      Total
+                    </th>
+                    <th scope="col" className="th-col">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentTableDataPaymentVerifications.map((transaction) => (
+                    <tr key={transaction.id}>
+                      <th scope="row" className="th-row">
+                        {transaction.id}
+                      </th>
+                      <td>{transaction.transaction_date}</td>
+                      <td>{transaction.expert_id}</td>
+                      <td>
+                        {<Link to={transaction.transaction_image}>Link</Link>}
+                      </td>
+                      <td>{transaction.customer_id}</td>
+                      <td>{transaction.payment_amount}</td>
+                      <td>
+                        <div>
+                          {transaction.transaction_status == "unverified" ? (
+                            <>
+                              <button
+                                onClick={() =>
+                                  updateTransactionStatus(transaction.id, true)
+                                }
+                                className="btn btn-success"
+                              >
+                                Accept
+                              </button>
+                              <button
+                                onClick={() =>
+                                  updateTransactionStatus(transaction.id, false)
+                                }
+                                className="btn btn-danger ms-2"
+                              >
+                                Reject
+                              </button>
+                            </>
+                          ) : transaction.transaction_status == "cancel" ? (
+                            <p className="text-danger">Rejected</p>
+                          ) : (
+                            <p className="text-success">Accepted</p>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Pagination
+                className="pagination-bar"
+                currentPage={currentPagePaymentVerifications}
+                totalCount={paymentVerifications.length}
+                pageSize={pageSizePaymentVerifications}
+                onPageChange={(page) =>
+                  setCurrentPagePaymentVerifications(page)
+                }
+              />
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
