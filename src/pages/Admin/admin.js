@@ -379,6 +379,114 @@ export const AdminPage = () => {
         </div>
         <div className="pt-5 d-flex flex-column justify-content-center align-items-center">
           <h2 className="font-frankruhllibre w-100 mb-3">
+            Transactions
+          </h2>
+          {isLoadingTransactions ? (
+            <div className="py-5">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <>
+              <div className="d-flex justify-content-start w-100">
+                <div className="d-flex flex-row align-items-center">
+                  <p className="mb-0 me-3">Show </p>
+                  <Form.Select
+                    className="mb-3 mt-4"
+                    value={pageSizeTransactions}
+                    onChange={(e) => {
+                      setPageSizeTransactions(e.target.value);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                  </Form.Select>
+                  <p className="mb-0 ms-3">Entries</p>
+                </div>
+              </div>
+              <table className="table admin-table w-100">
+                <thead>
+                  <tr>
+                    <th scope="col" className="th-col">
+                      ID
+                    </th>
+                    <th scope="col" className="th-col">
+                      Full Name
+                    </th>
+                    <th scope="col" className="th-col">
+                      Email
+                    </th>
+                    <th scope="col" className="th-col">
+                      Field
+                    </th>
+                    <th scope="col" className="th-col">
+                      Phone Number
+                    </th>
+                    <th scope="col" className="th-col">
+                      More Information
+                    </th>
+                    <th scope="col" className="th-col">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentTableDataTransactions.map((transaction) => (
+                    <tr key={transaction.id}>
+                      <th scope="row" className="th-row">
+                        {transaction.id}
+                      </th>
+                      <td>{transaction.transaction_date}</td>
+                      <td>{transaction.expert_id}</td>
+                      <td>
+                        {<Link to={transaction.transaction_image}>Link</Link>}
+                      </td>
+                      <td>{transaction.customer_id}</td>
+                      <td>{transaction.payment_amount}</td>
+                      <td>
+                        <div>
+                          {transaction.transaction_status == "unverified" ? (
+                            <>
+                              <button
+                                onClick={() =>
+                                  updateTransactionStatus(transaction.id, true)
+                                }
+                                className="btn btn-success"
+                              >
+                                Accept
+                              </button>
+                              <button
+                                onClick={() =>
+                                  updateTransactionStatus(transaction.id, false)
+                                }
+                                className="btn btn-danger ms-2"
+                              >
+                                Reject
+                              </button>
+                            </>
+                          ) : transaction.transaction_status == "cancel" ? (
+                            <p className="text-danger">Rejected</p>
+                          ) : (
+                            <p className="text-success">Accepted</p>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Pagination
+                className="pagination-bar"
+                currentPage={currentPageTransactions}
+                totalCount={transactions.length}
+                pageSize={pageSizeTransactions}
+                onPageChange={(page) => setCurrentPageTransactions(page)}
+              />
+            </>
+          )}
+        </div>
+        <div className="pt-5 d-flex flex-column justify-content-center align-items-center">
+          <h2 className="font-frankruhllibre w-100 mb-3">
             Payment Verifications
           </h2>
           {isLoadingPaymentVerifications ? (

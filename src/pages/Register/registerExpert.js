@@ -6,6 +6,7 @@ import { Form } from "react-bootstrap";
 import { getAllFieldsWithExperts } from "../../controller/fields_controller/fields_controller";
 import { useEffect } from "react";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
+import { Expert } from "../../controller/experts_controller/models/expert";
 
 export const RegisterExpert = () => {
   const [name, setName] = useState("");
@@ -19,6 +20,10 @@ export const RegisterExpert = () => {
   const [NIK, setNIK] = useState("");
   const [jobExperience, setJobExperience] = useState("");
   const [email, setEmail] = useState("");
+  const [KTP, setKTP] = useState(null);
+  const [certificates, setCertificates] = useState([]);
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [price, setPrice] = useState(0);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const genderOptions = [
@@ -41,7 +46,9 @@ export const RegisterExpert = () => {
 
   let handleSubmit = async (e) => {
     e.preventDefault();
-
+    const phoneRegex =
+      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
     if (birthDate == "" || gender == "" || education == "" || field == "") {
       var msg = "";
 
@@ -79,23 +86,58 @@ export const RegisterExpert = () => {
 
       msg = "You must select " + msg;
       setMessage(msg);
-    } else {
+    } else if (
+      password === confirmPassword &&
+      NIK.length == 16 &&
+      phone.match(phoneRegex) &&
+      password.match(passwordRegex)
+    ) {
       try {
-        const result = await registerExpert(
+        const newExpert = new Expert(
           name,
           phone,
           email,
           password,
-          confirmPassword
+          birthDate,
+          gender,
+          education,
+          field,
+          NIK,
+          jobExperience,
+          KTP,
+          certificates,
+          profilePicture,
+          0, price
         );
+        const result = await registerExpert(newExpert);
 
         if (result.data != null) {
-          navigate("/login");
+          navigate("/");
         } else {
           setMessage(result.errorMessage);
         }
       } catch (err) {
         console.log(err);
+      }
+    } else {
+      var msg = "";
+
+      if (password !== confirmPassword) {
+        msg = msg + "Password Confirmation does not match. ";
+      }
+
+      if (!password.match(passwordRegex)) {
+        msg =
+          msg +
+          "For password, please input atleast at least one uppercase letter, one lowercase letter and one number. ";
+      }
+
+      if (NIK.length != 16) {
+        msg = msg + "NIK must be a 16-digit number. ";
+      }
+
+      if (!phone.match(phoneRegex)) {
+        msg = msg + "Invalid Phone Number format.";
       }
     }
   };
@@ -262,8 +304,60 @@ export const RegisterExpert = () => {
                       required
                     />
                   </div>
+                  <div className="mb-3 mt-4">
+                    <input
+                      type="number"
+                      className="form-control font-montserrat"
+                      id="inputPrice"
+                      name="price"
+                      placeholder="Price"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3 mt-4">
+                    <p>KTP (.png, .jpeg)</p>
+                    <input
+                      type="file"
+                      className="form-control font-montserrat"
+                      id="inputKTP"
+                      name="KTP"
+                      accept="image/png, image/jpeg"
+                      value={KTP}
+                      onChange={(e) => setKTP(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3 mt-4">
+                    <p>Certificates (.pdf, .png, .jpeg)</p>
+                    <input
+                      type="file"
+                      className="form-control font-montserrat"
+                      id="inputCertificates"
+                      name="Certificates"
+                      accept="application/pdf, image/png, image/jpeg"
+                      value={certificates}
+                      onChange={(e) => setCertificates(e.target.value)}
+                      multiple
+                      required
+                    />
+                  </div>
+                  <div className="mb-3 mt-4">
+                    <p>Profile Picture (.png, .jpeg)</p>
+                    <input
+                      type="file"
+                      className="form-control font-montserrat"
+                      id="inputProfilePicture"
+                      name="ProfilePicture"
+                      accept="image/png, image/jpeg"
+                      value={profilePicture}
+                      onChange={(e) => setProfilePicture(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="d-flex flex-column justify-content-center">
+                <div className="d-flex flex-column justify-content-center mt-4">
                   <div className="d-flex justify-content-center">
                     <button
                       type="submit"
