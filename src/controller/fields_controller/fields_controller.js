@@ -130,7 +130,7 @@ export async function searchFieldsAndExperts(queryText) {
             const fieldExpertsQuery = query(collection(db, "expertData"),
                 where("fieldId", "==", fieldData.id),
                 where("verified", "==", "true"),
-                where("full_name", "array-contains", queryText.toLowerCase())
+                where("fullName", "array-contains", queryText.toLowerCase())
             );
 
             const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
@@ -251,7 +251,7 @@ export async function searchExpertsInField(fieldId, queryText) {
             const expertData = expertDoc.data();
 
             // Compare lowercase fullName with lowercase queryText
-            const fullNameLowerCase = expertData.full_name.toLowerCase();
+            const fullNameLowerCase = expertData.fullName.toLowerCase();
             const queryTextLowerCase = queryText.toLowerCase();
 
             if (fullNameLowerCase.includes(queryTextLowerCase)) {
