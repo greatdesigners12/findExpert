@@ -21,7 +21,7 @@ export const RegisterExpert = () => {
   const [jobExperience, setJobExperience] = useState("");
   const [email, setEmail] = useState("");
   const [KTP, setKTP] = useState(null);
-  const [certificates, setCertificates] = useState([]);
+  const [certificates, setCertificates] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
   const [price, setPrice] = useState(0);
   const [message, setMessage] = useState("");
@@ -30,6 +30,11 @@ export const RegisterExpert = () => {
     { value: "Male", label: "Male" },
     { value: "Female", label: "Female" },
   ];
+
+  const certificatesInputHandler = (event) => {
+    setCertificates(event.target.files);
+    console.log(event.target.files);
+  };
 
   const [fieldData, setFieldData] = useState([]);
   const [isLoading, setLoading] = useState(true);
@@ -107,11 +112,12 @@ export const RegisterExpert = () => {
           KTP,
           certificates,
           profilePicture,
-          0, price, ""
+          0,
+          price,
+          ""
         );
-        console.log("bro")
         const result = await registerExpert(newExpert);
-        
+
         if (result.data != null) {
           navigate("/");
         } else {
@@ -338,9 +344,8 @@ export const RegisterExpert = () => {
                       id="inputCertificates"
                       name="Certificates"
                       accept="application/pdf, image/png, image/jpeg"
-                      value={certificates}
-                      onChange={(e) => setCertificates(e.target.value)}
-                      multiple
+                      onChange={certificatesInputHandler}
+                      multiple="multiple"
                       required
                     />
                   </div>
