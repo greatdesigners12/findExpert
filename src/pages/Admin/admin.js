@@ -284,7 +284,7 @@ export const AdminPage = () => {
                             onClick={() =>
                               updateTransactionWithdrawStatus(cash.id, false)
                             }
-                            className="btn btn-danger ms-2"
+                            className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
                           >
                             Reject
                           </button>
@@ -378,7 +378,7 @@ export const AdminPage = () => {
                           </button>
                           <button
                             onClick={() => updateExpertStatus(expert.id, false)}
-                            className="btn btn-danger ms-2"
+                            className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
                           >
                             Reject
                           </button>
@@ -559,7 +559,7 @@ export const AdminPage = () => {
                                 onClick={() =>
                                   updateTransactionStatus(transaction.id, false)
                                 }
-                                className="btn btn-danger ms-2"
+                                className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
                               >
                                 Reject
                               </button>
