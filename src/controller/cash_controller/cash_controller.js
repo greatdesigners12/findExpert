@@ -2,6 +2,7 @@ import { db } from "../firebaseApp";
 import { collection, doc, getDocs, setDoc, updateDoc, query, where, getDoc } from "firebase/firestore";
 import { Cash } from "./models/cash";
 import { ResultData } from "../structureJson/resultData";
+
 export class CashController {
     async getLastDocumentFromPage(expertId, pageSize, pageNumber) {
         const cashCollection = collection(db, "cash");
