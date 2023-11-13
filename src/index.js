@@ -25,6 +25,7 @@ import { UserContextProvider } from "./context/authContext";
 import { RegisterExpert } from "./pages/Register/registerExpert";
 import { TransactionList } from "./pages/Transaction/TransactionList";
 import { HomeExpert } from "./pages/homepage/homeExpert";
+import { HomeUser } from "./pages/homepage/homeUser";
 import { AdminPage } from "./pages/Admin/admin";
 
 const router = createBrowserRouter([
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
   {
     path: "/homeexpert/",
     element: <HomeExpert />,
+  },
+  {
+    path: "/home/",
+    element: <HomeUser/>,
   },
 ]);
 
