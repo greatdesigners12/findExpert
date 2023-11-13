@@ -12,44 +12,27 @@ export async function getExpertsByFieldAndStatus(fieldId) {
         const fieldExpertsQuery = query(expertsCollection, where("fieldId", "==", fieldId), where("verified", "==", "true"));
         const expertSnapshot = await getDocs(fieldExpertsQuery);
 
-        const onlineExperts = [];
-        const busyExperts = [];
-        const offlineExperts = [];
-
-        expertSnapshot.docs.forEach((expertDoc) => {
+        const expertsList = expertSnapshot.docs.map((expertDoc) => {
             const expertData = expertDoc.data();
-            const expert = new Expert(
+            return new Expert(
                 expertData.fullName,
-                    expertData.phoneNumber,
-                    expertData.email,
-                    expertData.password,
-                    expertData.birthDate,
-                    expertData.gender,
-                    expertData.education,
-                    expertData.fieldId,
-                    expertData.nik,
-                    expertData.jobExperience,
-                    expertData.ktp,
-                    expertData.certificates,
-                    expertData.profilePicture,
-                    expertData.verified,
-                    expertData.status,
-                    expertData.cash_amount,
-                    expertData.price,
-                    expertData.id
+                expertData.phoneNumber,
+                expertData.email,
+                expertData.password,
+                expertData.birthDate,
+                expertData.gender,
+                expertData.education,
+                expertData.fieldId,
+                expertData.nik,
+                expertData.jobExperience,
+                expertData.ktp,
+                expertData.certificates,
+                expertData.profilePicture,
+                expertData.cash_amount,
+                expertData.price,
+                expertData.id
             );
-
-            if (expertData.status === 'online') {
-                onlineExperts.push(expert);
-            } else if (expertData.status === 'busy') {
-                busyExperts.push(expert);
-            } else {
-                offlineExperts.push(expert);
-            }
         });
-
-        // Concatenate the results in the order: online, busy, offline
-        const expertsList = onlineExperts.concat(busyExperts, offlineExperts);
 
         if (expertsList.length > 0) {
             result.data = expertsList;
@@ -126,69 +109,56 @@ export async function searchFieldsAndExperts(queryText) {
             const fieldData = fieldDoc.data();
             const field = new Field(fieldData.id, fieldData.name, fieldData.icon, fieldData.description);
 
-            // Query to check if there's any verified expert
-            const expertQuery = query(collection(db, "expertData"),
-                where("verified", "==", "true")
-            );
+            // Add fields to search results if their names contain the queryText
+            if (field.name.toLowerCase().includes(queryText.toLowerCase())) {
+                // Query to check if there's a verified expert with the current field
+                const expertQuery = query(collection(db, "expertData"),
+                    where("fieldId", "==", fieldData.id),
+                    where("verified", "==", "true")
+                );
 
-            const expertSnapshot = await getDocs(expertQuery);
+                const expertSnapshot = await getDocs(expertQuery);
 
-            // Compare lowercase field name with lowercase queryText
-            const fieldNameLowerCase = field.name.toLowerCase();
-            const queryTextLowerCase = queryText.toLowerCase();
-
-            if (fieldNameLowerCase.includes(queryTextLowerCase)) {
-                searchResults.push({ type: 'field', data: field });
+                // If there's at least one verified expert with the current field, include the field in search results
+                if (!expertSnapshot.empty) {
+                    searchResults.push({ type: 'field', data: field });
+                }
             }
 
-            const onlineResults = [];
-            const busyResults = [];
-            const offlineResults = [];
+            const fieldExpertsQuery = query(collection(db, "expertData"),
+                where("fieldId", "==", fieldData.id),
+                where("verified", "==", "true"),
+                where("fullName", "array-contains", queryText.toLowerCase())
+            );
 
-            expertSnapshot.forEach((expertDoc) => {
+            const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
+
+            for (const expertDoc of fieldExpertsSnapshot.docs) {
                 const expertData = expertDoc.data();
 
-                // Compare lowercase fullName with lowercase queryText
-                const fullNameLowerCase = expertData.fullName.toLowerCase();
+                // Create an instance of the Expert class
+                const expert = new Expert(
+                    expertData.fullName,
+                    expertData.phoneNumber,
+                    expertData.email,
+                    expertData.password,
+                    expertData.birthDate,
+                    expertData.gender,
+                    expertData.education,
+                    expertData.fieldId,
+                    expertData.nik,
+                    expertData.status,
+                    expertData.verified,
+                    expertData.jobExperience,
+                    expertData.ktp,
+                    expertData.certificates,
+                    expertData.profilePicture,
+                    expertData.cash_amount,
+                    expertData.price,
+                    expertData.id
+                );
 
-                if (fullNameLowerCase.includes(queryTextLowerCase)) {
-                    // Create an instance of the Expert class
-                    const expert = new Expert(
-                        expertData.fullName,
-                        expertData.phoneNumber,
-                        expertData.email,
-                        expertData.password,
-                        expertData.birthDate,
-                        expertData.gender,
-                        expertData.education,
-                        expertData.fieldId,
-                        expertData.nik,
-                        expertData.jobExperience,
-                        expertData.ktp,
-                        expertData.certificates,
-                        expertData.profilePicture,
-                        expertData.verified,
-                        expertData.status,
-                        expertData.cash_amount,
-                        expertData.price,
-                        expertData.id
-                    );
-
-                    if (expertData.status === 'online') {
-                        onlineResults.push({ type: 'expert', data: expert });
-                    } else if (expertData.status === 'busy') {
-                        busyResults.push({ type: 'expert', data: expert });
-                    } else {
-                        offlineResults.push({ type: 'expert', data: expert });
-                    }
-                }
-            });
-
-            // Concatenate the results in the order: online, busy, offline
-            const finalResults = onlineResults.concat(busyResults, offlineResults);
-
-            if (finalResults.length > 0) {
-                searchResults.push(...finalResults);
+                searchResults.push({ type: 'expert', data: expert });
             }
         }
 
@@ -273,12 +243,8 @@ export async function searchExpertsInField(fieldId, queryText) {
         );
 
         const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
-        console.log("query", fieldExpertsQuery);
+        console.log("query",fieldExpertsQuery)
         const searchResults = [];
-        const onlineResults = [];
-        const busyResults = [];
-        const offlineResults = [];
-
         fieldExpertsSnapshot.forEach((expertDoc) => {
             const expertData = expertDoc.data();
 
@@ -302,29 +268,17 @@ export async function searchExpertsInField(fieldId, queryText) {
                     expertData.ktp,
                     expertData.certificates,
                     expertData.profilePicture,
-                    expertData.verified,
-                    expertData.status,
                     expertData.cash_amount,
                     expertData.price,
                     expertData.id
                 );
-                
 
-                if (expertData.status === 'online') {
-                    onlineResults.push({ type: 'expert', data: expert });
-                } else if (expertData.status === 'busy') {
-                    busyResults.push({ type: 'expert', data: expert });
-                } else {
-                    offlineResults.push({ type: 'expert', data: expert });
-                }
+                searchResults.push({ type: 'expert', data: expert });
             }
         });
 
-        // Concatenate the results in the order: online, busy, offline
-        const finalResults = onlineResults.concat(busyResults, offlineResults);
-
-        if (finalResults.length > 0) {
-            result.data = finalResults;
+        if (searchResults.length > 0) {
+            result.data = searchResults;
             result.errorMessage = "";
             result.statusCode = 200;
         } else {
@@ -337,6 +291,7 @@ export async function searchExpertsInField(fieldId, queryText) {
         result.errorMessage = "Failed to search for experts in the field: " + error.message;
         result.statusCode = 500;
     }
-
+console.log("result", result)
     return result;
+    
 }
