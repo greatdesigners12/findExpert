@@ -1,8 +1,8 @@
 import { db } from "../firebaseApp";
-import { collection, doc, getDocs, setDoc, updateDoc, query, where, getDoc } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc, updateDoc, query, where, getDoc, startAfter, limit } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Cash } from "./models/cash";
 import { ResultData } from "../structureJson/resultData";
-import { getDocumentToStartAfter, }
 
 export class CashController {
     async getLastDocumentFromPage(expertId, pageSize, pageNumber) {
