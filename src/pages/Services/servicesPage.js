@@ -57,7 +57,7 @@ export const ServicesPages = () => {
                       </div>
                       <div className="services__content">
                         <h3>
-                          <Link to={`/expertbyfield/${field.id}/${field.name}`}>{field.name}</Link>
+                          <Link to={`/expertbyfield/${field.id}`}>{field.name}</Link>
                         </h3>
                         <p>{field.description}</p>
                       </div>

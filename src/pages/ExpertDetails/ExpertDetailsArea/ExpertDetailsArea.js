@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { FaClock } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
-import { LoadingSpinner } from "../../../components/shared/LoadingSpinner";
-import "./expertdetail.css";
+import React from 'react';
+import { BiMap } from 'react-icons/bi';
+import { FaEnvelope, FaFacebookF, FaPhoneAlt, FaTwitter, FaVimeoV } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
 import { useParams } from "react-router-dom";
+import "./expertdetail.css";
+import { LoadingSpinner } from "../../../components/shared/LoadingSpinner";
 
 export const ExpertDetailsArea = () => {
   const [expertsData, setExpertsData] = useState(null);
@@ -39,15 +39,10 @@ export const ExpertDetailsArea = () => {
 
     getData();
   }, []);
-
-  const isExpertAvailable =
-    expertsData?.data?.status == "offline" ||
-    expertsData?.data?.status == "busy";
-
   return (
     <>
       {expertsData == null ? (
-        <LoadingSpinner />
+        <LoadingSpinner/>
       ) : (
         <section className="team__details pt-120 pb-160">
           <div className="container">
@@ -62,42 +57,90 @@ export const ExpertDetailsArea = () => {
                   </div>
                 </div>
                 <div className="col-xl-6 col-lg-6">
-                  <div className="team__details-content pt-50 pb-100">
+                  <div className="team__details-content pt-105">
                     <span>{expertsData.data.field.name}</span>
                     <h3>{expertsData.data.fullName}</h3>
-                    <h5>{expertsData.data.education}</h5>
-                    <h4>Rp. {expertsData.data.price} / Jam</h4>
-                    <div className="py-2">
-                      <button
-                        className="custom-button"
-                        onClick={handleDecrementTime}
-                      >
-                        -
-                      </button>{" "}
-                      {count} mins{" "}
-                      <button
-                        className="custom-button"
-                        onClick={handleIncrementTime}
-                      >
-                        +
-                      </button>
+                    <p>{expertsData.data.jobExperience}</p>
+                    <div className="team__details-contact mb-45">
+                      <ul>
+                        <li>
+                          <div className="icon theme-color ">
+                            <i>
+                              {" "}
+                              <FaEnvelope />{" "}
+                            </i>
+                          </div>
+                          <div className="text theme-color ">
+                            {/* {`/expertdetails/${expert.id}`} */}
+                            <h4>Rp. {expertsData.data.price} / Jam</h4>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="icon theme-color">
+                            <i>
+                              <FaPhoneAlt />{" "}
+                            </i>
+                          </div>
+                          <div className="text theme-color">
+                            <div>
+                              <button
+                                className="custom-button" // Apply the custom button class
+                                onClick={handleDecrementTime}
+                              >
+                                -
+                              </button>
+                              {count} mins
+                              <button
+                                className="custom-button" // Apply the custom button class
+                                onClick={handleIncrementTime}
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="address-button">
+                           <Link to={`/transaction/${expertsData.data.id}/${timeIntervals}`} className="z-btn">
+                              Consult
+                            </Link>
+                          </div>
+                        </li>
+                      </ul>
                     </div>
-                    <div className="address-button">
-                      {isExpertAvailable ? (
-                        <Link
-                          to={`/transaction/${expertsData.data.id}/${timeIntervals}`}
-                          className="z-btn custom-consult-button"
-                        >
-                          Consult
-                        </Link>
-                      ) : (
-                        <button
-                          className="z-btn custom-consult-button unavailable"
-                          disabled
-                        >
-                          Experts currently unavailable
-                        </button>
-                      )}
+                    <div className="team__details-social theme-social">
+                      <ul>
+                        <li>
+                          <a href="#">
+                            <i>
+                              <FaFacebookF />
+                            </i>
+                            <i>
+                              <FaFacebookF />
+                            </i>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i>
+                              <FaTwitter />{" "}
+                            </i>
+                            <i>
+                              <FaTwitter />{" "}
+                            </i>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i>
+                              <FaVimeoV />{" "}
+                            </i>
+                            <i>
+                              <FaVimeoV />{" "}
+                            </i>
+                          </a>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -107,13 +150,34 @@ export const ExpertDetailsArea = () => {
               <div className="col-xl-10 offset-xl-1">
                 <div className="team__details-info mt-60">
                   <h4>Information</h4>
-                  <p>{expertsData.data.jobExperience}</p>
+                  <p>
+                    jolly good codswallop what a plonker he nicked it
+                    bog-standard porkies gosh the full monty, wind up at public
+                    school hanky panky cheeky bugger Richard do one some dodgy
+                    chav bite your arm off. Argy-bargy excuse my French brown
+                    bread up the duff bleeder fanny around spend a penny barmy
+                    bonnet, bubble and squeak brolly bugger no biggie smashing
+                    get stuffed mate old lurgy, cup of tea nice one mufty that I
+                    knackered some dodgy chav. Say vagabond morish crikey excuse
+                    my French bonnet William blatant spend a penny, knackered
+                    bite your arm off what a plonker blimey smashing a blinding
+                    shot pardon me grub, wind up cracking goal Jeffrey hanky
+                    panky are you taking the piss such a fibber hunky-dory.
+                  </p>
+                  <p>
+                    So I said on your bike mate easy peasy dropped a clanger
+                    blow off porkies is fantastic show off show off pick your
+                    nose and blow off, faff about bubble and squeak bugger all
+                    mate happy days hotpot don't get shirty with me jolly good
+                    gormless barmy.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </section>
       )}
+      ;
     </>
   );
 };
