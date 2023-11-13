@@ -53,6 +53,7 @@ export const AdminPage = () => {
     const firstPageIndex =
       (currentPageWithdrawRequests - 1) * pageSizeWithdrawRequests;
     const lastPageIndex = firstPageIndex + pageSizeWithdrawRequests;
+    console.log(withdrawRequests.length);
 
     return withdrawRequests.slice(firstPageIndex, lastPageIndex);
   }, [currentPageWithdrawRequests, pageSizeWithdrawRequests]);
@@ -111,11 +112,13 @@ export const AdminPage = () => {
 
   useEffect(() => {
     const getWithdrawRequests = async () => {
-      const result = await getAllUnverifiedWithdrawalRequest(1);
+      const result = await getAllUnverifiedWithdrawalRequest();
 
-      setWithdrawRequests(result.data);
-      setPageSizeWithdrawRequests(5);
-      setIsLoadingWithdrawRequests(false);
+      setTimeout(function () {
+        setWithdrawRequests(result.data);
+        setPageSizeWithdrawRequests(5);
+        setIsLoadingWithdrawRequests(false);
+      }, 2000);
     };
 
     getWithdrawRequests();
@@ -123,23 +126,41 @@ export const AdminPage = () => {
 
   useEffect(() => {
     const getExpertVerifications = async () => {
-      const result = await getAllUnverifiedExperts(1);
+      const result = await getAllUnverifiedExperts();
 
-      setExpertVerifications(result.data);
-      setPageSizeExpertVerifications(5);
-      setIsLoadingExpertVerifications(false);
+      setTimeout(function () {
+        setExpertVerifications(result.data);
+        setPageSizeExpertVerifications(5);
+        setIsLoadingExpertVerifications(false);
+      }, 2000);
     };
 
     getExpertVerifications();
   }, []);
 
   useEffect(() => {
-    const getPaymentVerifications = async () => {
-      const result = await getAllUnverifiedTransactions(1);
+    const getAllTransaction = async () => {
+      const result = await getAllTransactions(1);
 
-      setPaymentVerfications(result.data);
-      setPageSizePaymentVerifications(5);
-      setIsLoadingPaymentVerifications(false);
+      setTimeout(function () {
+        setTransactions(result.data);
+        setPageSizeTransactions(5);
+        setIsLoadingTransactions(false);
+      }, 2000);
+    };
+
+    getAllTransaction();
+  }, []);
+
+  useEffect(() => {
+    const getPaymentVerifications = async () => {
+      const result = await getAllUnverifiedTransactions();
+
+      setTimeout(function () {
+        setPaymentVerfications(result.data);
+        setPageSizePaymentVerifications(5);
+        setIsLoadingPaymentVerifications(false);
+      }, 2000);
     };
 
     getPaymentVerifications();
@@ -247,7 +268,7 @@ export const AdminPage = () => {
                       </td>
                       <td>{cash.account}</td>
                       <td>{cash.no_rek}</td>
-                      <td>{"cash.expert_id"}</td>
+                      <td>{cash.expertData.fullName}</td>
                       <td>{cash.amount}</td>
                       <td>
                         <div>
@@ -263,7 +284,7 @@ export const AdminPage = () => {
                             onClick={() =>
                               updateTransactionWithdrawStatus(cash.id, false)
                             }
-                            className="btn btn-danger ms-2"
+                            className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
                           >
                             Reject
                           </button>
@@ -344,7 +365,7 @@ export const AdminPage = () => {
                       </th>
                       <td>{expert.fullName}</td>
                       <td>{expert.email}</td>
-                      <td>{expert.fieldId}</td>
+                      <td>{expert.fieldData.name}</td>
                       <td>{expert.phoneNumber}</td>
                       <td>{"More Info"}</td>
                       <td>
@@ -357,7 +378,7 @@ export const AdminPage = () => {
                           </button>
                           <button
                             onClick={() => updateExpertStatus(expert.id, false)}
-                            className="btn btn-danger ms-2"
+                            className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
                           >
                             Reject
                           </button>
@@ -378,9 +399,7 @@ export const AdminPage = () => {
           )}
         </div>
         <div className="pt-5 d-flex flex-column justify-content-center align-items-center">
-          <h2 className="font-frankruhllibre w-100 mb-3">
-            Transactions
-          </h2>
+          <h2 className="font-frankruhllibre w-100 mb-3">Transactions</h2>
           {isLoadingTransactions ? (
             <div className="py-5">
               <LoadingSpinner />
@@ -411,19 +430,19 @@ export const AdminPage = () => {
                       ID
                     </th>
                     <th scope="col" className="th-col">
-                      Full Name
+                      Expert
                     </th>
                     <th scope="col" className="th-col">
-                      Email
+                      Customer
                     </th>
                     <th scope="col" className="th-col">
-                      Field
+                      Session
                     </th>
                     <th scope="col" className="th-col">
-                      Phone Number
+                      Date Time
                     </th>
                     <th scope="col" className="th-col">
-                      More Information
+                      Total
                     </th>
                     <th scope="col" className="th-col">
                       Status
@@ -436,41 +455,14 @@ export const AdminPage = () => {
                       <th scope="row" className="th-row">
                         {transaction.id}
                       </th>
-                      <td>{transaction.transaction_date}</td>
-                      <td>{transaction.expert_id}</td>
+                      <td>{transaction.expertData.fullName}</td>
+                      <td>{transaction.customerData.fullName}</td>
+                      <td>{transaction.consultation_time}</td>
                       <td>
-                        {<Link to={transaction.transaction_image}>Link</Link>}
+                        {new Date(transaction.start_time.seconds).toUTCString()}
                       </td>
-                      <td>{transaction.customer_id}</td>
                       <td>{transaction.payment_amount}</td>
-                      <td>
-                        <div>
-                          {transaction.transaction_status == "unverified" ? (
-                            <>
-                              <button
-                                onClick={() =>
-                                  updateTransactionStatus(transaction.id, true)
-                                }
-                                className="btn btn-success"
-                              >
-                                Accept
-                              </button>
-                              <button
-                                onClick={() =>
-                                  updateTransactionStatus(transaction.id, false)
-                                }
-                                className="btn btn-danger ms-2"
-                              >
-                                Reject
-                              </button>
-                            </>
-                          ) : transaction.transaction_status == "cancel" ? (
-                            <p className="text-danger">Rejected</p>
-                          ) : (
-                            <p className="text-success">Accepted</p>
-                          )}
-                        </div>
-                      </td>
+                      <td>{transaction.transaction_status}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -522,13 +514,13 @@ export const AdminPage = () => {
                       Date
                     </th>
                     <th scope="col" className="th-col">
-                      Expert ID
+                      Expert
                     </th>
                     <th scope="col" className="th-col">
                       Payment Prove
                     </th>
                     <th scope="col" className="th-col">
-                      Customer ID
+                      Customer
                     </th>
                     <th scope="col" className="th-col">
                       Total
@@ -545,11 +537,11 @@ export const AdminPage = () => {
                         {transaction.id}
                       </th>
                       <td>{transaction.transaction_date}</td>
-                      <td>{transaction.expert_id}</td>
+                      <td>{transaction.expertData.fullName}</td>
                       <td>
                         {<Link to={transaction.transaction_image}>Link</Link>}
                       </td>
-                      <td>{transaction.customer_id}</td>
+                      <td>{transaction.customerData.fullName}</td>
                       <td>{transaction.payment_amount}</td>
                       <td>
                         <div>
@@ -567,7 +559,7 @@ export const AdminPage = () => {
                                 onClick={() =>
                                   updateTransactionStatus(transaction.id, false)
                                 }
-                                className="btn btn-danger ms-2"
+                                className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
                               >
                                 Reject
                               </button>

@@ -130,7 +130,7 @@ export async function getAllTransactions(start_at_page_num, limitNums=5) {
     try {
        
         if(start_at_page_num === 1){
-            const first = query(collection(db, "transactions"), orderBy("transaction_date"), limit(limitNums));
+            const first = query(collection(db, "transactions"), orderBy("transaction_date"));
             
             const querySnapshot = await getDocs(first);
             const data = []
@@ -152,7 +152,7 @@ export async function getAllTransactions(start_at_page_num, limitNums=5) {
             result.statusCode = 200;
             return result
         }
-        const first = query(collection(db, "transactions"), orderBy("transaction_date"), limit((start_at_page_num - 1) * limitNums));
+        const first = query(collection(db, "transactions"), orderBy("transaction_date"));
         const documentSnapshots = await getDocs(first);
         
         // Get the last visible document
@@ -423,6 +423,7 @@ export async function getAllUnverifiedWithdrawalRequest() {
             
             const curData = cashDoc.data()
             curData["expertData"] = expertData.data()
+            console.log(curData)
             data.push(curData)
         });
         result.data = data;
