@@ -9,6 +9,7 @@ import { Expert } from './controller/experts_controller/models/expert';
 import { Transaction } from './controller/transaction_controller/models/transactions';
 import { ExpertsController } from './controller/experts_controller/experts_controller';
 import { createTransaction } from './controller/transaction_controller/transaction_controller';
+import { getExpertsByFieldAndStatus, searchExpertsInField } from './controller/fields_controller/fields_controller';
 
 
 
@@ -22,7 +23,7 @@ function App() {
       // test akun user : "gg@gmail.com", "Awd123"
       // test akun expert : "ggbrooo@gmail.com ", "GGWP123awda" 
       
-      const data =  await login("aa@gmail.com", "Awd123");
+      // const data =  await login("aa@gmail.com", "Awd123");
       // const result1 = await getAllUnverifiedWithdrawalRequest(1, 5)
       // const result1 = await updateTransactionWithdrawStatus("Rwr5SUfpTptLMrdGArpI", false)
       // const result1 = await getAllUnverifiedTransactions(1, 5)
@@ -30,13 +31,17 @@ function App() {
        // const result1 =  await getAllTransactions(1, 5)
       //  const result1 =  await getAllUnverifiedExperts()
       //   const result2 =  await getAllUnverifiedTransactions()
-      //   const result3 =  await getAllUnverifiedWithdrawalRequest()
+      
+        const result3 =  await getExpertsByFieldAndStatus("02uTj3FZzbhDVd7dOiH1")
+        const result4 = await searchExpertsInField("02uTj3FZzbhDVd7dOiH1", "Micheila")
       // const result3 =  await checkRole("57ATrg73k9PGRReXHFhavjuQgFa2")
       // const result4 =  getCurrentUser()
       
+      
       // console.log(result1)
       // console.log(result2)
-      // console.log(result3)
+      console.log(result3)
+      console.log(result4)
  
     }
     tryLogin();
