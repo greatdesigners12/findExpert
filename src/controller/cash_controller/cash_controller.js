@@ -12,12 +12,51 @@ import { ResultData } from "../structureJson/resultData";
         return startAfterDoc;
     }
 
+    export async function getAllCashRecords(expertId) {
+        const result = new ResultData();
+
+        try {
+            const expertRef = doc(db, "expertData", expertId);
+            const cashCollection = collection(db, "cash");
+            let cashQuery = query(cashCollection, where("expert_id", "==", expertRef));
+
+            const cashSnapshot = await getDocs(cashQuery);
+
+            const cashRecords = [];
+            cashSnapshot.docs.forEach((cashDoc) => {
+                const cashData = cashDoc.data();
+                cashRecords.push(
+                    new Cash(
+                        cashData.amount,
+                        cashData.id,
+                        cashData.expert_id,
+                        cashData.no_rek,
+                        cashData.status,
+                        cashData.withdraw_time,
+                        cashData.account
+                    )
+                );
+            });
+
+            result.data = cashRecords;
+            result.errorMessage = "";
+            result.statusCode = 200;
+        } catch (error) {
+            result.data = null;
+            result.errorMessage = "Failed to get cash records: " + error.message;
+            result.statusCode = 500;
+        }
+
+        return result;
+    }
+
     export async function getAllCashRecordsWithPagination(expertId, pageSize, pageNumber) {
         const result = new ResultData();
 
         try {
+            const expertRef = doc(db, "expertData", expertId);
             const cashCollection = collection(db, "cash");
-            let cashQuery = query(cashCollection, where("expert_id", "==", expertId));
+            let cashQuery = query(cashCollection, where("expert_id", "==", expertRef));
 
             // Menggunakan limit untuk paginasi
             const startAtDoc = pageNumber > 1 ? await getLastDocumentFromPage(expertId, pageSize, pageNumber - 1) : null;
@@ -29,7 +68,7 @@ import { ResultData } from "../structureJson/resultData";
             const cashSnapshot = await getDocs(cashQuery);
 
             const cashRecords = [];
-            cashSnapshot.forEach((cashDoc) => {
+            cashSnapshot.docs.forEach((cashDoc) => {
                 const cashData = cashDoc.data();
                 cashRecords.push(
                     new Cash(

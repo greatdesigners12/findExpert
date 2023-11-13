@@ -13,7 +13,10 @@ import { useContext } from "react";
 import { UserContext } from "../../context/authContext.js";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
-import { getAllCashRecordsWithPagination } from "../../controller/cash_controller/cash_controller.js";
+import {
+  getAllCashRecords,
+  getAllCashRecordsWithPagination,
+} from "../../controller/cash_controller/cash_controller.js";
 
 export const HomeExpert = () => {
   //withdraw cash
@@ -40,15 +43,14 @@ export const HomeExpert = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       // try {
-        const expertId = userData.uid; // Replace with the actual expert ID
-        const result = await getAllCashRecordsWithPagination(expertId, pageSizeTransactions , currentPageTransactions);
-          setTransactions(result.data);
-          setPageSizeTransactions(5);
-          console.log(result)
-    }
+      const expertId = userData.uid; // Replace with the actual expert ID
+      const result = await getAllCashRecords(expertId);
+      setTransactions(result.data);
+      setPageSizeTransactions(5);
+      console.log(result);
+    };
     fetchTransactions();
   }, []);
-
 
   let handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,232 +71,229 @@ export const HomeExpert = () => {
       console.log(err);
     }
   };
-    return (
-      <>
-        <PageHelmet pageTitle="Home Expert" />
-        <StyleFiveHeader />
-        <section className="services__area home-expert-page pt-115 pb-80">
-          <div className="container">
-            <div className="row">
-              <div className="col-xl-4 col-lg-4">
-                <div
-                  className="section__title section__title-3 text-center mb-90 wow fadeInUp "
-                  data-wow-delay=".2s"
-                >
-                  <h3>
-                    <span className="span">Expert</span>
-                    <span className="text-wrapper-3">Pay</span>
-                  </h3>
-                  <h3>Rp. {totalCash}</h3>
-                  <form onSubmit={handleSubmit} className="w-75 mx-auto">
-                    <div className="mb-3 mt-4">
-                      <input
-                        type="email"
-                        className="form-control font-montserrat"
-                        id="inputEmail"
-                        name="email"
-                        placeholder="Enter Account Type"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-3 mt-4">
-                      <input
-                        type="password"
-                        className="form-control font-montserrat"
-                        id="inputPassword"
-                        name="password"
-                        placeholder="Enter Account Number"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="d-flex flex-column justify-content-center">
-                      <div className="d-flex justify-content-center">
-                        <button
-                          type="submit"
-                          className="btn btn-primary font-montserrat fw-semibold py-1 px-2"
-                        >
-                          <img
-                            src="../assets/img/logo/Vector.png"
-                            alt="logo"
-                            className="p-3"
-                          ></img>
-                          <span className="white px-3">Cairkan Dana</span>
-                        </button>
-                      </div>
-                      <small className="text-danger font-montserrat text-center mt-3">
-                        {message}
-                      </small>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              <div className="col-xl-1 col-lg-1"></div>
-              <div className="col-xl-7 col-lg-7">
-                 <h3>Payment History</h3>
-                <div
-                  className="section__title section__title-3 mb-90 wow fadeInUp"
-                  data-wow-delay=".2s"
-                >
-                    <div className=" d-flex flex-column justify-content-center align-items-center">
-                      {transactions.length > 0 ? (
-                        <div className="py-5">
-                          <LoadingSpinner />
-                        </div>
-                      ) : (
-                        <>
-                          <div className="d-flex justify-content-start w-100">
-                            <div className="d-flex flex-row align-items-center">
-                              <p className="mb-0 me-3">Show </p>
-                              <Form.Select
-                                className="mb-3 mt-4"
-                                value={pageSizeTransactions}
-                                onChange={(e) => {
-                                  setPageSizeTransactions(e.target.value);
-                                }}
-                              >
-                                <option value={5}>5</option>
-                                <option value={10}>10</option>
-                                <option value={15}>15</option>
-                              </Form.Select>
-                              <p className="mb-0 ms-3">Entries</p>
-                            </div>
-                          </div>
-                          <table className="table admin-table w-25">
-                            <thead>
-                              <tr>
-                                <th scope="col" className="th-col">
-                                  Order ID
-                                </th>
-                                <th scope="col" className="th-col">
-                                  Date
-                                </th>
-                                <th scope="col" className="th-col">
-                                  Account Type
-                                </th>
-                                <th scope="col" className="th-col">
-                                  Account Number
-                                </th>
-                                <th scope="col" className="th-col">
-                                  Total
-                                </th>
-                                <th scope="col" className="th-col">
-                                  Status
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                             {currentTableDataTransactions.map((transaction) => {
-                                  return (
-                                    <tr key={transaction.id}>
-                                      <th scope="row" className="th-row">
-                                        {transaction.id}
-                                      </th>
-                                      <td>{transaction.amount}</td>
-                                      <td>{transaction.amount}</td>
-                                      <td>{transaction.amount}</td>
-                                      <td>{transaction.amount}</td>
-                                      <td
-                                        style={{
-                                          color:
-                                            transaction.transaction_status ===
-                                            "verified"
-                                              ? "green"
-                                              : "red",
-                                        }}
-                                      >
-                                        {transaction.transaction_status}
-                                      </td>
-                                    </tr>
-                                  );
-                                })
-                             }
-                            </tbody>
-                          </table>
-                          <Pagination
-                            className="pagination-bar"
-                            currentPage={currentPageTransactions}
-                            totalCount={transactions.length}
-                            pageSize={pageSizeTransactions}
-                            onPageChange={(page) =>
-                              setCurrentPageTransactions(page)
-                            }
-                          />
-                        </>
-                      )}
-                    </div>
-       
-                </div>
-              </div>
-            </div>
-
-            <div className="row">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : (
-                <div>
-                  <h3>Consultation</h3>
-                  <div className="col-xl-3 col-lg-4 col-md-6">
-                    <div className="textdeco text-center mb-30">
-                      <div className="team__thumb mb-25">
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
-                          alt="team"
-                        />
-                      </div>
-                      <div className="team__content">
-                        <h3>nnn</h3>
-                        <span>mmm</span>
-                      </div>
-                    </div>
+  return (
+    <>
+      <PageHelmet pageTitle="Home Expert" />
+      <StyleFiveHeader />
+      <section className="services__area home-expert-page pt-115 pb-80">
+        <div className="container">
+          <div className="row">
+            <div className="col-xl-4 col-lg-4">
+              <div
+                className="section__title section__title-3 text-center mb-90 wow fadeInUp "
+                data-wow-delay=".2s"
+              >
+                <h3>
+                  <span className="span">Expert</span>
+                  <span className="text-wrapper-3">Pay</span>
+                </h3>
+                <h3>Rp. {totalCash}</h3>
+                <form onSubmit={handleSubmit} className="w-75 mx-auto">
+                  <div className="mb-3 mt-4">
+                    <input
+                      type="email"
+                      className="form-control font-montserrat"
+                      id="inputEmail"
+                      name="email"
+                      placeholder="Enter Account Type"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
                   </div>
-                </div>
-              )}
+                  <div className="mb-3 mt-4">
+                    <input
+                      type="password"
+                      className="form-control font-montserrat"
+                      id="inputPassword"
+                      name="password"
+                      placeholder="Enter Account Number"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="d-flex flex-column justify-content-center">
+                    <div className="d-flex justify-content-center">
+                      <button
+                        type="submit"
+                        className="btn btn-primary font-montserrat fw-semibold py-1 px-2"
+                      >
+                        <img
+                          src="../assets/img/logo/Vector.png"
+                          alt="logo"
+                          className="p-3"
+                        ></img>
+                        <span className="white px-3">Cairkan Dana</span>
+                      </button>
+                    </div>
+                    <small className="text-danger font-montserrat text-center mt-3">
+                      {message}
+                    </small>
+                  </div>
+                </form>
+              </div>
             </div>
-            <div className="row">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : (
-                <div>
-                  <h3>Consultation List</h3>
-
-                  <div id="table-container"></div>
-
-                  <div class="records table-responsive">
-                    <div>
-                      <table width="100%">
+            <div className="col-xl-1 col-lg-1"></div>
+            <div className="col-xl-7 col-lg-7">
+              <h3>Payment History</h3>
+              <div
+                className="section__title section__title-3 mb-90 wow fadeInUp"
+                data-wow-delay=".2s"
+              >
+                <div className=" d-flex flex-column justify-content-center align-items-center">
+                  {pageSizeTransactions == 0 ? (
+                    <div className="py-5">
+                      <LoadingSpinner />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="d-flex justify-content-start w-100">
+                        <div className="d-flex flex-row align-items-center">
+                          <p className="mb-0 me-3">Show </p>
+                          <Form.Select
+                            className="mb-3 mt-4"
+                            value={pageSizeTransactions}
+                            onChange={(e) => {
+                              setPageSizeTransactions(e.target.value);
+                            }}
+                          >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={15}>15</option>
+                          </Form.Select>
+                          <p className="mb-0 ms-3">Entries</p>
+                        </div>
+                      </div>
+                      <table className="table admin-table w-25">
                         <thead>
                           <tr>
-                            <th>Order ID</th>
-                            <th> NAMA</th>
-                            <th> JAM KERJA</th>
-                            <th> NO TELP</th>
-                            <th>HAPUS</th>
+                            <th scope="col" className="th-col">
+                              Order ID
+                            </th>
+                            <th scope="col" className="th-col">
+                              Date
+                            </th>
+                            <th scope="col" className="th-col">
+                              Account Type
+                            </th>
+                            <th scope="col" className="th-col">
+                              Account Number
+                            </th>
+                            <th scope="col" className="th-col">
+                              Total
+                            </th>
+                            <th scope="col" className="th-col">
+                              Status
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>#0</td>
-                            <td>nnn</td>
-                            <td>nn</td>
-                            <td>nnn</td>
-                            <td>asasas</td>
-                          </tr>
+                          {currentTableDataTransactions.map((transaction) => {
+                            return (
+                              <tr key={transaction.id}>
+                                <th scope="row" className="th-row">
+                                  {transaction.id}
+                                </th>
+                                <td>{transaction.amount}</td>
+                                <td>{transaction.amount}</td>
+                                <td>{transaction.amount}</td>
+                                <td>{transaction.amount}</td>
+                                <td
+                                  style={{
+                                    color:
+                                      transaction.transaction_status ===
+                                      "verified"
+                                        ? "green"
+                                        : "red",
+                                  }}
+                                >
+                                  {transaction.transaction_status}
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
+                      <Pagination
+                        className="pagination-bar"
+                        currentPage={currentPageTransactions}
+                        totalCount={transactions.length}
+                        pageSize={pageSizeTransactions}
+                        onPageChange={(page) =>
+                          setCurrentPageTransactions(page)
+                        }
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row">
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <div>
+                <h3>Consultation</h3>
+                <div className="col-xl-3 col-lg-4 col-md-6">
+                  <div className="textdeco text-center mb-30">
+                    <div className="team__thumb mb-25">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
+                        alt="team"
+                      />
+                    </div>
+                    <div className="team__content">
+                      <h3>nnn</h3>
+                      <span>mmm</span>
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        </section>
+          <div className="row">
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <div>
+                <h3>Consultation List</h3>
 
-        <Footer />
-      </>
-    );
+                <div id="table-container"></div>
+
+                <div class="records table-responsive">
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>Order ID</th>
+                          <th> NAMA</th>
+                          <th> JAM KERJA</th>
+                          <th> NO TELP</th>
+                          <th>HAPUS</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>#0</td>
+                          <td>nnn</td>
+                          <td>nn</td>
+                          <td>nnn</td>
+                          <td>asasas</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </>
+  );
 };
-
