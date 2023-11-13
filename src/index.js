@@ -30,7 +30,7 @@ import { AdminPage } from "./pages/Admin/admin";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/livechat/",
     element: <App />,
   },
   {
@@ -111,7 +111,7 @@ const router = createBrowserRouter([
     element: <HomeExpert />,
   },
   {
-    path: "/home/",
+    path: "/",
     element: <HomeUser/>,
   },
 ]);

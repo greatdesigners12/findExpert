@@ -19,7 +19,7 @@ const HomeOneHeader = () => {
                         <div className="col-xl-6 col-lg-5 col-md-4">
                            
                         </div>
-                        <div className="col-xl-6 col-lg-7 col-md-8">
+                        {/* <div className="col-xl-6 col-lg-7 col-md-8">
                            <div className="header__info f-right">
                               <ul>
                                  <li>
@@ -41,7 +41,7 @@ const HomeOneHeader = () => {
                                  </li>
                               </ul>
                            </div>
-                        </div>
+                        </div> */}
                      </div>
                   </div>
                </div>
