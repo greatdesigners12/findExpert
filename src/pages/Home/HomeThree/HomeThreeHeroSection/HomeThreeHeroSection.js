@@ -34,10 +34,10 @@ const HomeThreeHeroSection = () => {
                      </div>
                      <div className="col-xl-6 col-lg-7 d-flex align-items-center">
                         <div className="hero__content">
-                           <span>Welcome To Zibber.</span>
-                           <h1>Get more <br /> Impact Fasted</h1>
-                           <p>Tinkety tonk old fruit baking cakes cobblers happy days argy-bargy up the duff excuse my french fanny around.</p>
-                           <Link to="/about" className="z-btn z-btn-border">See what's New</Link>
+                           <span>Welcome To FindExpert.</span>
+                           <h1>Get things <br /> Done Faster</h1>
+                           <p>Find experts to help you through whatever it is you’re struggling with right now.</p>
+                           <Link to="/fields" className="z-btn z-btn-border">See Our Expert Fields</Link>
                         </div>
                      </div>
                   </div>
