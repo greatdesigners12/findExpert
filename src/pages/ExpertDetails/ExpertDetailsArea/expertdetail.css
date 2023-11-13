@@ -1,14 +1,43 @@
 /* Custom CSS for the buttons */
-.custom-button {
-    background-color: purple;
-    color: white;
-    font-size: 24px; /* Adjust the font size to make the buttons bigger */
-    padding: 5px 10px; /* Adjust the padding to make the buttons larger */
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
 
-.custom-button:hover {
-    background-color: #800080; /* Darker purple on hover */
-}
+
+/* Additional styles for the custom buttons */
+.custom-button {
+    font-size: 24px; /* Adjust the font size to make the buttons bigger */
+    padding: 5px 10px;
+    margin: 0 5px; /* Add spacing between the buttons */
+    border-radius: 5px; /* Add border-radius to the buttons */
+    background-color: #6f42c1; /* Set the button color */
+    color: #fff; /* Set the text color */
+  }
+  
+  .custom-button:hover {
+    background-color: #fff; /* Change background color on hover */
+    color: #6f42c1; /* Change text color on hover */
+  }
+  
+  .custom-consult-button {
+    background-color: #6f42c1; /* Set the button color */
+    color: #fff; /* Set the text color */
+  }
+  
+  .custom-consult-button:hover {
+    background-color: #fff; /* Change background color on hover */
+    color: #6f42c1; /* Change text color on hover */
+  }
+
+  /* Add this style to your CSS file */
+.custom-consult-button.unavailable {
+    background-color: red;
+    color: white;
+    border: 1px solid white;
+    
+  }
+  
+  /* .custom-consult-button.unavailable:hover {
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+  } */
+  
+  

@@ -81,14 +81,14 @@ const router = createBrowserRouter([
     ),
   },
   // tidak dipakai, pakainya expertbyid
-  {
-    path: "/expert/",
-    element: (
-      <IsAuthenticated>
-        <Expert />
-      </IsAuthenticated>
-    ),
-  },
+  // {
+  //   path: "/expert/",
+  //   element: (
+  //     <IsAuthenticated>
+  //       <Expert />
+  //     </IsAuthenticated>
+  //   ),
+  // },
   {
     path: "/expertdetails/:id",
     element: <ExpertDetails />,
@@ -102,7 +102,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/expertbyfield/:id",
+    path: "/expertbyfield/:id/:name",
     element: <ExpertByField />,
   },
   {
