@@ -1,5 +1,4 @@
 import { Navigate } from "react-router-dom";
-import { Link, NavLink } from 'react-router-dom';
 import {
   getCurrentUser,
   checkRole,
@@ -10,10 +9,12 @@ import { UserContext } from "../../context/authContext.js";
 export const IsNotAuthenticated = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
-  if (userData === null && userData !== "") {
-    return <Navigate to="/" />;
-  } else {
-    return children;
+  if (userData !== "") {
+    if (userData == null) {
+      return children;
+    } else {
+      return <Navigate to="/" />;
+    }
   }
 };
 
@@ -21,17 +22,16 @@ export const IsNotAuthenticatedSmallComponent = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
   if (userData !== "") {
-      if(userData === null){
-        return children;
-      }
-   
+    if (userData === null) {
+      return children;
+    }
   }
 };
 
 export const IsAuthenticated = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
   if (userData != "") {
-    console.log(userData)
+    console.log(userData);
     if (userData != null) {
       return children;
     } else {
@@ -43,45 +43,38 @@ export const IsAuthenticated = ({ children }) => {
 export const IsAuthenticatedSmallComponent = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
   if (userData !== "") {
-    if(userData !== null){
+    if (userData !== null) {
       return children;
     }
- 
-}
+  }
 };
 
 export const IsExpert = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
   if (userData != "") {
-    if(userData != null){
+    if (userData != null) {
       if (userData.displayName == "expert") {
         return children;
       } else {
         return <Navigate to="/" />;
       }
-    }else {
+    } else {
       return <Navigate to="/login" />;
     }
-    
-  } 
+  }
 };
 
 export const IsExpertSmallComponent = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
   if (userData !== "") {
-    if(userData != null){
+    if (userData != null) {
       if (userData.displayName == "expert") {
         return children;
-      } else{
-        return (<li>
-          <NavLink to="/">Home</NavLink>
-          </li>);
       }
     }
-    
-  } 
+  }
 };
 
 export const IsAdmin = ({ children }) => {
@@ -102,11 +95,10 @@ export const IsAdminSmallComponent = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
   if (userData !== "") {
-    if(userData != null){
+    if (userData != null) {
       if (userData.displayName == "admin") {
         return children;
-      } 
+      }
     }
-    
-  } 
+  }
 };
