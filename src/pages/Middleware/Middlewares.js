@@ -16,9 +16,21 @@ export const IsNotAuthenticated = ({ children }) => {
   }
 };
 
+export const IsNotAuthenticatedSmallComponent = ({ children }) => {
+  const { userData, setUser } = useContext(UserContext);
+
+  if (userData !== "") {
+      if(userData === null){
+        return children;
+      }
+   
+  }
+};
+
 export const IsAuthenticated = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
   if (userData != "") {
+    console.log(userData)
     if (userData != null) {
       return children;
     } else {
@@ -27,18 +39,44 @@ export const IsAuthenticated = ({ children }) => {
   }
 };
 
+export const IsAuthenticatedSmallComponent = ({ children }) => {
+  const { userData, setUser } = useContext(UserContext);
+  if (userData !== "") {
+    if(userData !== null){
+      return children;
+    }
+ 
+}
+};
+
 export const IsExpert = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
-  if (userData != null && userData != "") {
-    if (userData.displayName == "expert") {
-      return children;
-    } else {
-      return <Navigate to="/" />;
+  if (userData != "") {
+    if(userData != null){
+      if (userData.displayName == "expert") {
+        return children;
+      } else {
+        return <Navigate to="/" />;
+      }
+    }else {
+      return <Navigate to="/login" />;
     }
-  } else {
-    return <Navigate to="/login" />;
-  }
+    
+  } 
+};
+
+export const IsExpertSmallComponent = ({ children }) => {
+  const { userData, setUser } = useContext(UserContext);
+
+  if (userData !== "") {
+    if(userData != null){
+      if (userData.displayName == "expert") {
+        return children;
+      } 
+    }
+    
+  } 
 };
 
 export const IsAdmin = ({ children }) => {
@@ -53,4 +91,17 @@ export const IsAdmin = ({ children }) => {
   } else {
     return <Navigate to="/login" />;
   }
+};
+
+export const IsAdminSmallComponent = ({ children }) => {
+  const { userData, setUser } = useContext(UserContext);
+
+  if (userData !== "") {
+    if(userData != null){
+      if (userData.displayName == "admin") {
+        return children;
+      } 
+    }
+    
+  } 
 };

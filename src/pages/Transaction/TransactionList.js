@@ -10,7 +10,7 @@ export const TransactionList = () => {
     <>
       <PageHelmet pageTitle="Transaction List" />
       <link rel="stylesheet" href="assets/css/transaction-list.css" />
-      <HomeOneHeader />
+      <HomeOneHeader /> 
       <CommonPageHeader title="Transaction List" subtitle="Transaction List" />
 
       <div className="container py-5 font-montserrat">

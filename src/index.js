@@ -76,11 +76,12 @@ const router = createBrowserRouter([
   {
     path: "/transaction-list/",
     element: (
-      <IsAuthenticated>
+      // <IsAuthenticated>
         <TransactionList />
-      </IsAuthenticated>
+      // </IsAuthenticated>
     ),
   },
+ 
   // tidak dipakai, pakainya expertbyid
   {
     path: "/expert/",
