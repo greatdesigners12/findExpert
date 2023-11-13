@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { Link, NavLink } from 'react-router-dom';
 import {
   getCurrentUser,
   checkRole,
@@ -9,7 +10,7 @@ import { UserContext } from "../../context/authContext.js";
 export const IsNotAuthenticated = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
-  if (userData != null && userData != "") {
+  if (userData === null && userData !== "") {
     return <Navigate to="/" />;
   } else {
     return children;
@@ -73,7 +74,11 @@ export const IsExpertSmallComponent = ({ children }) => {
     if(userData != null){
       if (userData.displayName == "expert") {
         return children;
-      } 
+      } else{
+        return (<li>
+          <NavLink to="/">Home</NavLink>
+          </li>);
+      }
     }
     
   } 

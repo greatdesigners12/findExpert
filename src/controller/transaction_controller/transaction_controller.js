@@ -461,9 +461,9 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
     const expertTransactionsQuery = query(
       transactionsCollection,
       where("expert_id", "==", expertId),
-      where("transaction_status", "in", ["ready", "paid", "ongoing"]),
-      orderBy("transaction_date", "desc") // Optional: Order the transactions by date
-    );
+      where("transaction_status", "in", ["verified", "unverified"], 
+      orderBy("transaction_date", "desc")),
+    );     
 
     const startAfterDocument = currentPage > 1 ? await getDocumentToStartAfter(expertTransactionsQuery, pageSize, currentPage) : null;
 

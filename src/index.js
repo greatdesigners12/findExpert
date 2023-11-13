@@ -6,7 +6,6 @@ import reportWebVitals from "./reportWebVitals";
 import "./index.scss";
 import "bootstrap/dist/js/bootstrap.min.js";
 import AllContext from "./context/AllContext";
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { TestingRegisterExpert } from "./testing backend/registerExpert";
 import { LiveChatPage } from "./pages/LiveChat/liveChat";
@@ -19,6 +18,7 @@ import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
 import {
   IsAuthenticated,
+  IsExpert,
   IsNotAuthenticated,
 } from "./pages/Middleware/Middlewares";
 import { UserContextProvider } from "./context/authContext";
@@ -30,7 +30,7 @@ import { AdminPage } from "./pages/Admin/admin";
 
 const router = createBrowserRouter([
   {
-    path: "/livechat/",
+    path: "/livechatapp/",
     element: <App />,
   },
   {
@@ -70,8 +70,11 @@ const router = createBrowserRouter([
     element: <AdminPage />,
   },
   {
+    
     path: "/fields/",
-    element: <ServicesPages />,
+    element: 
+    <ServicesPages />
+    ,
   },
   {
     path: "/transaction-list/",
@@ -109,7 +112,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/homeexpert/",
-    element: <HomeExpert />,
+    element: (
+      <IsExpert>
+    <HomeExpert />
+    </IsExpert>),
   },
   {
     path: "/",

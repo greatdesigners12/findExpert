@@ -72,12 +72,10 @@ const HomeOneHeader = () => {
                          <ul>
                            <IsExpertSmallComponent>
                            <li>
-                             <NavLink to="/homeexpert">Home</NavLink>
+                             <NavLink to="/homeexpert/">Home</NavLink>
                            </li>
                            </IsExpertSmallComponent> 
-                           <li>
-                           <NavLink to="/">Home</NavLink>
-                           </li>
+                           
                            <li>
                              <NavLink to="/about">About Us </NavLink>
                            </li>

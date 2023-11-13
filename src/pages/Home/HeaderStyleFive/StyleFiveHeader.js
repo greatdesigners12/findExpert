@@ -2,7 +2,8 @@ import React, { useState} from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import useGlobalContext from '../../../hooks/useGlobalContext';
-import { IsAuthenticated, IsNotAuthenticated } from '../../Middleware/Middlewares';
+import { IsExpert, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent } from '../../Middleware/Middlewares';
+
 
 const StyleFiveHeader = () => {
 
@@ -33,7 +34,7 @@ const StyleFiveHeader = () => {
                      <div className="logo-3 mr-50">
                        <NavLink to="/">
                          <img
-                           src="assets/img/logo/logo-gradient.png"
+                           src="../assets/img/logo/logo-gradient.png"
                            alt="logo"
                          />
                        </NavLink>
@@ -42,9 +43,12 @@ const StyleFiveHeader = () => {
                      <div className="main-menu main-menu-3 header_style_nav_five">
                        <nav id="mobile-menu">
                          <ul>
+                           <IsExpertSmallComponent>
                            <li>
-                             <NavLink to="/">Home</NavLink>
+                             <NavLink to="/homeexpert/">Home</NavLink>
                            </li>
+                           </IsExpertSmallComponent> 
+                           
                            <li>
                              <NavLink to="/about">About Us </NavLink>
                            </li>
@@ -54,11 +58,11 @@ const StyleFiveHeader = () => {
                            <li>
                              <NavLink to="/contact">Contact Us</NavLink>
                            </li>
-                           <IsNotAuthenticated>
-                           <li>
-                             <NavLink to="/login">Login</NavLink>
-                           </li>
-                           </IsNotAuthenticated>
+                           <IsNotAuthenticatedSmallComponent>
+                             <li>
+                               <NavLink to="/login">Login</NavLink>
+                             </li>
+                           </IsNotAuthenticatedSmallComponent>
                          </ul>
                        </nav>
                      </div>
