@@ -2,8 +2,7 @@ import React from "react";
 import Footer from "../../components/shared/Footer";
 import PageHelmet from "../../components/shared/PageHelmet";
 import StyleFiveHeader from "../Home/HeaderStyleFive/StyleFiveHeader";
-import { login } from "../../controller/auth_controller/auth_controller";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import { useState } from "react";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
@@ -19,9 +18,17 @@ import {
   getAllCashRecordsWithPagination,
 } from "../../controller/cash_controller/cash_controller.js";
 import { ExpertsController } from "../../controller/experts_controller/experts_controller.js";
-
+import {
+  getExpertByHistory,
+  getExpertTransactionsById,
+  updateTransactionByExpert,
+  updateTransactionStatus,
+} from "../../controller/transaction_controller/transaction_controller.js";
 
 export const HomeExpert = () => {
+
+
+
   //withdraw cash
   const [accType, setaccType] = useState("");
   const [accNumber, setaccNumber] = useState("");
@@ -32,6 +39,7 @@ export const HomeExpert = () => {
   console.log(userData.uid);
   //for cash
   const [totalCash, setTotalCash] = useState(0);
+  const [consultation, setConsultation] = useState([]);
   const [currentPageTransactions, setCurrentPageTransactions] = useState(1);
   const [pageSizeTransactions, setPageSizeTransactions] = useState(1);
   //for transaction
@@ -43,6 +51,13 @@ export const HomeExpert = () => {
     return transactions.slice(firstPageIndex, lastPageIndex);
   }, [currentPageTransactions, pageSizeTransactions]);
 
+  const updateTransactionStatusAndNavigate = async (id) => {
+    // Perform the updateTransactionStatus action here
+    await updateTransactionStatus(id, true);
+
+    // Navigate to another page after the action is performed
+    navigate("/livechat/"+id);
+  };
   useEffect(() => {
     const fetchTransactions = async () => {
       // try {
@@ -66,12 +81,27 @@ export const HomeExpert = () => {
     fetchTotalMoney();
   }, []);
 
+  useEffect(() => {
+    const fetchConsultation = async () => {
+      const expertId = userData.uid; // Replace with the actual expert ID
+      const result = await getExpertTransactionsById(expertId);
+      setConsultation(result.data);
+      console.log(result.data);
+    };
+    fetchConsultation();
+  }, []);
+
   let handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const result = await createCashRequest(userData.uid, totalCash, accNumber, accType);
+      const result = await createCashRequest(
+        userData.uid,
+        totalCash,
+        accNumber,
+        accType
+      );
 
       if (result.data != null) {
         sessionStorage.setItem("role", result.data.role);
@@ -210,16 +240,17 @@ export const HomeExpert = () => {
                                   {transaction.id}
                                 </th>
                                 <td>
-                        {new Date(transaction.withdraw_time.seconds).toUTCString()}
-                      </td>
+                                  {new Date(
+                                    transaction.withdraw_time.seconds
+                                  ).toUTCString()}
+                                </td>
                                 <td>{transaction.account}</td>
                                 <td>{transaction.no_rek}</td>
                                 <td>{transaction.amount}</td>
                                 <td
                                   style={{
                                     color:
-                                      transaction.status ===
-                                      "verified"
+                                      transaction.status === "verified"
                                         ? "green"
                                         : "red",
                                   }}
@@ -254,36 +285,70 @@ export const HomeExpert = () => {
               <div className="mb-3">
                 <h3 className="mb-3">Consultation</h3>
                 <div className="col-xl-3 col-lg-4 col-md-6">
-                  <div className="textdeco text-center mb-30">
-                    <div className="team__thumb mb-25">
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
-                        alt="team"
-                      />
-                    </div>
-                    <div className="team__content">
-                      <h3>nnn</h3>
-                      <span>mmm</span>
-                      <>
-                              <button
-                                onClick={() =>
-                                  updateTransactionStatus(transaction.id, true)
-                                }
-                                className="btn btn-success"
-                              >
-                                Accept
-                              </button>
-                              <button
-                                onClick={() =>
-                                  updateTransactionStatus(transaction.id, false)
-                                }
-                                className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
-                              >
-                                Reject
-                              </button>
-                            </>
+                  <div className="d-flex justify-content-start w-100">
+                    <div className="d-flex flex-row align-items-center">
+                      <p className="mb-0 me-3">Show </p>
+                      <Form.Select
+                        className="mb-3 mt-4"
+                        value={pageSizeTransactions}
+                        onChange={(e) => {
+                          setCurrentPageTransactions(e.target.value);
+                        }}
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                      </Form.Select>
+                      <p className="mb-0 ms-3">Entries</p>
                     </div>
                   </div>
+                </div>
+                <div className="row mb-3">
+                  {consultation.map((consultations) => {
+                    return (
+                      <div className="col-xl-3 col-lg-3 col-md-3">
+                        <div className="textdeco text-center mb-30">
+                          <div className="team__thumb mb-25">
+                            <img
+                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
+                              alt="team"
+                              className="w-75"
+                            />
+
+                            <div className="team__content">
+                              <div key={consultations.id}>
+                                <h3>{consultations.customer_id}</h3>
+                                <span>{}</span>
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      updateTransactionStatusAndNavigate(
+                                        consultations.id
+                                      )
+                                    }
+                                    className="btn btn-success"
+                                  >
+                                    Accept
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      updateTransactionStatus(
+                                        consultations.id,
+                                        false
+                                      )
+                                    }
+                                    className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
+                                  >
+                                    Decline
+                                  </button>
+                                </>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

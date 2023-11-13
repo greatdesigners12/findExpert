@@ -300,6 +300,32 @@ export async function updateTransactionByAdmin(id, newData) {
   return result;
 }
 
+export async function updateTransactionStatus(id, isAccepted=true) {
+  const result = new ResultData();
+
+  try {
+      
+      const transactionsCollection = collection(db, "transactions");
+      const transactionRef = doc(transactionsCollection, id);
+
+      const r = await updateDoc(transactionRef, {
+          
+          transaction_status:  isAccepted ? "ready" : "busy"
+      });
+
+      result.data = r;
+      result.errorMessage = "";
+      result.statusCode = 200;
+      
+  } catch (error) {
+      result.data = null;
+      result.errorMessage = "Failed to update transaction: " + error.message;
+      result.statusCode = 500;
+  }
+
+  return result;
+}
+
 export async function updateTransactionByExpert(id, newStatus) {
   const result = new ResultData();
 
