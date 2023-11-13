@@ -8,14 +8,12 @@ import { Form } from "react-bootstrap";
 import { useState } from "react";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 import "./home.css";
-import {
-  getExpertTransactionsById
-} from "../../controller/transaction_controller/transaction_controller";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { UserContext } from "../../context/authContext.js";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
+import { CashController } from "../../controller/cash_controller/cash_controller.js";
 
 export const HomeExpert = () => {
   //withdraw cash
@@ -31,9 +29,7 @@ export const HomeExpert = () => {
   const [currentPageTransactions, setCurrentPageTransactions] = useState(1);
   const [pageSizeTransactions, setPageSizeTransactions] = useState(1);
   //for transaction
-  const [transactionCount, setTransactionCount] = useState(0);
   const [transactions, setTransactions] = useState([]);
-  const [isLoadingTransactions, setIsLoadingTransactions] = useState(true);
   const currentTableDataTransactions = useMemo(() => {
     const firstPageIndex = (currentPageTransactions - 1) * pageSizeTransactions;
     const lastPageIndex = firstPageIndex + pageSizeTransactions;
@@ -44,8 +40,9 @@ export const HomeExpert = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       // try {
+        const cc = CashController;
         const expertId = userData.uid; // Replace with the actual expert ID
-        const result = await getExpertTransactionsById(expertId, currentPageTransactions, pageSizeTransactions);
+        const result = await cc.getAllCashRecordsWithPagination(expertId, pageSizeTransactions , currentPageTransactions);
           setTransactions(result.data);
           setPageSizeTransactions(5);
           console.log(result.data)
@@ -201,7 +198,17 @@ export const HomeExpert = () => {
                                       <td>{transaction.customer_id}</td>
                                       <td>{transaction.consultation_time}</td>
                                       <td>{transaction.payment_amount}</td>
-                                      <td>{transaction.transaction_status}</td>
+                                      <td
+                                        style={{
+                                          color:
+                                            transaction.transaction_status ===
+                                            "verified"
+                                              ? "green"
+                                              : "red",
+                                        }}
+                                      >
+                                        {transaction.transaction_status}
+                                      </td>
                                     </tr>
                                   );
                                 })
