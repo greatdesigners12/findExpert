@@ -102,7 +102,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/expertbyfield/:id",
+    path: "/expertbyfield/:id/:name",
     element: <ExpertByField />,
   },
   {
