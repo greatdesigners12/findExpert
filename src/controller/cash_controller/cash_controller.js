@@ -27,13 +27,14 @@ import { ResultData } from "../structureJson/resultData";
                 const cashData = cashDoc.data();
                 cashRecords.push(
                     new Cash(
+                        cashData.account,
                         cashData.amount,
-                        cashData.id,
                         cashData.expert_id,
+                        cashData.id,
+                        cashData.image,
                         cashData.no_rek,
                         cashData.status,
                         cashData.withdraw_time,
-                        cashData.account
                     )
                 );
             });
@@ -102,17 +103,21 @@ import { ResultData } from "../structureJson/resultData";
             const cashCollection = collection(db, "cash");
             const cashRef = doc(cashCollection);
     
-            const currentTimestamp = new Date().toISOString(); // Get the current timestamp
+            const currentTimestamp = new Date(); // Get the current timestamp
     
             const newCashRequest = new Cash(
+                account,
                 amount,
+                doc(db, "expertData", expert_id),
                 cashRef.id,
-                expert_id,
+                "",
                 no_rek,
-                "request", // Initially, the status is set to "request"
-                currentTimestamp, // Set the withdraw_time to the current timestamp
-                account
+                "unverified",
+                currentTimestamp
             );
+            
+      
+            
     
             await setDoc(cashRef, newCashRequest.serialize());
     

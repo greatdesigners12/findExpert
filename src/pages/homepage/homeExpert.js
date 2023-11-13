@@ -14,14 +14,17 @@ import { UserContext } from "../../context/authContext.js";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
 import {
+  createCashRequest,
   getAllCashRecords,
   getAllCashRecordsWithPagination,
 } from "../../controller/cash_controller/cash_controller.js";
+import { ExpertsController } from "../../controller/experts_controller/experts_controller.js";
+
 
 export const HomeExpert = () => {
   //withdraw cash
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [accType, setaccType] = useState("");
+  const [accNumber, setaccNumber] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const { userData, setUser } = useContext(UserContext);
@@ -52,12 +55,23 @@ export const HomeExpert = () => {
     fetchTransactions();
   }, []);
 
+  useEffect(() => {
+    const fetchTotalMoney = async () => {
+      const ec = new ExpertsController();
+      const expertId = userData.uid; // Replace with the actual expert ID
+      const result = await ec.getExpertCashAmountById(expertId);
+      setTotalCash(result.data);
+      console.log(result.data);
+    };
+    fetchTotalMoney();
+  }, []);
+
   let handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const result = await login(email, password);
+      const result = await createCashRequest(userData.uid, totalCash, accNumber, accType);
 
       if (result.data != null) {
         sessionStorage.setItem("role", result.data.role);
@@ -91,25 +105,25 @@ export const HomeExpert = () => {
                 <form onSubmit={handleSubmit} className="w-75 mx-auto">
                   <div className="mb-3 mt-4">
                     <input
-                      type="email"
+                      type="text"
                       className="form-control font-montserrat"
-                      id="inputEmail"
-                      name="email"
+                      id="inputaccType"
+                      name="accType"
                       placeholder="Enter Account Type"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={accType}
+                      onChange={(e) => setaccType(e.target.value)}
                       required
                     />
                   </div>
                   <div className="mb-3 mt-4">
                     <input
-                      type="password"
+                      type="number"
                       className="form-control font-montserrat"
-                      id="inputPassword"
-                      name="password"
+                      id="inputaccNumber"
+                      name="accNumber"
                       placeholder="Enter Account Number"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={accNumber}
+                      onChange={(e) => setaccNumber(e.target.value)}
                       required
                     />
                   </div>
@@ -165,7 +179,7 @@ export const HomeExpert = () => {
                           <p className="mb-0 ms-3">Entries</p>
                         </div>
                       </div>
-                      <table className="table admin-table w-25">
+                      <table className="table admin-table w-100">
                         <thead>
                           <tr>
                             <th scope="col" className="th-col">
@@ -195,20 +209,22 @@ export const HomeExpert = () => {
                                 <th scope="row" className="th-row">
                                   {transaction.id}
                                 </th>
-                                <td>{transaction.amount}</td>
-                                <td>{transaction.amount}</td>
-                                <td>{transaction.amount}</td>
+                                <td>
+                        {new Date(transaction.withdraw_time.seconds).toUTCString()}
+                      </td>
+                                <td>{transaction.account}</td>
+                                <td>{transaction.no_rek}</td>
                                 <td>{transaction.amount}</td>
                                 <td
                                   style={{
                                     color:
-                                      transaction.transaction_status ===
+                                      transaction.status ===
                                       "verified"
                                         ? "green"
                                         : "red",
                                   }}
                                 >
-                                  {transaction.transaction_status}
+                                  {transaction.status}
                                 </td>
                               </tr>
                             );
@@ -231,12 +247,12 @@ export const HomeExpert = () => {
             </div>
           </div>
 
-          <div className="row">
+          <div className="row mb-3">
             {isLoading ? (
               <LoadingSpinner />
             ) : (
-              <div>
-                <h3>Consultation</h3>
+              <div className="mb-3">
+                <h3 className="mb-3">Consultation</h3>
                 <div className="col-xl-3 col-lg-4 col-md-6">
                   <div className="textdeco text-center mb-30">
                     <div className="team__thumb mb-25">
@@ -248,13 +264,31 @@ export const HomeExpert = () => {
                     <div className="team__content">
                       <h3>nnn</h3>
                       <span>mmm</span>
+                      <>
+                              <button
+                                onClick={() =>
+                                  updateTransactionStatus(transaction.id, true)
+                                }
+                                className="btn btn-success"
+                              >
+                                Accept
+                              </button>
+                              <button
+                                onClick={() =>
+                                  updateTransactionStatus(transaction.id, false)
+                                }
+                                className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
+                              >
+                                Reject
+                              </button>
+                            </>
                     </div>
                   </div>
                 </div>
               </div>
             )}
           </div>
-          <div className="row">
+          <div className="row my-3">
             {isLoading ? (
               <LoadingSpinner />
             ) : (
