@@ -13,7 +13,7 @@ import { useContext } from "react";
 import { UserContext } from "../../context/authContext.js";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
-import { CashController } from "../../controller/cash_controller/cash_controller.js";
+import { getAllCashRecordsWithPagination } from "../../controller/cash_controller/cash_controller.js";
 
 export const HomeExpert = () => {
   //withdraw cash
@@ -40,12 +40,11 @@ export const HomeExpert = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       // try {
-        const cc = CashController;
         const expertId = userData.uid; // Replace with the actual expert ID
-        const result = await cc.getAllCashRecordsWithPagination(expertId, pageSizeTransactions , currentPageTransactions);
+        const result = await getAllCashRecordsWithPagination(expertId, pageSizeTransactions , currentPageTransactions);
           setTransactions(result.data);
           setPageSizeTransactions(5);
-          console.log(result.data)
+          console.log(result)
     }
     fetchTransactions();
   }, []);
@@ -141,7 +140,7 @@ export const HomeExpert = () => {
                   data-wow-delay=".2s"
                 >
                     <div className=" d-flex flex-column justify-content-center align-items-center">
-                      {transactions > 0 ? (
+                      {transactions.length > 0 ? (
                         <div className="py-5">
                           <LoadingSpinner />
                         </div>
@@ -194,10 +193,10 @@ export const HomeExpert = () => {
                                       <th scope="row" className="th-row">
                                         {transaction.id}
                                       </th>
-                                      <td>{transaction.transaction_date}</td>
-                                      <td>{transaction.customer_id}</td>
-                                      <td>{transaction.consultation_time}</td>
-                                      <td>{transaction.payment_amount}</td>
+                                      <td>{transaction.amount}</td>
+                                      <td>{transaction.amount}</td>
+                                      <td>{transaction.amount}</td>
+                                      <td>{transaction.amount}</td>
                                       <td
                                         style={{
                                           color:

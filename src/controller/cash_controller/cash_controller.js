@@ -4,15 +4,15 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Cash } from "./models/cash";
 import { ResultData } from "../structureJson/resultData";
 
-export class CashController {
-    async getLastDocumentFromPage(expertId, pageSize, pageNumber) {
+
+  export async function getLastDocumentFromPage(expertId, pageSize, pageNumber) {
         const cashCollection = collection(db, "cash");
         const query = query(cashCollection, where("expert_id", "==", expertId));
         const startAfterDoc = await getDocumentToStartAfter(query, pageSize, pageNumber);
         return startAfterDoc;
     }
 
-    async getAllCashRecordsWithPagination(expertId, pageSize, pageNumber) {
+    export async function getAllCashRecordsWithPagination(expertId, pageSize, pageNumber) {
         const result = new ResultData();
 
         try {
@@ -20,7 +20,7 @@ export class CashController {
             let cashQuery = query(cashCollection, where("expert_id", "==", expertId));
 
             // Menggunakan limit untuk paginasi
-            const startAtDoc = pageNumber > 1 ? await this.getLastDocumentFromPage(expertId, pageSize, pageNumber - 1) : null;
+            const startAtDoc = pageNumber > 1 ? await getLastDocumentFromPage(expertId, pageSize, pageNumber - 1) : null;
             if (startAtDoc) {
                 cashQuery = query(cashQuery, startAfter(startAtDoc));
             }
@@ -56,7 +56,7 @@ export class CashController {
         return result;
     }
     
-    async createCashRequest(expert_id, amount, no_rek, account) {
+    export async function createCashRequest(expert_id, amount, no_rek, account) {
         const result = new ResultData();
     
         try {
@@ -89,7 +89,7 @@ export class CashController {
         return result;
     }
 
-    async getAllCashRecordsWithStatusRequest(pageSize, pageNumber) {
+    export async function getAllCashRecordsWithStatusRequest(pageSize, pageNumber) {
         const result = new ResultData();
     
         try {
@@ -134,7 +134,7 @@ export class CashController {
     }
     
     
-    async updateCashRequest(cashRequestId, requestedAmount, image) {
+    export async function updateCashRequest(cashRequestId, requestedAmount, image) {
         const result = new ResultData();
     
         try {
@@ -193,4 +193,21 @@ export class CashController {
     
         return result;
     }
-}
+    
+    export async function getDocumentToStartAfter(query, pageSize, currentPage) {
+        const snapshot = await getDocs(query.limit(pageSize));
+        const documents = snapshot.docs;
+      
+        if (documents.length === pageSize) {
+          const lastDocument = documents[pageSize - 1];
+          return lastDocument;
+        } else if (currentPage > 1) {
+          // If the current page is greater than 1, there's no more data to fetch
+          return null;
+        } else {
+          return null;
+        }
+      }
+    
+
+
