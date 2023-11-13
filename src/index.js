@@ -70,21 +70,18 @@ const router = createBrowserRouter([
     element: <AdminPage />,
   },
   {
-    
     path: "/fields/",
-    element: 
-    <ServicesPages />
-    ,
+    element: <ServicesPages />,
   },
   {
     path: "/transaction-list/",
     element: (
-      // <IsAuthenticated>
+      <IsAuthenticated>
         <TransactionList />
-      // </IsAuthenticated>
+      </IsAuthenticated>
     ),
   },
- 
+
   // tidak dipakai, pakainya expertbyid
   {
     path: "/expert/",
@@ -114,12 +111,13 @@ const router = createBrowserRouter([
     path: "/homeexpert/",
     element: (
       <IsExpert>
-    <HomeExpert />
-    </IsExpert>),
+        <HomeExpert />
+      </IsExpert>
+    ),
   },
   {
     path: "/",
-    element: <HomeUser/>,
+    element: <HomeUser />,
   },
 ]);
 
