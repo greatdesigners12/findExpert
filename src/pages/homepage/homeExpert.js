@@ -42,14 +42,25 @@ export const HomeExpert = () => {
   const [consultation, setConsultation] = useState([]);
   const [currentPageTransactions, setCurrentPageTransactions] = useState(1);
   const [pageSizeTransactions, setPageSizeTransactions] = useState(1);
+  const [currentPageTransactionsbyid, setCurrentPageTransactionsbyid] = useState(1);
+  const [pageSizeTransactionsbyid, setPageSizeTransactionsbyid] = useState(1);
   //for transaction
   const [transactions, setTransactions] = useState([]);
+  const [transactionsbyid, setTransactionsbyid] = useState([]);
+
   const currentTableDataTransactions = useMemo(() => {
     const firstPageIndex = (currentPageTransactions - 1) * pageSizeTransactions;
     const lastPageIndex = firstPageIndex + pageSizeTransactions;
 
     return transactions.slice(firstPageIndex, lastPageIndex);
   }, [currentPageTransactions, pageSizeTransactions]);
+
+  const currentTableDataTransactionsbyid = useMemo(() => {
+    const firstPageIndex = (currentPageTransactionsbyid - 1) * pageSizeTransactionsbyid;
+    const lastPageIndex = firstPageIndex + pageSizeTransactionsbyid;
+
+    return transactionsbyid.slice(firstPageIndex, lastPageIndex);
+  }, [currentPageTransactionsbyid, pageSizeTransactionsbyid]);
 
   const updateTransactionStatusAndNavigate = async (id) => {
     // Perform the updateTransactionStatus action here
@@ -58,6 +69,19 @@ export const HomeExpert = () => {
     // Navigate to another page after the action is performed
     navigate("/livechat/"+id);
   };
+
+  useEffect(() => {
+    const fetchTransactionsByID = async () => {
+      // try {
+      const expertId = userData.uid; // Replace with the actual expert ID
+      const result = await getExpertTransactionsById(expertId, currentPageTransactionsbyid, pageSizeTransactionsbyid);
+      setTransactionsbyid(result.data);
+      setPageSizeTransactionsbyid(5);
+      console.log(result);
+    };
+    fetchTransactionsByID();
+  }, []);
+
   useEffect(() => {
     const fetchTransactions = async () => {
       // try {
@@ -87,6 +111,7 @@ export const HomeExpert = () => {
       const result = await getExpertTransactionsById(expertId);
       setConsultation(result.data);
       console.log(result.data);
+      setLoading(false);
     };
     fetchConsultation();
   }, []);
@@ -359,7 +384,25 @@ export const HomeExpert = () => {
             ) : (
               <div>
                 <h3>Consultation List</h3>
-
+                <div className="col-xl-3 col-lg-4 col-md-6">
+                  <div className="d-flex justify-content-start w-100">
+                    <div className="d-flex flex-row align-items-center">
+                      <p className="mb-0 me-3">Show </p>
+                      <Form.Select
+                        className="mb-3 mt-4"
+                        value={pageSizeTransactionsbyid}
+                        onChange={(e) => {
+                          setCurrentPageTransactions(e.target.value);
+                        }}
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                      </Form.Select>
+                      <p className="mb-0 ms-3">Entries</p>
+                    </div>
+                  </div>
+                </div>
                 <div id="table-container"></div>
 
                 <div class="records table-responsive">
@@ -368,22 +411,47 @@ export const HomeExpert = () => {
                       <thead>
                         <tr>
                           <th>Order ID</th>
-                          <th> NAMA</th>
-                          <th> JAM KERJA</th>
-                          <th> NO TELP</th>
-                          <th>HAPUS</th>
+                          <th> Date</th>
+                          <th> Jam</th>
+                          <th> Billing Name</th>
+                          <th>Total</th>
+                          <th>Video Call</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>#0</td>
-                          <td>nnn</td>
-                          <td>nn</td>
-                          <td>nnn</td>
-                          <td>asasas</td>
-                        </tr>
-                      </tbody>
+                          {currentTableDataTransactionsbyid.map((transaction) => {
+                            return (
+                              <tr key={transaction.id}>
+                                <th scope="row" className="th-row">
+                                  {transaction.id}
+                                </th>
+                                <td>
+                                {transaction.transaction_date}
+                                </td>
+                                <td>{transaction.start_time}-{transaction.end_time}</td>
+                                <td>{transaction.customer_id}</td>
+                                <td>{transaction.payment_amount}</td>
+                                <td
+                                  
+                                >
+                                  <img src="../assets/img/Vector (1).png"
+                          alt="logo"
+                          className="p-3"></img>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
                     </table>
+                    <Pagination
+                        className="pagination-bar"
+                        currentPageTransactionsbyid={currentPageTransactionsbyid}
+                        totalCount={transactionsbyid.length}
+                        pageSize={pageSizeTransactionsbyid}
+                        onPageChange={(page) =>
+                          setCurrentPageTransactionsbyid(page)
+                        }
+                      />
                   </div>
                 </div>
               </div>
