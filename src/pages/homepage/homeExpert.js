@@ -35,7 +35,9 @@ export const HomeExpert = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const { userData, setUser } = useContext(UserContext);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [isLoadingTransactionsbyid, setLoadingTransactionsbyid] = useState(true);
+
   console.log(userData.uid);
   //for cash
   const [totalCash, setTotalCash] = useState(0);
@@ -78,6 +80,7 @@ export const HomeExpert = () => {
       setTransactionsbyid(result.data);
       setPageSizeTransactionsbyid(5);
       console.log(result);
+      setLoadingTransactionsbyid(false);
     };
     fetchTransactionsByID();
   }, []);
@@ -111,7 +114,7 @@ export const HomeExpert = () => {
       const result = await getExpertTransactionsById(expertId);
       setConsultation(result.data);
       console.log(result.data);
-      setLoading(false);
+      setLoadingTransactionsbyid(false);
     };
     fetchConsultation();
   }, []);
@@ -304,7 +307,7 @@ export const HomeExpert = () => {
           </div>
 
           <div className="row mb-3">
-            {isLoading ? (
+            {isLoadingTransactionsbyid? (
               <LoadingSpinner />
             ) : (
               <div className="mb-3">
@@ -315,7 +318,7 @@ export const HomeExpert = () => {
                       <p className="mb-0 me-3">Show </p>
                       <Form.Select
                         className="mb-3 mt-4"
-                        value={pageSizeTransactions}
+                        value={pageSizeTransactionsbyid}
                         onChange={(e) => {
                           setCurrentPageTransactions(e.target.value);
                         }}
@@ -328,8 +331,9 @@ export const HomeExpert = () => {
                     </div>
                   </div>
                 </div>
+                
                 <div className="row mb-3">
-                  {consultation.map((consultations) => {
+                  {currentTableDataTransactionsbyid.map((transaction) => {
                     return (
                       <div className="col-xl-3 col-lg-3 col-md-3">
                         <div className="textdeco text-center mb-30">
@@ -341,14 +345,14 @@ export const HomeExpert = () => {
                             />
 
                             <div className="team__content">
-                              <div key={consultations.id}>
-                                <h3>{consultations.customer_id}</h3>
+                              <div key={transaction.id}>
+                                <h3>{transaction.customerData.fullName}</h3>
                                 <span>{}</span>
                                 <>
                                   <button
                                     onClick={() =>
                                       updateTransactionStatusAndNavigate(
-                                        consultations.id
+                                        transaction.id
                                       )
                                     }
                                     className="btn btn-success"
@@ -358,7 +362,7 @@ export const HomeExpert = () => {
                                   <button
                                     onClick={() =>
                                       updateTransactionStatus(
-                                        consultations.id,
+                                        transaction.id,
                                         false
                                       )
                                     }
@@ -374,12 +378,22 @@ export const HomeExpert = () => {
                       </div>
                     );
                   })}
+                  
                 </div>
+                <Pagination
+                        className="pagination-bar"
+                        currentPageTransactionsbyid={currentPageTransactionsbyid}
+                        totalCount={transactionsbyid.length}
+                        pageSize={pageSizeTransactionsbyid}
+                        onPageChange={(page) =>
+                          setCurrentPageTransactionsbyid(page)
+                        }
+                      />
               </div>
             )}
           </div>
           <div className="row my-3">
-            {isLoading ? (
+            {isLoadingTransactionsbyid ? (
               <LoadingSpinner />
             ) : (
               <div>
@@ -429,7 +443,7 @@ export const HomeExpert = () => {
                                 {transaction.transaction_date}
                                 </td>
                                 <td>{transaction.start_time}-{transaction.end_time}</td>
-                                <td>{transaction.customer_id}</td>
+                                <td>{transaction.customerData.fullName}</td>
                                 <td>{transaction.payment_amount}</td>
                                 <td
                                   

@@ -310,7 +310,7 @@ export async function updateTransactionStatus(id, isAccepted=true) {
 
       const r = await updateDoc(transactionRef, {
           
-          transaction_status:  isAccepted ? "ready" : "busy"
+          transaction_status:  isAccepted ? "ready" : "cancel"
       });
 
       result.data = r;
@@ -501,8 +501,12 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
     const transactionsSnapshot = await getDocs(queryWithPagination);
 
     const transactions = [];
-    transactionsSnapshot.forEach((transactionDoc) => {
+    transactionsSnapshot.forEach(async (transactionDoc) => {
+  
+      const userRef = doc(db, "userData", transactionDoc.data().customer_id)
+      const userSnap = await getDoc(userRef);
       const transactionData = transactionDoc.data();
+      transactionData["customerData"] = userSnap.data()
       transactions.push(transactionData);
     });
 
