@@ -12,16 +12,48 @@ import HomeThreeSecondServices from "../Home/HomeThreeSecondServices/HomeThreeSe
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../../../src/components/shared/LoadingSpinner";
-import { getExpertsByFieldAndStatus } from "../../../src/controller/fields_controller/fields_controller";
+import { getAllFieldsWithExperts, getExpertsByFieldAndStatus } from "../../../src/controller/fields_controller/fields_controller";
 import "./home.css";
+import { useContext } from "react";
+import { UserContext } from "../../context/authContext.js";
 import HomeServices from "../Home/HomeServices/HomeServices";
+import { getExpertByHistory, getExpertByHistory1 } from "../../controller/transaction_controller/transaction_controller";
+import { IsUserSmallComponent } from "../Middleware/Middlewares.js";
+import { Link } from "react-router-dom";
 
 export const HomeUser = () => {
   const [expertsData, setExpertsData] = useState([]);
+  const [isLoadingHistory, setLoadingHistory,] = useState(true);
+  const [history, setHistory] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const params = useParams();
   const id = params.id;
   const name = params.name;
+  const { userData, setUser } = useContext(UserContext);
+
+  useEffect(() => {
+    const fetchHistory = async () => { // Replace with the actual expert ID
+      const expertId = userData.uid; // Replace with the actual expert ID
+      const result = await getExpertByHistory(expertId);
+      console.log(userData.uid)
+      setHistory(result.data);
+      console.log(result.data);
+      setLoadingHistory(false);
+    };
+    fetchHistory();
+  }, []);
+
+  const [fieldData, setFieldData] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await getAllFieldsWithExperts();
+      setFieldData(data);
+      console.log(data);
+      setLoading(false);
+    };
+    getData();
+  }, []);
 
   useEffect(() => {
     const getData = async () => {
@@ -76,32 +108,90 @@ export const HomeUser = () => {
         </form>
       </div>
       <div className="home-expert-page container">
-      <div className="row">
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <div className="">
-            <h3>Recent Consultation</h3>
-            <div className="col-xl-3 col-lg-4 col-md-6 mt-30">
-              <div className="textdeco text-center mb-30">
-                <div className="team__thumb mb-25">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
-                    alt="team"
-                  />
-                </div>
-                <div className="team__content">
-                  <h3>nnn</h3>
-                  <span>mmm</span>
-                </div>
+        <IsUserSmallComponent>
+        <div className="row">
+          {isLoadingHistory ? (
+            <LoadingSpinner />
+          ) : (
+            <div className="">
+              <h3>Recent Consultation</h3>
+              {
+                 history ? (
+                history.map((historys) => {
+                return (
+                 
+                    <div className="col-xl-3 col-lg-4 col-md-6 mt-30">
+                       <div key={historys.id}>
+                      <div className="textdeco text-center mb-30">
+                        <div className="team__thumb mb-25">
+                          <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
+                            alt="team"
+                          />
+                        </div>
+                        <div className="team__content">
+                          {/* <h3>{historys}</h3>
+                          <span>{historys}</span> */}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <p>No results found.</p>
+            )}
+            </div>
+          )}
+          
+        </div>
+        </IsUserSmallComponent>
+      </div>
+
+      <section className="services__area pt-115 pb-80">
+        <div className="container">
+          <div className="row">
+            <div className="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+              <div
+                className="section__title section__title-3 text-center mb-90 wow fadeInUp"
+                data-wow-delay=".2s"
+              >
+                <span>Our Services</span>
+                <h2>Provide various experts in every fields</h2>
               </div>
             </div>
           </div>
-        )}
-      </div>
-      </div>
 
-      <HomeServices />
+          <div className="row">
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              fieldData.data.map((field) => (
+                <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                  <div key={field.id}>
+                    <div className="services__item mb-90">
+                      <div className="services__icon mb-35">
+                        <img
+                          src={field.icon}
+                          alt="services"
+                          height={60}
+                          width={60}
+                        />
+                      </div>
+                      <div className="services__content">
+                        <h3>
+                          <Link to={`/expertbyfield/${field.id}/${field.name}`}>{field.name}</Link>
+                        </h3>
+                        <p>{field.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
       <HomeThreeSecondServices />
       <HomeTwoTestimonial />
       <HomeThreeProjects />

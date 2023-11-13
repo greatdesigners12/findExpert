@@ -102,3 +102,15 @@ export const IsAdminSmallComponent = ({ children }) => {
     }
   }
 };
+
+export const IsUserSmallComponent = ({ children }) => {
+  const { userData, setUser } = useContext(UserContext);
+
+  if (userData !== "") {
+    if (userData != null) {
+      if (userData.displayName == "user") {
+        return children;
+      }
+    }
+  }
+};

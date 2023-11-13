@@ -2,7 +2,7 @@ import React, { useState} from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import useGlobalContext from '../../../hooks/useGlobalContext';
-import { IsExpert, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent } from '../../Middleware/Middlewares';
+import { IsExpert, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent, IsUserSmallComponent } from '../../Middleware/Middlewares';
 
 
 const StyleFiveHeader = () => {
@@ -48,6 +48,11 @@ const StyleFiveHeader = () => {
                              <NavLink to="/homeexpert/">Home</NavLink>
                            </li>
                            </IsExpertSmallComponent> 
+                           <IsUserSmallComponent>
+                           <li>
+                             <NavLink to="/">Home</NavLink>
+                           </li>
+                           </IsUserSmallComponent> 
                            
                            <li>
                              <NavLink to="/about">About Us </NavLink>

@@ -3,7 +3,7 @@ import { FaFacebookF, FaTwitter, FaPinterestP, FaPhoneAlt, FaEnvelope, FaSearch,
 import { Link, NavLink } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import useGlobalContext from '../../../hooks/useGlobalContext';
-import { IsExpert, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent } from '../../Middleware/Middlewares';
+import { IsExpert, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent, IsUserSmallComponent } from '../../Middleware/Middlewares';
 
 const HomeOneHeader = () => {
    const [show, setShow] = useState(false);
@@ -75,6 +75,11 @@ const HomeOneHeader = () => {
                              <NavLink to="/homeexpert/">Home</NavLink>
                            </li>
                            </IsExpertSmallComponent> 
+                           <IsUserSmallComponent>
+                           <li>
+                             <NavLink to="/">Home</NavLink>
+                           </li>
+                           </IsUserSmallComponent> 
                            
                            <li>
                              <NavLink to="/about">About Us </NavLink>
