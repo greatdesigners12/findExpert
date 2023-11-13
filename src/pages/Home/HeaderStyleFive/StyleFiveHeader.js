@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import useGlobalContext from '../../../hooks/useGlobalContext';
+import { IsAuthenticated, IsNotAuthenticated } from '../../Middleware/Middlewares';
 
 const StyleFiveHeader = () => {
 
@@ -53,9 +54,11 @@ const StyleFiveHeader = () => {
                            <li>
                              <NavLink to="/contact">Contact Us</NavLink>
                            </li>
+                           <IsNotAuthenticated>
                            <li>
                              <NavLink to="/login">Login</NavLink>
                            </li>
+                           </IsNotAuthenticated>
                          </ul>
                        </nav>
                      </div>
