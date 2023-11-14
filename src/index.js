@@ -17,6 +17,7 @@ import { ExpertByField } from "./pages/ExpertByFields/ExpertByField";
 import Transaction from "./pages/Transaction/Transaction";
 import { Login } from "./pages/Login/login";
 import {
+  IsAdmin,
   IsAuthenticated,
   IsExpert,
   IsNotAuthenticated,
