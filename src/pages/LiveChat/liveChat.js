@@ -123,6 +123,7 @@ export const LiveChatPage = () => {
     if (counter > 0) {
       setTimeout(() => setCounter(counter - 1), 1000);
       if (counter < 1) {
+        setVideoCall(false);
         updateStatusToDone();
       }
     } else if (transaction != null) {
