@@ -28,6 +28,7 @@ export const ExpertDetailsArea = () => {
   // /expertDetail/:id
   const params = useParams();
   const id = params.id;
+  
   const handleIncrementTime = () => {
     setTimeIntervals(timeIntervals + 1);
     setCountIntervals(count + 30);
