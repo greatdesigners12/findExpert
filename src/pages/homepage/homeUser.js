@@ -18,7 +18,7 @@ import {
 } from "../../../src/controller/fields_controller/fields_controller";
 import "./home.css";
 import { useContext } from "react";
-import { UserContext } from "../../context/authContext.js";
+import { UserContext, getValidatedUser } from "../../context/authContext.js";
 import HomeServices from "../Home/HomeServices/HomeServices";
 import { IsUserSmallComponent } from "../Middleware/Middlewares.js";
 import { Link } from "react-router-dom";
@@ -37,8 +37,9 @@ export const HomeUser = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       // Replace with the actual expert ID
-      const expertId = userData.uid; // Replace with the actual expert ID
-      const result = await getLatestExpertTransaction(userData.uid);
+      const user = await getValidatedUser();
+      const expertId = user.uid; // Replace with the actual expert ID
+      const result = await getLatestExpertTransaction(user.uid);
       console.log(userData.uid);
       setHistory(result.data);
       console.log(result.data);
