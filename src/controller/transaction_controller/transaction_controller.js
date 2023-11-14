@@ -9,11 +9,13 @@ import {
   updateDoc,
   deleteDoc,
   startAfter,
+  limit
 } from "firebase/firestore";
 import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { Expert } from "./models/expert";
 
 
 export async function createTransaction(transaction) {
@@ -418,7 +420,7 @@ export async function getLatestExpertTransaction(user_id) {
       transactionsCollection,
       where("customer_id", "==", user_id),
       orderBy("transaction_date", "desc"),
-      limit(4) // Limit to the latest 4 transactions
+      limit(4) 
     );
 
     const transactionSnapshot = await getDocs(userTransactionsQuery);

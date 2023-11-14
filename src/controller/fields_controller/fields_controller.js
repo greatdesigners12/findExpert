@@ -246,8 +246,12 @@ export async function searchExpertsInField(fieldId, queryText) {
         );
 
         const fieldExpertsSnapshot = await getDocs(fieldExpertsQuery);
-        console.log("query",fieldExpertsQuery)
+
         const searchResults = [];
+        const onlineResults = [];
+        const busyResults = [];
+        const offlineResults = [];
+
         fieldExpertsSnapshot.forEach((expertDoc) => {
             const expertData = expertDoc.data();
 
@@ -278,12 +282,29 @@ export async function searchExpertsInField(fieldId, queryText) {
                     expertData.id
                 );
 
-                searchResults.push({ type: 'expert', data: expert });
+                // Categorize experts based on status
+                switch (expertData.status.toLowerCase()) {
+                    case 'online':
+                        onlineResults.push({ type: 'expert', data: expert });
+                        break;
+                    case 'busy':
+                        busyResults.push({ type: 'expert', data: expert });
+                        break;
+                    case 'offline':
+                        offlineResults.push({ type: 'expert', data: expert });
+                        break;
+                    default:
+                        // Handle other statuses if needed
+                        break;
+                }
             }
         });
 
-        if (searchResults.length > 0) {
-            result.data = searchResults;
+        // Concatenate the results in the desired order: online, busy, offline
+        const orderedResults = onlineResults.concat(busyResults, offlineResults);
+
+        if (orderedResults.length > 0) {
+            result.data = orderedResults;
             result.errorMessage = "";
             result.statusCode = 200;
         } else {
@@ -296,7 +317,7 @@ export async function searchExpertsInField(fieldId, queryText) {
         result.errorMessage = "Failed to search for experts in the field: " + error.message;
         result.statusCode = 500;
     }
-console.log("result", result)
+
     return result;
-    
 }
+
