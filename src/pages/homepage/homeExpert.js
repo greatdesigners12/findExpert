@@ -384,7 +384,7 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
                             <div className="team__content">
                               <div key={transaction.id}>
                                 <h3 className="m-2">
-                                  {transaction.customer_id}
+                                  {transaction.customerData.fullName}
                                 </h3>
                                 {transaction.transaction_status ===
                                 "on going" ? (
@@ -519,7 +519,7 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
                                 {transaction2.transaction_date}
                                 </td>
                                 <td>{transaction2.start_time}-{transaction2.end_time}</td>
-                                <td>{transaction2.customer_id}</td>
+                                <td>{transaction2.customerData.fullName}</td>
                                 <td>{transaction2.payment_amount}</td>
                                 <td
                                   
