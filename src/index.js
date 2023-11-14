@@ -67,7 +67,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin/",
-    element: <AdminPage />,
+    element: (
+      <IsAdmin>
+        <AdminPage />
+      </IsAdmin>
+    ),
   },
   {
     path: "/fields/",
