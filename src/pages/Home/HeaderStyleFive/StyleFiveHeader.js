@@ -67,7 +67,7 @@ const StyleFiveHeader = () => {
                            {/* <li>
                              <NavLink to="/contact">Contact Us</NavLink>
                            </li> */}
-                           <IsNotAuthenticatedSmallComponent>
+                           {/* <IsNotAuthenticatedSmallComponent>
                              <li>
                                <NavLink to="/login">Login</NavLink>
                              </li>
@@ -76,7 +76,7 @@ const StyleFiveHeader = () => {
                            <li>
                                <NavLink onClick={handleLogout}>Logout</NavLink>
                              </li>
-                           </IsAuthenticated>
+                           </IsAuthenticated> */}
                          </ul>
                        </nav>
                      </div>
@@ -85,9 +85,22 @@ const StyleFiveHeader = () => {
                  <div className="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-6">
                    <div className="header__bottom-right d-flex justify-content-end align-items-center">
                      <div className="header__btn d-none d-sm-block d-xl-block ml-50">
+                     <IsNotAuthenticatedSmallComponent>
                        <Link to="/contact" className="z-btn z-btn-3">
-                         Book Now
+                         
+                             
+                               <NavLink to="/login">Login</NavLink>
+                             
+                           
                        </Link>
+                       </IsNotAuthenticatedSmallComponent>
+                       <IsAuthenticated>
+                       <Link to="/contact" className="z-btn z-btn-3">
+                         
+                       <NavLink onClick={handleLogout}>Logout</NavLink>
+                           
+                       </Link>
+                       </IsAuthenticated>
                      </div>
                      <div
                        onClick={handleShow}
