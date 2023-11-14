@@ -410,28 +410,32 @@ export async function updateTransactionByExpert(id, newStatus) {
   }
 
   return result;
-}
-export async function getLatestExpertTransaction(user_id) {
+}export async function getLatestExpertTransaction(user_id) {
   const result = new ResultData();
 
   try {
     const transactionsCollection = collection(db, "transactions");
     const userTransactionsQuery = query(
       transactionsCollection,
-      where("customer_id", "in", [user_id]),
-      orderBy("transaction_date", "desc"),
-      limit(4)
+      where("customer_id", "in", [user_id])
     );
 
     const transactionSnapshot = await getDocs(userTransactionsQuery);
 
+    // Mengurutkan transaksi berdasarkan tanggal secara manual
+    const sortedTransactions = transactionSnapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .sort((a, b) => b.transaction_date - a.transaction_date);
+
+    // Mengambil 4 transaksi terbaru
+    const latestTransactions = sortedTransactions.slice(0, 4);
+
     const expertTransactions = [];
 
-    for (const transactionDoc of transactionSnapshot.docs) {
-      const transactionData = transactionDoc.data();
+    for (const transactionData of latestTransactions) {
       const id = transactionData.expert_id;
 
-      // Get the expert data using expert_id
+      // Mendapatkan data expert menggunakan expert_id
       const expertDoc = await getDoc(doc(db, "expertData", id));
       const expertData = expertDoc.data();
 
@@ -475,6 +479,7 @@ export async function getLatestExpertTransaction(user_id) {
 
   return result;
 }
+
 
 export async function deleteTransaction(id) {
   const result = new ResultData();
