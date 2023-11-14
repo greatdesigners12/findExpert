@@ -16,13 +16,13 @@
   }
   
   .custom-consult-button {
-    background-color: #d1a8f1; /* Set the button color */
+    background-color: #6f42c1; /* Set the button color */
     color: #fff; /* Set the text color */
   }
   
   .custom-consult-button:hover {
     background-color: #fff; /* Change background color on hover */
-    color: #d1a8f1; /* Change text color on hover */
+    color: #6f42c1; /* Change text color on hover */
   }
 
   
