@@ -22,14 +22,17 @@ import {
   getUserById,
 } from "../../controller/auth_controller/auth_controller";
 import { useContext } from "react";
-import { UserContext } from "../../context/authContext";
+import { UserContext, getValidatedUser } from "../../context/authContext";
 import { ExpertsController } from "../../controller/experts_controller/experts_controller";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { useRef } from "react";
 import CommonPageHeader from "../../components/CommonPageHeader/CommonPageHeader";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
-import { updateTransactionByExpert } from "../../controller/transaction_controller/transaction_controller";
+import {
+  updateTransactionByExpert,
+  updateTransactionStatusToOngoing,
+} from "../../controller/transaction_controller/transaction_controller";
 import { FaVideo } from "react-icons/fa";
 import PageHelmet from "../../components/shared/PageHelmet";
 
@@ -96,28 +99,29 @@ export const LiveChatPage = () => {
       console.log(result);
       if (result.statusCode === 200) {
         setMessages(result.data);
+        setLoadingMessages(false);
       }
     };
     getAllMessage();
   }, []);
 
-  useEffect(() => {
-    const q = query(
-      collection(dbFirebase, "livechat"),
-      where("transaction_id", "==", transactionId),
-      orderBy("date")
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const result = [];
-      querySnapshot.forEach((doc) => {
-        result.push(doc.data());
-      });
+  // useEffect(() => {
+  //   const q = query(
+  //     collection(dbFirebase, "livechat"),
+  //     where("transaction_id", "==", transactionId),
+  //     orderBy("date")
+  //   );
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     const result = [];
+  //     querySnapshot.forEach((doc) => {
+  //       result.push(doc.data());
+  //     });
 
-      setMessages(result);
-      setLoadingMessages(false);
-    });
-    return unsubscribe;
-  }, []);
+  //     setMessages(result);
+  //     setLoadingMessages(false);
+  //   });
+  //   return unsubscribe;
+  // }, []);
 
   useEffect(() => {
     const getTransaction = async () => {
@@ -129,6 +133,23 @@ export const LiveChatPage = () => {
       setExpertData(expertDataTemp.data);
       const userInfo = await getUserById(result.data.customer_id);
       setUserInformation(userInfo.data);
+      const user = await getValidatedUser();
+      console.log(result.data);
+      setTransaction(result.data);
+      if (userInfo.data.id != user.uid) {
+        return <Navigate to="/" />;
+      } else if (result.data.transaction_status != "ongoing") {
+        const updateStatus = await updateTransactionStatusToOngoing(
+          transactionId
+        );
+        console.log(updateStatus);
+
+        if (
+          updateStatus.errorMessage == "Transaction is not in 'waiting' status."
+        ) {
+          navigate("/");
+        }
+      }
 
       setLoadingReceiverData(false);
     };
@@ -259,7 +280,7 @@ export const LiveChatPage = () => {
           <div className="px-4">
             <div className="d-flex flex-row justify-content-center">
               <h5>
-                {transaction.transaction_status === "ready"
+                {transaction.transaction_status === "ongoing"
                   ? "This Consultation Session Will End At " +
                     new Date(transaction.end_time.seconds * 1000).getHours() +
                     ":" +
@@ -267,7 +288,16 @@ export const LiveChatPage = () => {
                   : "This Consultation Session Ended At " +
                     new Date(transaction.end_time.seconds * 1000).getHours() +
                     ":" +
-                    new Date(transaction.end_time.seconds * 1000).getMinutes() +
+                    (new Date(
+                      transaction.end_time.seconds * 1000
+                    ).getMinutes() > 9
+                      ? new Date(
+                          transaction.end_time.seconds * 1000
+                        ).getMinutes()
+                      : "0" +
+                        new Date(
+                          transaction.end_time.seconds * 1000
+                        ).getMinutes()) +
                     " " +
                     new Date(transaction.end_time.seconds * 1000).getDate() +
                     " " +
@@ -339,7 +369,7 @@ export const LiveChatPage = () => {
             )}
           </div>
           <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
-            {transaction.transaction_status === "ready" ? (
+            {transaction.transaction_status === "ongoing" ? (
               <>
                 <FontAwesomeIcon
                   icon={faPaperclip}

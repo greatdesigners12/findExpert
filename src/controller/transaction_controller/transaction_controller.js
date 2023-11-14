@@ -9,14 +9,14 @@ import {
   updateDoc,
   deleteDoc,
   startAfter,
-  limit
+  limit,
+  Timestamp,
 } from "firebase/firestore";
 import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Expert } from "../experts_controller/models/expert";
-
 
 export async function createTransaction(transaction) {
   const result = new ResultData();
@@ -138,12 +138,12 @@ export async function updateTransactionStatusToOngoing(transactionId) {
       // Check if the current transaction status is "waiting" to update it to "ongoing"
       if (transactionSnapshot.data().transaction_status === "waiting") {
         // Use new Date() for current time (local time)
-        const currentTimestamp = new Date();
-        const amount = transactionSnapshot.data().amount;
+        const currentTimestamp = Timestamp.fromDate(new Date());
+        const amount = transactionSnapshot.data().consultation_time;
 
         // Calculate the end time based on the amount in minutes
-        const endTime = new Date(
-          currentTimestamp.getTime() + amount * 30 * 60000
+        const endTime = Timestamp.fromDate(
+          new Date(new Date().getTime() + amount * 60000)
         );
 
         // Update the transaction status to "ongoing" and update start_time and end_time
@@ -420,7 +420,7 @@ export async function getLatestExpertTransaction(user_id) {
       transactionsCollection,
       where("customer_id", "in", [user_id]),
       // orderBy("transaction_date", "desc"), tidak jalan
-      limit(4) 
+      limit(4)
     );
 
     const transactionSnapshot = await getDocs(userTransactionsQuery);
@@ -455,7 +455,6 @@ export async function getLatestExpertTransaction(user_id) {
         expertData.price,
         expertData.id,
         expertData.registered_date
-       
       );
 
       expertTransactions.push({
@@ -469,7 +468,8 @@ export async function getLatestExpertTransaction(user_id) {
     result.statusCode = 200;
   } catch (error) {
     result.data = null;
-    result.errorMessage = "Failed to get latest expert transactions: " + error.message;
+    result.errorMessage =
+      "Failed to get latest expert transactions: " + error.message;
     result.statusCode = 500;
   }
 
@@ -553,7 +553,6 @@ export async function getExpertTransactionsById(
       }
       transactions.push(transactionData);
     }
-    
 
     result.data = transactions;
     result.errorMessage = "";
@@ -623,7 +622,6 @@ export async function getExpertTransactionsById2(
       }
       transactions.push(transactionData);
     }
-    
 
     result.data = transactions;
     result.errorMessage = "";

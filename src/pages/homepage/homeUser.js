@@ -120,60 +120,66 @@ export const HomeUser = () => {
               <div className="">
                 <h3>Recent Consultation</h3>
                 <div className="row">
-              {history ? (
-                history.map((historys) => {
-                  let circleColor;
+                  {history ? (
+                    history.map((historys) => {
+                      let circleColor;
 
-                  switch (historys.expert.status) {
-                    case "online":
-                      circleColor = "green";
-                      break;
-                    case "busy":
-                      circleColor = "red";
-                      break;
-                    case "offline":
-                      circleColor = "grey";
-                      break;
-                    default:
-                      circleColor = "black"; // Default color jika status tidak sesuai
-                  }
+                      switch (historys.expert.status) {
+                        case "online":
+                          circleColor = "green";
+                          break;
+                        case "busy":
+                          circleColor = "red";
+                          break;
+                        case "offline":
+                          circleColor = "grey";
+                          break;
+                        default:
+                          circleColor = "black"; // Default color jika status tidak sesuai
+                      }
 
-                  return (
-                    <div key={historys.expert.id} className="col-xl-3 col-lg-4 col-md-6">
-                      <a href={`/expertdetails/${historys.expert.id}`}>
-                        <div className="team__item p-relative text-center fix mb-30">
-                          <div className="team__thumb mb-25">
-                            <img src={historys.expert.profilePicture} alt="team" />
-                            <div
-                              className="status-circle"
-                              style={{ backgroundColor: circleColor }}
-                            ></div>
-                            <div className="team__info text-start">
-                              <h3>
-                                <Link to={`/expertdetails/${historys.expert.id}`}>
-                                  {historys.expert.fullName}
-                                </Link>
-                              </h3>
-                              <span>{name}</span>
+                      return (
+                        <div
+                          key={historys.expert.id}
+                          className="col-xl-3 col-lg-4 col-md-6"
+                        >
+                          <a href={`/livechat/${historys.transaction.id}`}>
+                            <div className="team__item p-relative text-center fix mb-30">
+                              <div className="team__thumb mb-25">
+                                <img
+                                  src={historys.expert.profilePicture}
+                                  alt="team"
+                                />
+                                <div
+                                  className="status-circle"
+                                  style={{ backgroundColor: circleColor }}
+                                ></div>
+                                <div className="team__info text-start">
+                                  <h3>
+                                    <Link to={`/transaction/${historys.id}`}>
+                                      {historys.expert.fullName}
+                                    </Link>
+                                  </h3>
+                                  <span>{name}</span>
+                                </div>
+                              </div>
+                              <div className="team__content">
+                                <h3>
+                                  <Link to={`/transaction/${historys.id}`}>
+                                    {historys.expert.fullName}
+                                  </Link>
+                                </h3>
+                                <span>{name}</span>
+                              </div>
                             </div>
-                          </div>
-                          <div className="team__content">
-                            <h3>
-                              <Link to={`/expertdetails/${historys.expert.id}`}>
-                                {historys.expert.fullName}
-                              </Link>
-                            </h3>
-                            <span>{name}</span>
-                          </div>
+                          </a>
                         </div>
-                      </a>
-                    </div>
-                  );
-                })
-              ) : (
-                <p>No results found.</p>
-              )}
-            </div>
+                      );
+                    })
+                  ) : (
+                    <p>No results found.</p>
+                  )}
+                </div>
               </div>
             )}
           </div>
