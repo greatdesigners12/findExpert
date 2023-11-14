@@ -12,18 +12,24 @@ import HomeThreeSecondServices from "../Home/HomeThreeSecondServices/HomeThreeSe
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../../../src/components/shared/LoadingSpinner";
-import { getAllFieldsWithExperts, getExpertsByFieldAndStatus } from "../../../src/controller/fields_controller/fields_controller";
+import {
+  getAllFieldsWithExperts,
+  getExpertsByFieldAndStatus,
+} from "../../../src/controller/fields_controller/fields_controller";
 import "./home.css";
 import { useContext } from "react";
 import { UserContext } from "../../context/authContext.js";
 import HomeServices from "../Home/HomeServices/HomeServices";
-import { getExpertByHistory, getExpertByHistory1 } from "../../controller/transaction_controller/transaction_controller";
+import {
+  getExpertByHistory,
+  getExpertByHistory1,
+} from "../../controller/transaction_controller/transaction_controller";
 import { IsUserSmallComponent } from "../Middleware/Middlewares.js";
 import { Link } from "react-router-dom";
 
 export const HomeUser = () => {
   const [expertsData, setExpertsData] = useState([]);
-  const [isLoadingHistory, setLoadingHistory,] = useState(true);
+  const [isLoadingHistory, setLoadingHistory] = useState(true);
   const [history, setHistory] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const params = useParams();
@@ -32,10 +38,11 @@ export const HomeUser = () => {
   const { userData, setUser } = useContext(UserContext);
 
   useEffect(() => {
-    const fetchHistory = async () => { // Replace with the actual expert ID
+    const fetchHistory = async () => {
+      // Replace with the actual expert ID
       const expertId = userData.uid; // Replace with the actual expert ID
       const result = await getExpertByHistory(expertId);
-      console.log(userData.uid)
+      console.log(userData.uid);
       setHistory(result.data);
       console.log(result.data);
       setLoadingHistory(false);
@@ -109,42 +116,39 @@ export const HomeUser = () => {
       </div>
       <div className="home-expert-page container">
         <IsUserSmallComponent>
-        <div className="row">
-          {isLoadingHistory ? (
-            <LoadingSpinner />
-          ) : (
-            <div className="">
-              <h3>Recent Consultation</h3>
-              {
-                 history ? (
-                history.map((historys) => {
-                return (
-                 
-                    <div className="col-xl-3 col-lg-4 col-md-6 mt-30">
-                       <div key={historys.id}>
-                      <div className="textdeco text-center mb-30">
-                        <div className="team__thumb mb-25">
-                          <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
-                            alt="team"
-                          />
-                        </div>
-                        <div className="team__content">
-                          {/* <h3>{historys}</h3>
+          <div className="row">
+            {isLoadingHistory ? (
+              <LoadingSpinner />
+            ) : (
+              <div className="">
+                <h3>Recent Consultation</h3>
+                {history ? (
+                  history.map((historys) => {
+                    return (
+                      <div className="col-xl-3 col-lg-4 col-md-6 mt-30">
+                        <div key={historys.id}>
+                          <div className="textdeco text-center mb-30">
+                            <div className="team__thumb mb-25">
+                              <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
+                                alt="team"
+                              />
+                            </div>
+                            <div className="team__content">
+                              {/* <h3>{historys}</h3>
                           <span>{historys}</span> */}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <p>No results found.</p>
+                    );
+                  })
+                ) : (
+                  <p>No results found.</p>
+                )}
+              </div>
             )}
-            </div>
-          )}
-          
-        </div>
+          </div>
         </IsUserSmallComponent>
       </div>
 
@@ -180,7 +184,9 @@ export const HomeUser = () => {
                       </div>
                       <div className="services__content">
                         <h3>
-                          <Link to={`/expertbyfield/${field.id}/${field.name}`}>{field.name}</Link>
+                          <Link to={`/expertbyfield/${field.id}/${field.name}`}>
+                            {field.name}
+                          </Link>
                         </h3>
                         <p>{field.description}</p>
                       </div>
