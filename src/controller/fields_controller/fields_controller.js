@@ -32,7 +32,8 @@ export async function getExpertsByFieldAndStatus(fieldId) {
                 expertData.status,
                 expertData.cash_amount,
                 expertData.price,
-                expertData.id
+                expertData.id,
+                expertData.regitered_date
             );
         });
 
