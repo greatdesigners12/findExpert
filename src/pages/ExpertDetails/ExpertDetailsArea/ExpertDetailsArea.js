@@ -7,16 +7,28 @@ import { LoadingSpinner } from "../../../components/shared/LoadingSpinner";
 import "./expertdetail.css";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
 import { useParams } from "react-router-dom";
+import { useMemo } from "react";
 
 export const ExpertDetailsArea = () => {
   const [expertsData, setExpertsData] = useState(null);
   const [timeIntervals, setTimeIntervals] = useState(1);
   const [count, setCountIntervals] = useState(30);
+  const isExpertAvailable = useMemo(() => {
+    if (expertsData != null) {
+      return !(
+        expertsData.data.status == "offline" ||
+        expertsData.data.status == "busy"
+      );
+    } else {
+      return false;
+    }
+  }, [expertsData]);
 
   // Ambil id di url
   // /expertDetail/:id
   const params = useParams();
   const id = params.id;
+  
   const handleIncrementTime = () => {
     setTimeIntervals(timeIntervals + 1);
     setCountIntervals(count + 30);
@@ -39,8 +51,6 @@ export const ExpertDetailsArea = () => {
 
     getData();
   }, []);
-
-  const isExpertAvailable = expertsData.data.status == "offline" || expertsData.data.status == "busy";
 
   return (
     <>
@@ -81,20 +91,22 @@ export const ExpertDetailsArea = () => {
                       </button>
                     </div>
                     <div className="address-button">
-  {isExpertAvailable ? (
-    <Link
-      to={`/transaction/${expertsData.data.id}/${timeIntervals}`}
-      className="z-btn custom-consult-button"
-    >
-      Consult
-    </Link>
-  ) : (
-    <button className="z-btn custom-consult-button unavailable" disabled>
-      Experts currently unavailable
-    </button>
-  )}
-</div>
-
+                      {isExpertAvailable ? (
+                        <Link
+                          to={`/transaction/${expertsData.data.id}/${timeIntervals}`}
+                          className="z-btn custom-consult-button"
+                        >
+                          Consult
+                        </Link>
+                      ) : (
+                        <button
+                          className="z-btn custom-consult-button unavailable"
+                          disabled
+                        >
+                          Experts currently unavailable
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

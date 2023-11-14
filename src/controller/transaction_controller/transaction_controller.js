@@ -14,7 +14,7 @@ import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { ExpertsController } from "../path/to/ExpertControllers/experts_controller";
+import { ExpertsController } from "../experts_controller/experts_controller";
 
 
 export async function createTransaction(transaction) {
@@ -511,7 +511,6 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
     for (const transactionDoc of transactionsSnapshot.docs) {
       const transactionData = transactionDoc.data();
 
-      // Uncomment the following section to get customer data
       try {
         const userRef = doc(db, "userData", transactionData.customer_id);
         const userSnap = await getDoc(userRef);
@@ -526,9 +525,9 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
         console.error("Error fetching customer data:", error.message);
         transactionData["customerData"] = null;
       }
-
       transactions.push(transactionData);
     }
+    
 
     result.data = transactions;
     result.errorMessage = "";
@@ -567,7 +566,6 @@ export async function getExpertTransactionsById2(expertId, currentPage, pageSize
     for (const transactionDoc of transactionsSnapshot.docs) {
       const transactionData = transactionDoc.data();
 
-      // Uncomment the following section to get customer data
       try {
         const userRef = doc(db, "userData", transactionData.customer_id);
         const userSnap = await getDoc(userRef);
@@ -582,9 +580,9 @@ export async function getExpertTransactionsById2(expertId, currentPage, pageSize
         console.error("Error fetching customer data:", error.message);
         transactionData["customerData"] = null;
       }
-
       transactions.push(transactionData);
     }
+    
 
     result.data = transactions;
     result.errorMessage = "";

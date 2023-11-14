@@ -519,8 +519,7 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
                                 {transaction2.transaction_date}
                                 </td>
                                 <td>{transaction2.start_time}-{transaction2.end_time}</td>
-                                <td>{transaction2.customerData.fullName}
-</td>
+                                <td>{transaction2.customerData.fullName}</td>
                                 <td>{transaction2.payment_amount}</td>
                                 <td
                                   
