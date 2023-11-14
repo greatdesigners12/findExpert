@@ -15,6 +15,7 @@ import {
   onSnapshot,
   orderBy,
   where,
+  Timestamp,
 } from "firebase/firestore";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
@@ -43,6 +44,8 @@ export const LiveChatPage = () => {
     token: null,
     enableScreensharing: true,
   };
+
+  const [counter, setCounter] = useState(0);
 
   const { userData, setUser } = useContext(UserContext);
 
@@ -105,6 +108,27 @@ export const LiveChatPage = () => {
     getAllMessage();
   }, []);
 
+  useEffect(() => {
+    const updateStatusToDone = async () => {
+      const updateStatusDone = await updateTransactionByExpert(
+        transactionId,
+        "done"
+      );
+      const result = await getTransactionById(transactionId);
+      setTransaction(result.data);
+      console.log("Masook");
+      console.log(updateStatusDone);
+    };
+
+    if (counter > 0) {
+      setTimeout(() => setCounter(counter - 1), 1000);
+      if (counter < 1) {
+        updateStatusToDone();
+      }
+    } else if (transaction != null) {
+    }
+  }, [counter]);
+
   // useEffect(() => {
   //   const q = query(
   //     collection(dbFirebase, "livechat"),
@@ -138,7 +162,10 @@ export const LiveChatPage = () => {
       setTransaction(result.data);
       if (userInfo.data.id != user.uid) {
         return <Navigate to="/" />;
-      } else if (result.data.transaction_status != "ongoing") {
+      } else if (
+        result.data.transaction_status != "ongoing" &&
+        result.data.transaction_status != "done"
+      ) {
         const updateStatus = await updateTransactionStatusToOngoing(
           transactionId
         );
@@ -149,6 +176,19 @@ export const LiveChatPage = () => {
         ) {
           navigate("/");
         }
+      }
+
+      if (Timestamp.now() >= result.data.end_time) {
+        const updateStatusDone = await updateTransactionByExpert(
+          transactionId,
+          "done"
+        );
+
+        const result = await getTransactionById(transactionId);
+        setTransaction(result.data);
+        console.log(updateStatusDone);
+      } else {
+        setCounter(result.data.end_time - Timestamp.now());
       }
 
       setLoadingReceiverData(false);
@@ -282,9 +322,9 @@ export const LiveChatPage = () => {
               <h5>
                 {transaction.transaction_status === "ongoing"
                   ? "This Consultation Session Will End At " +
-                    new Date(transaction.end_time.seconds * 1000).getHours() +
+                    Math.floor(counter / 60) +
                     ":" +
-                    new Date(transaction.end_time.seconds * 1000).getMinutes()
+                    Math.floor(counter % 60)
                   : "This Consultation Session Ended At " +
                     new Date(transaction.end_time.seconds * 1000).getHours() +
                     ":" +
