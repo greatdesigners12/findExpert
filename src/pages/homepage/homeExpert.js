@@ -21,6 +21,7 @@ import { ExpertsController } from "../../controller/experts_controller/experts_c
 import {
   getExpertByHistory,
   getExpertTransactionsById,
+  getExpertTransactionsById2,
   updateTransactionByExpert,
   updateTransactionStatus,
 } from "../../controller/transaction_controller/transaction_controller.js";
@@ -36,7 +37,10 @@ export const HomeExpert = () => {
   const navigate = useNavigate();
   const { userData, setUser } = useContext(UserContext);
   const [isLoading, setLoading] = useState(true);
+  const [isLoadingTransaction, setLoadingTransactions] = useState(true);
   const [isLoadingTransactionsbyid, setLoadingTransactionsbyid] = useState(true);
+  const [isLoadingTransactionsbyid2, setLoadingTransactionsbyid2] = useState(true);
+
 
   console.log(userData.uid);
   //for cash
@@ -46,9 +50,12 @@ export const HomeExpert = () => {
   const [pageSizeTransactions, setPageSizeTransactions] = useState(1);
   const [currentPageTransactionsbyid, setCurrentPageTransactionsbyid] = useState(1);
   const [pageSizeTransactionsbyid, setPageSizeTransactionsbyid] = useState(1);
+  const [currentPageTransactionsbyid2, setCurrentPageTransactionsbyid2] = useState(1);
+  const [pageSizeTransactionsbyid2, setPageSizeTransactionsbyid2] = useState(1);
   //for transaction
   const [transactions, setTransactions] = useState([]);
   const [transactionsbyid, setTransactionsbyid] = useState([]);
+  const [transactionsbyid2, setTransactionsbyid2] = useState([]);
 
   const currentTableDataTransactions = useMemo(() => {
     const firstPageIndex = (currentPageTransactions - 1) * pageSizeTransactions;
@@ -64,6 +71,14 @@ export const HomeExpert = () => {
     return transactionsbyid.slice(firstPageIndex, lastPageIndex);
   }, [currentPageTransactionsbyid, pageSizeTransactionsbyid]);
 
+
+const currentTableDataTransactionsbyid2 = useMemo(() => {
+    const firstPageIndex = (currentPageTransactionsbyid2 - 1) * pageSizeTransactionsbyid2;
+    const lastPageIndex = firstPageIndex + pageSizeTransactionsbyid2;
+
+    return transactionsbyid2.slice(firstPageIndex, lastPageIndex);
+  }, [currentPageTransactionsbyid2, pageSizeTransactionsbyid2]);
+
   const updateTransactionStatusAndNavigate = async (id) => {
     // Perform the updateTransactionStatus action here
     await updateTransactionStatus(id, true);
@@ -77,12 +92,29 @@ export const HomeExpert = () => {
       // try {
       const expertId = userData.uid; // Replace with the actual expert ID
       const result = await getExpertTransactionsById(expertId, currentPageTransactionsbyid, pageSizeTransactionsbyid);
+      if(result.statusCode == 200){
       setTransactionsbyid(result.data);
       setPageSizeTransactionsbyid(5);
-      console.log(result);
+      console.log(result.data);
       setLoadingTransactionsbyid(false);
+      }
     };
     fetchTransactionsByID();
+  }, []);
+
+  useEffect(() => {
+    const fetchTransactionsByID2 = async () => {
+      // try {
+      const expertId = userData.uid; // Replace with the actual expert ID
+      const result = await getExpertTransactionsById2(expertId, currentPageTransactionsbyid2, pageSizeTransactionsbyid2);
+      if(result.statusCode == 200){
+      setTransactionsbyid2(result.data);
+      setPageSizeTransactionsbyid2(5);
+      console.log(result.data);
+      setLoadingTransactionsbyid2(false);
+      }
+    };
+    fetchTransactionsByID2();
   }, []);
 
   useEffect(() => {
@@ -93,6 +125,7 @@ export const HomeExpert = () => {
       setTransactions(result.data);
       setPageSizeTransactions(5);
       console.log(result);
+      setLoadingTransactions(false);
     };
     fetchTransactions();
   }, []);
@@ -214,7 +247,7 @@ export const HomeExpert = () => {
                 data-wow-delay=".2s"
               >
                 <div className=" d-flex flex-column justify-content-center align-items-center">
-                  {pageSizeTransactions == 0 ? (
+                  {isLoadingTransaction ? (
                     <div className="py-5">
                       <LoadingSpinner />
                     </div>
@@ -307,20 +340,20 @@ export const HomeExpert = () => {
           </div>
 
           <div className="row mb-3">
-            {isLoadingTransactionsbyid? (
-              <LoadingSpinner />
-            ) : (
+           
               <div className="mb-3">
                 <h3 className="mb-3">Consultation</h3>
                 <div className="col-xl-3 col-lg-4 col-md-6">
+                  
                   <div className="d-flex justify-content-start w-100">
                     <div className="d-flex flex-row align-items-center">
+
                       <p className="mb-0 me-3">Show </p>
                       <Form.Select
                         className="mb-3 mt-4"
                         value={pageSizeTransactionsbyid}
                         onChange={(e) => {
-                          setCurrentPageTransactions(e.target.value);
+                          setCurrentPageTransactionsbyid(e.target.value);
                         }}
                       >
                         <option value={5}>5</option>
@@ -331,7 +364,11 @@ export const HomeExpert = () => {
                     </div>
                   </div>
                 </div>
-                
+                {transactionsbyid.length == 0 ? (
+                    <div className="py-5">
+                      <LoadingSpinner />
+                    </div>
+                  ) : (
                 <div className="row mb-3">
                   {currentTableDataTransactionsbyid.map((transaction) => {
                     return (
@@ -346,40 +383,78 @@ export const HomeExpert = () => {
 
                             <div className="team__content">
                               <div key={transaction.id}>
-                                <h3>{transaction.customerData.fullName}</h3>
-                                <span>{}</span>
-                                <>
-                                  <button
-                                    onClick={() =>
-                                      updateTransactionStatusAndNavigate(
-                                        transaction.id
-                                      )
-                                    }
-                                    className="btn btn-success"
-                                  >
-                                    Accept
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      updateTransactionStatus(
-                                        transaction.id,
-                                        false
-                                      )
-                                    }
-                                    className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
-                                  >
-                                    Decline
-                                  </button>
-                                </>
+                                <h3 className="m-2">
+                                  {transaction.customer_id}
+                                </h3>
+                                {transaction.transaction_status ===
+                                "on going" ? (
+                                  <>
+                                    <div
+                                      style={{
+                                        display: "inline-block",
+                                        backgroundColor: "purple",
+                                        borderRadius: "10px",
+                                        padding: "5px",
+                                        margin: "8px",
+                                      }}
+                                    >
+                                      {transaction.transaction_status ===
+                                        "on going" && (
+                                        <span style={{ color: "white" }}>
+                                          On Going
+                                        </span>
+                                      )}
+                                    </div>
+                                    <br></br>
+                                    <button
+                                      onClick={() =>
+                                        updateTransactionStatusAndNavigate(
+                                          transaction.id
+                                        )
+                                      }
+                                      className="btn btn-danger"
+                                    >
+                                      Back to Livechat
+                                    </button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <button
+                                      onClick={() =>
+                                        updateTransactionStatusAndNavigate(
+                                          transaction.id
+                                        )
+                                      }
+                                      className="btn btn-success"
+                                    >
+                                      Accept
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        updateTransactionStatus(
+                                          transaction.id,
+                                          false
+                                        )
+                                      }
+                                      className="btn btn-danger ms-lg-2 mt-2 mt-lg-0"
+                                    >
+                                      Decline
+                                    </button>
+                                  </>
+                                )}
+                                {/* <span>{}</span> */}
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                       
                     );
+                    
                   })}
-                  
+               
                 </div>
+)}
                 <Pagination
                         className="pagination-bar"
                         currentPageTransactionsbyid={currentPageTransactionsbyid}
@@ -389,13 +464,12 @@ export const HomeExpert = () => {
                           setCurrentPageTransactionsbyid(page)
                         }
                       />
+
               </div>
-            )}
+
           </div>
           <div className="row my-3">
-            {isLoadingTransactionsbyid ? (
-              <LoadingSpinner />
-            ) : (
+            
               <div>
                 <h3>Consultation List</h3>
                 <div className="col-xl-3 col-lg-4 col-md-6">
@@ -404,9 +478,9 @@ export const HomeExpert = () => {
                       <p className="mb-0 me-3">Show </p>
                       <Form.Select
                         className="mb-3 mt-4"
-                        value={pageSizeTransactionsbyid}
+                        value={pageSizeTransactionsbyid2}
                         onChange={(e) => {
-                          setCurrentPageTransactions(e.target.value);
+                          setCurrentPageTransactionsbyid2(e.target.value);
                         }}
                       >
                         <option value={5}>5</option>
@@ -418,7 +492,9 @@ export const HomeExpert = () => {
                   </div>
                 </div>
                 <div id="table-container"></div>
-
+                {transactionsbyid2.length == 0 ? (
+              <LoadingSpinner />
+            ) : (
                 <div class="records table-responsive">
                   <div>
                     <table width="100%">
@@ -433,18 +509,18 @@ export const HomeExpert = () => {
                         </tr>
                       </thead>
                       <tbody>
-                          {currentTableDataTransactionsbyid.map((transaction) => {
+                          {currentTableDataTransactionsbyid2.map((transaction2) => {
                             return (
-                              <tr key={transaction.id}>
+                              <tr key={transaction2.id}>
                                 <th scope="row" className="th-row">
-                                  {transaction.id}
+                                  {transaction2.id}
                                 </th>
                                 <td>
-                                {transaction.transaction_date}
+                                {transaction2.transaction_date}
                                 </td>
-                                <td>{transaction.start_time}-{transaction.end_time}</td>
-                                <td>{transaction.customerData.fullName}</td>
-                                <td>{transaction.payment_amount}</td>
+                                <td>{transaction2.start_time}-{transaction2.end_time}</td>
+                                <td>{transaction2.customer_id}</td>
+                                <td>{transaction2.payment_amount}</td>
                                 <td
                                   
                                 >
@@ -459,17 +535,18 @@ export const HomeExpert = () => {
                     </table>
                     <Pagination
                         className="pagination-bar"
-                        currentPageTransactionsbyid={currentPageTransactionsbyid}
-                        totalCount={transactionsbyid.length}
-                        pageSize={pageSizeTransactionsbyid}
+                        currentPageTransactionsbyid={currentPageTransactionsbyid2}
+                        totalCount={transactionsbyid2.length}
+                        pageSize={pageSizeTransactionsbyid2}
                         onPageChange={(page) =>
-                          setCurrentPageTransactionsbyid(page)
+                          setCurrentPageTransactionsbyid2(page)
                         }
                       />
                   </div>
                 </div>
+)}
               </div>
-            )}
+            
           </div>
         </div>
       </section>

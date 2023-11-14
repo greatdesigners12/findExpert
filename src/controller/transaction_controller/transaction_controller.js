@@ -310,7 +310,7 @@ export async function updateTransactionStatus(id, isAccepted=true) {
 
       const r = await updateDoc(transactionRef, {
           
-          transaction_status:  isAccepted ? "ready" : "cancel"
+          transaction_status:  isAccepted ? "on going" : "cancel"
       });
 
       result.data = r;
@@ -487,7 +487,51 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
     const expertTransactionsQuery = query(
       transactionsCollection,
       where("expert_id", "==", expertId),
-      where("transaction_status", "in", ["verified", "unverified"], 
+      where("transaction_status", "in", ["on going", "verified"], 
+      orderBy("transaction_status",'asc'), // Sort by transaction_status in ascending order
+     ),
+    );     
+
+    const startAfterDocument = currentPage > 1 ? await getDocumentToStartAfter(expertTransactionsQuery, pageSize, currentPage) : null;
+
+    let queryWithPagination = expertTransactionsQuery;
+    if (startAfterDocument) {
+      queryWithPagination = startAfter(queryWithPagination, startAfterDocument);
+    }
+
+    const transactionsSnapshot = await getDocs(queryWithPagination);
+
+    const transactions = [];
+    transactionsSnapshot.forEach(async (transactionDoc) => {
+  
+      // const userRef = doc(db, "userData", transactionDoc.data().customer_id)
+      // const userSnap = await getDoc(userRef);
+      const transactionData = transactionDoc.data();
+      // transactionData["customerData"] = userSnap.data()
+      transactions.push(transactionData);
+    });
+
+    result.data = transactions;
+    result.errorMessage = "";
+    result.statusCode = 200;
+  } catch (error) {
+    result.data = null;
+    result.errorMessage = "Failed to get expert transactions: " + error.message;
+    result.statusCode = 500;
+  }
+
+  return result;
+}
+
+export async function getExpertTransactionsById2(expertId, currentPage, pageSize) {
+  const result = new ResultData();
+
+  try {
+    const transactionsCollection = collection(db, "transactions");
+    const expertTransactionsQuery = query(
+      transactionsCollection,
+      where("expert_id", "==", expertId),
+      where("transaction_status", "in", ["on going", "done", "cancel", "verified", "unverified"], 
       orderBy("transaction_date", "desc")),
     );     
 
@@ -503,10 +547,10 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
     const transactions = [];
     transactionsSnapshot.forEach(async (transactionDoc) => {
   
-      const userRef = doc(db, "userData", transactionDoc.data().customer_id)
-      const userSnap = await getDoc(userRef);
+      // const userRef = doc(db, "userData", transactionDoc.data().customer_id)
+      // const userSnap = await getDoc(userRef);
       const transactionData = transactionDoc.data();
-      transactionData["customerData"] = userSnap.data()
+      // transactionData["customerData"] = userSnap.data()
       transactions.push(transactionData);
     });
 
