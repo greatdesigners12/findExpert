@@ -15,7 +15,7 @@ import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { Expert } from "./models/expert";
+import { Expert } from "../experts_controller/models/expert";
 
 
 export async function createTransaction(transaction) {
@@ -418,8 +418,7 @@ export async function getLatestExpertTransaction(user_id) {
     const transactionsCollection = collection(db, "transactions");
     const userTransactionsQuery = query(
       transactionsCollection,
-      where("customer_id", "==", user_id),
-      orderBy("transaction_date", "desc"),
+      where("customer_id", "in", [user_id]),
       limit(4) 
     );
 

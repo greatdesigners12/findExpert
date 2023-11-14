@@ -20,12 +20,9 @@ import "./home.css";
 import { useContext } from "react";
 import { UserContext } from "../../context/authContext.js";
 import HomeServices from "../Home/HomeServices/HomeServices";
-import {
-  getExpertByHistory,
-  getExpertByHistory1,
-} from "../../controller/transaction_controller/transaction_controller";
 import { IsUserSmallComponent } from "../Middleware/Middlewares.js";
 import { Link } from "react-router-dom";
+import { getLatestExpertTransaction } from "../../controller/transaction_controller/transaction_controller.js";
 
 export const HomeUser = () => {
   const [expertsData, setExpertsData] = useState([]);
@@ -41,7 +38,7 @@ export const HomeUser = () => {
     const fetchHistory = async () => {
       // Replace with the actual expert ID
       const expertId = userData.uid; // Replace with the actual expert ID
-      const result = await getExpertByHistory(expertId);
+      const result = await getLatestExpertTransaction(userData.uid);
       console.log(userData.uid);
       setHistory(result.data);
       console.log(result.data);
@@ -122,30 +119,61 @@ export const HomeUser = () => {
             ) : (
               <div className="">
                 <h3>Recent Consultation</h3>
-                {history ? (
-                  history.map((historys) => {
-                    return (
-                      <div className="col-xl-3 col-lg-4 col-md-6 mt-30">
-                        <div key={historys.id}>
-                          <div className="textdeco text-center mb-30">
-                            <div className="team__thumb mb-25">
-                              <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Siberischer_tiger_de_edit02.jpg/400px-Siberischer_tiger_de_edit02.jpg"
-                                alt="team"
-                              />
-                            </div>
-                            <div className="team__content">
-                              {/* <h3>{historys}</h3>
-                          <span>{historys}</span> */}
+                <div className="row">
+              {history ? (
+                history.map((historys) => {
+                  let circleColor;
+
+                  switch (historys.expert.status) {
+                    case "online":
+                      circleColor = "green";
+                      break;
+                    case "busy":
+                      circleColor = "red";
+                      break;
+                    case "offline":
+                      circleColor = "grey";
+                      break;
+                    default:
+                      circleColor = "black"; // Default color jika status tidak sesuai
+                  }
+
+                  return (
+                    <div key={historys.expert.id} className="col-xl-3 col-lg-4 col-md-6">
+                      <a href={`/expertdetails/${historys.expert.id}`}>
+                        <div className="team__item p-relative text-center fix mb-30">
+                          <div className="team__thumb mb-25">
+                            <img src={historys.expert.profilePicture} alt="team" />
+                            <div
+                              className="status-circle"
+                              style={{ backgroundColor: circleColor }}
+                            ></div>
+                            <div className="team__info text-start">
+                              <h3>
+                                <Link to={`/expertdetails/${historys.expert.id}`}>
+                                  {historys.expert.fullName}
+                                </Link>
+                              </h3>
+                              <span>{name}</span>
                             </div>
                           </div>
+                          <div className="team__content">
+                            <h3>
+                              <Link to={`/expertdetails/${historys.expert.id}`}>
+                                {historys.expert.fullName}
+                              </Link>
+                            </h3>
+                            <span>{name}</span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p>No results found.</p>
-                )}
+                      </a>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>No results found.</p>
+              )}
+            </div>
               </div>
             )}
           </div>
