@@ -2,8 +2,8 @@ import React, { useState} from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import useGlobalContext from '../../../hooks/useGlobalContext';
-import { IsExpert, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent, IsUserSmallComponent } from '../../Middleware/Middlewares';
-
+import { IsAuthenticated, IsExpert, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent, IsUserSmallComponent } from '../../Middleware/Middlewares';
+import {logout} from '../../../controller/auth_controller/auth_controller'
 
 const StyleFiveHeader = () => {
 
@@ -11,6 +11,10 @@ const StyleFiveHeader = () => {
    const handleClose = () => setShow(false);
    const handleShow = () => setShow(true);
    const { stickyMenu } = useGlobalContext();
+
+   const handleLogout = () => {
+    logout();
+  };
 
    return (
      <>
@@ -54,20 +58,25 @@ const StyleFiveHeader = () => {
                            </li>
                            </IsUserSmallComponent> 
                            
-                           <li>
+                           {/* <li>
                              <NavLink to="/about">About Us </NavLink>
-                           </li>
+                           </li> */}
                            <li>
                              <NavLink to="/fields">Fields</NavLink>
                            </li>
-                           <li>
+                           {/* <li>
                              <NavLink to="/contact">Contact Us</NavLink>
-                           </li>
+                           </li> */}
                            <IsNotAuthenticatedSmallComponent>
                              <li>
                                <NavLink to="/login">Login</NavLink>
                              </li>
                            </IsNotAuthenticatedSmallComponent>
+                           <IsAuthenticated>
+                           <li>
+                               <NavLink onClick={handleLogout}>Logout</NavLink>
+                             </li>
+                           </IsAuthenticated>
                          </ul>
                        </nav>
                      </div>

@@ -41,7 +41,7 @@ const Sidebar = ({ show, handleClose }) => {
                               <div className="tab-pane fade show active" id="menu" role="tabpanel" aria-labelledby="menu-tab">
 
                                  <div className='side_navBar'>
-                                    <Collapsible trigger={<NavLink to="/home">Home</NavLink>} triggerTagName="div"
+                                    {/* <Collapsible trigger={<NavLink to="/home">Home</NavLink>} triggerTagName="div"
                                        triggerOpenedClassName="icon_close" triggerClassName="iconAdd" open={false}>
                                        <ul className="sidebar_sub_menu text-white">
 
@@ -65,21 +65,21 @@ const Sidebar = ({ show, handleClose }) => {
                                           </Collapsible>
 
                                        </ul>
-                                    </Collapsible>
+                                    </Collapsible> */}
 
-                                   <div className='about iconAdd'>
+                                   {/* <div className='about iconAdd'>
                                        <NavLink to="/about">About Us </NavLink>
-                                   </div>
+                                   </div> */}
 
-                                    <Collapsible trigger={<NavLink to="/services">Services</NavLink>} triggerTagName="div"
+                                    <Collapsible trigger={<NavLink to="/fields">Fields</NavLink>} triggerTagName="div"
                                        triggerOpenedClassName="icon_close" triggerClassName="iconAdd" open={false}>
-                                          <ul className="sidebar_sub_menu submenu text-white">
+                                          {/* <ul className="sidebar_sub_menu submenu text-white">
                                              <li><NavLink to="/services">Services</NavLink></li>
                                              <li><NavLink to="/servicesDetails">Services Details</NavLink></li>
-                                          </ul>
+                                          </ul> */}
                                     </Collapsible>
 
-                                    <Collapsible trigger={<NavLink to="/portfolio">Insights</NavLink>} triggerTagName="div"
+                                    {/* <Collapsible trigger={<NavLink to="/portfolio">Insights</NavLink>} triggerTagName="div"
                                        triggerOpenedClassName="icon_close" triggerClassName="iconAdd" open={false}>
                                        <ul className="sidebar_sub_menu submenu text-white text-capitalize">
                                           <li><NavLink to="/portfolio">portfolio</NavLink></li>
@@ -95,11 +95,11 @@ const Sidebar = ({ show, handleClose }) => {
                                           <li><NavLink to="/blogs">Blog</NavLink></li>
                                           <li><NavLink to="/blogDetails">Blog Details</NavLink></li>
                                        </ul>
-                                    </Collapsible>
+                                    </Collapsible> */}
 
-                                    <div className='about iconAdd border-0'>
+                                    {/* <div className='about iconAdd border-0'>
                                        <NavLink to="/contact">Contact Us </NavLink>
-                                    </div>
+                                    </div> */}
 
                                  </div>
 
