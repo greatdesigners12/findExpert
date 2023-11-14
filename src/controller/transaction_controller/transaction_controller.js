@@ -14,7 +14,7 @@ import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { ExpertsController } from "../experts_controller/experts_controller";
+
 
 export async function createTransaction(transaction) {
   const result = new ResultData();
