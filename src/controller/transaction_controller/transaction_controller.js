@@ -419,6 +419,7 @@ export async function getLatestExpertTransaction(user_id) {
     const userTransactionsQuery = query(
       transactionsCollection,
       where("customer_id", "in", [user_id]),
+      // orderBy("transaction_date", "desc"), tidak jalan
       limit(4) 
     );
 
