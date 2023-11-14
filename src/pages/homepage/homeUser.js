@@ -233,7 +233,7 @@ export const HomeUser = () => {
           </div>
         </div>
       </section>
-      <HomeThreeSecondServices />
+      <div><HomeThreeSecondServices /></div>
       <HomeTwoTestimonial />
       <HomeThreeProjects />
       <HomeThreeFaq />
