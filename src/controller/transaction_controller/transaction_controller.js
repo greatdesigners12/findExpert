@@ -14,6 +14,8 @@ import { Transaction } from "./models/transactions";
 import { collection, getDocs, setDoc } from "firebase/firestore";
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ExpertsController } from "../path/to/ExpertControllers/experts_controller";
+
 
 export async function createTransaction(transaction) {
   const result = new ResultData();
@@ -413,7 +415,6 @@ export async function updateTransactionByExpert(id, newStatus) {
   return result;
 }
 
-
 export async function getExpertByHistory(user_id) {
   const result = new ResultData();
 
@@ -434,10 +435,14 @@ export async function getExpertByHistory(user_id) {
       const expert_id = transactionData.expert_id;
 
       if (!uniqueExpertIds.has(expert_id) && experts.length < 4) {
-        const expert = await this.getExpertById(expert_id);
-        if (expert.statusCode === 200) {
-          experts.push(expert.data);
+        const expert = await ExpertsController.getExpertById(expert_id);
+
+        if (expert) {
+          experts.push(expert);
           uniqueExpertIds.add(expert_id);
+        } else {
+          
+          console.error(`Failed to get expert with ID ${expert_id}`);
         }
       }
 
@@ -457,6 +462,7 @@ export async function getExpertByHistory(user_id) {
 
   return result;
 }
+
 
 export async function deleteTransaction(id) {
   const result = new ResultData();
