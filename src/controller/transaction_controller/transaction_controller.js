@@ -16,7 +16,6 @@ import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ExpertsController } from "../experts_controller/experts_controller";
 
-
 export async function createTransaction(transaction) {
   const result = new ResultData();
   const {
@@ -302,27 +301,24 @@ export async function updateTransactionByAdmin(id, newData) {
   return result;
 }
 
-export async function updateTransactionStatus(id, isAccepted=true) {
+export async function updateTransactionStatus(id, isAccepted = true) {
   const result = new ResultData();
 
   try {
-      
-      const transactionsCollection = collection(db, "transactions");
-      const transactionRef = doc(transactionsCollection, id);
+    const transactionsCollection = collection(db, "transactions");
+    const transactionRef = doc(transactionsCollection, id);
 
-      const r = await updateDoc(transactionRef, {
-          
-          transaction_status:  isAccepted ? "on going" : "cancel"
-      });
+    const r = await updateDoc(transactionRef, {
+      transaction_status: isAccepted ? "on going" : "cancel",
+    });
 
-      result.data = r;
-      result.errorMessage = "";
-      result.statusCode = 200;
-      
+    result.data = r;
+    result.errorMessage = "";
+    result.statusCode = 200;
   } catch (error) {
-      result.data = null;
-      result.errorMessage = "Failed to update transaction: " + error.message;
-      result.statusCode = 500;
+    result.data = null;
+    result.errorMessage = "Failed to update transaction: " + error.message;
+    result.statusCode = 500;
   }
 
   return result;
@@ -337,7 +333,6 @@ export async function updateTransactionByExpert(id, newStatus) {
 
     // Get the current local timestamp
     const currentTimestamp = new Date();
-   
 
     if (newStatus === "Accept") {
       // Retrieve the amount from the transaction data
@@ -348,13 +343,12 @@ export async function updateTransactionByExpert(id, newStatus) {
       const startTime = currentTimestamp;
       const endTime = new Date(startTime.getTime() + amount * 30 * 60000);
       // Calculate the end time based on the start time and amount
-    
 
       // Update the 'transaction_status', 'start_time', and 'end_time' fields
       await updateDoc(transactionRef, {
         transaction_status: "ready",
         start_time: startTime,
-        end_time: endTime
+        end_time: endTime,
       });
 
       // Assuming you have access to the expert document or data
@@ -363,7 +357,7 @@ export async function updateTransactionByExpert(id, newStatus) {
 
       // Update the expert status directly
       await updateDoc(expertRef, {
-        status: "busy" // Change "busy" to the desired status
+        status: "busy", // Change "busy" to the desired status
       });
     } else if (newStatus === "done") {
       // Retrieve the transaction data
@@ -376,7 +370,7 @@ export async function updateTransactionByExpert(id, newStatus) {
       if (currentTimestamp >= fifteenMinutesLater) {
         // Update the 'transaction_status' to "done"
         await updateDoc(transactionRef, {
-          transaction_status: "done"
+          transaction_status: "done",
         });
 
         // Assuming you have access to the expert document or data
@@ -385,7 +379,7 @@ export async function updateTransactionByExpert(id, newStatus) {
 
         // Update the expert status directly
         await updateDoc(expertRef, {
-          status: "online" // Change "online" to the desired status
+          status: "online", // Change "online" to the desired status
         });
 
         result.data = newStatus;
@@ -393,13 +387,14 @@ export async function updateTransactionByExpert(id, newStatus) {
         result.statusCode = 200;
       } else {
         result.data = null;
-        result.errorMessage = "Transaction must be at least 15 minutes to be marked as 'done'.";
+        result.errorMessage =
+          "Transaction must be at least 15 minutes to be marked as 'done'.";
         result.statusCode = 400;
       }
     } else if (newStatus === "cancel") {
       // Update the 'transaction_status' to "cancel"
       await updateDoc(transactionRef, {
-        transaction_status: "cancel"
+        transaction_status: "cancel",
       });
     } else {
       result.data = null;
@@ -479,7 +474,6 @@ export async function getLatestExpertTransaction(user_id) {
   return result;
 }
 
-
 export async function deleteTransaction(id) {
   const result = new ResultData();
 
@@ -501,7 +495,11 @@ export async function deleteTransaction(id) {
   return result;
 }
 
-export async function getExpertTransactionsById(expertId, currentPage, pageSize) {
+export async function getExpertTransactionsById(
+  expertId,
+  currentPage,
+  pageSize
+) {
   const result = new ResultData();
 
   try {
@@ -509,12 +507,22 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
     const expertTransactionsQuery = query(
       transactionsCollection,
       where("expert_id", "==", expertId),
-      where("transaction_status", "in", ["on going", "verified"], 
-      orderBy("transaction_status",'asc'), // Sort by transaction_status in ascending order
-     ),
-    );     
+      where(
+        "transaction_status",
+        "in",
+        ["on going", "verified"],
+        orderBy("transaction_status", "asc") // Sort by transaction_status in ascending order
+      )
+    );
 
-    const startAfterDocument = currentPage > 1 ? await getDocumentToStartAfter(expertTransactionsQuery, pageSize, currentPage) : null;
+    const startAfterDocument =
+      currentPage > 1
+        ? await getDocumentToStartAfter(
+            expertTransactionsQuery,
+            pageSize,
+            currentPage
+          )
+        : null;
 
     let queryWithPagination = expertTransactionsQuery;
     if (startAfterDocument) {
@@ -557,7 +565,11 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
   return result;
 }
 
-export async function getExpertTransactionsById2(expertId, currentPage, pageSize) {
+export async function getExpertTransactionsById2(
+  expertId,
+  currentPage,
+  pageSize
+) {
   const result = new ResultData();
 
   try {
@@ -565,11 +577,22 @@ export async function getExpertTransactionsById2(expertId, currentPage, pageSize
     const expertTransactionsQuery = query(
       transactionsCollection,
       where("expert_id", "==", expertId),
-      where("transaction_status", "in", ["on going", "done", "cancel", "verified", "unverified"], 
-      orderBy("transaction_date", "desc")),
-    );     
+      where(
+        "transaction_status",
+        "in",
+        ["on going", "done", "cancel", "verified", "unverified"],
+        orderBy("transaction_date", "desc")
+      )
+    );
 
-    const startAfterDocument = currentPage > 1 ? await getDocumentToStartAfter(expertTransactionsQuery, pageSize, currentPage) : null;
+    const startAfterDocument =
+      currentPage > 1
+        ? await getDocumentToStartAfter(
+            expertTransactionsQuery,
+            pageSize,
+            currentPage
+          )
+        : null;
 
     let queryWithPagination = expertTransactionsQuery;
     if (startAfterDocument) {
