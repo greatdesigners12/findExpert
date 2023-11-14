@@ -28,6 +28,8 @@ export async function getExpertsByFieldAndStatus(fieldId) {
                 expertData.ktp,
                 expertData.certificates,
                 expertData.profilePicture,
+                expertData.verified,
+                expertData.status,
                 expertData.cash_amount,
                 expertData.price,
                 expertData.id
@@ -147,12 +149,12 @@ export async function searchFieldsAndExperts(queryText) {
                     expertData.education,
                     expertData.fieldId,
                     expertData.nik,
-                    expertData.status,
-                    expertData.verified,
                     expertData.jobExperience,
                     expertData.ktp,
                     expertData.certificates,
                     expertData.profilePicture,
+                    expertData.verified,
+                    expertData.status,
                     expertData.cash_amount,
                     expertData.price,
                     expertData.id
@@ -268,6 +270,8 @@ export async function searchExpertsInField(fieldId, queryText) {
                     expertData.ktp,
                     expertData.certificates,
                     expertData.profilePicture,
+                    expertData.verified,
+                    expertData.status,
                     expertData.cash_amount,
                     expertData.price,
                     expertData.id
