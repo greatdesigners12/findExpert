@@ -237,7 +237,16 @@ export const LiveChatPage = () => {
     return <LoadingSpinner />;
   } else {
     return videoCall ? (
-      <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
+      <div
+        style={{ width: "100vw", height: "100vh" }}
+        className="d-flex flex-column"
+      >
+        <h5 className="w-100 text-center">
+          {"This Consultation Session Will End At " +
+            Math.floor(counter / 60) +
+            ":" +
+            Math.floor(counter % 60)}
+        </h5>
         <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
       </div>
     ) : (
