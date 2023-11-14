@@ -508,27 +508,14 @@ export async function getExpertTransactionsById(expertId, currentPage, pageSize)
     const transactionsSnapshot = await getDocs(queryWithPagination);
 
     const transactions = [];
-    for (const transactionDoc of transactionsSnapshot.docs) {
+    transactionsSnapshot.forEach(async (transactionDoc) => {
+  
+      // const userRef = doc(db, "userData", transactionDoc.data().customer_id)
+      // const userSnap = await getDoc(userRef);
       const transactionData = transactionDoc.data();
-
-      // Uncomment the following section to get customer data
-      try {
-        const userRef = doc(db, "userData", transactionData.customer_id);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          transactionData["customerData"] = userSnap.data();
-        } else {
-          // Handle the case where customer data is not found
-          transactionData["customerData"] = null;
-        }
-      } catch (error) {
-        // Handle any error that might occur while fetching customer data
-        console.error("Error fetching customer data:", error.message);
-        transactionData["customerData"] = null;
-      }
-
+      // transactionData["customerData"] = userSnap.data()
       transactions.push(transactionData);
-    }
+    });
 
     result.data = transactions;
     result.errorMessage = "";
@@ -564,27 +551,14 @@ export async function getExpertTransactionsById2(expertId, currentPage, pageSize
     const transactionsSnapshot = await getDocs(queryWithPagination);
 
     const transactions = [];
-    for (const transactionDoc of transactionsSnapshot.docs) {
+    transactionsSnapshot.forEach(async (transactionDoc) => {
+  
+      // const userRef = doc(db, "userData", transactionDoc.data().customer_id)
+      // const userSnap = await getDoc(userRef);
       const transactionData = transactionDoc.data();
-
-      // Uncomment the following section to get customer data
-      try {
-        const userRef = doc(db, "userData", transactionData.customer_id);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          transactionData["customerData"] = userSnap.data();
-        } else {
-          // Handle the case where customer data is not found
-          transactionData["customerData"] = null;
-        }
-      } catch (error) {
-        // Handle any error that might occur while fetching customer data
-        console.error("Error fetching customer data:", error.message);
-        transactionData["customerData"] = null;
-      }
-
+      // transactionData["customerData"] = userSnap.data()
       transactions.push(transactionData);
-    }
+    });
 
     result.data = transactions;
     result.errorMessage = "";
