@@ -414,8 +414,7 @@ export async function updateTransactionByExpert(id, newStatus) {
 
   return result;
 }
-
-export async function getExpertByHistory(user_id) {
+export async function getLatestExpertTransaction(user_id) {
   const result = new ResultData();
 
   try {
@@ -423,40 +422,57 @@ export async function getExpertByHistory(user_id) {
     const userTransactionsQuery = query(
       transactionsCollection,
       where("customer_id", "==", user_id),
-      orderBy("transaction_date", "desc")
+      orderBy("transaction_date", "desc"),
+      limit(4) // Limit to the latest 4 transactions
     );
+
     const transactionSnapshot = await getDocs(userTransactionsQuery);
 
-    const experts = [];
-    const uniqueExpertIds = new Set();
+    const expertTransactions = [];
 
     for (const transactionDoc of transactionSnapshot.docs) {
       const transactionData = transactionDoc.data();
-      const expert_id = transactionData.expert_id;
+      const id = transactionData.expert_id;
 
-      if (!uniqueExpertIds.has(expert_id) && experts.length < 4) {
-        const expert = await ExpertsController.getExpertById(expert_id);
+      // Get the expert data using expert_id
+      const expertDoc = await getDoc(doc(db, "expertData", id));
+      const expertData = expertDoc.data();
 
-        if (expert) {
-          experts.push(expert);
-          uniqueExpertIds.add(expert_id);
-        } else {
-          
-          console.error(`Failed to get expert with ID ${expert_id}`);
-        }
-      }
+      const expert = new Expert(
+        expertData.fullName,
+        expertData.phoneNumber,
+        expertData.email,
+        expertData.password,
+        expertData.birthDate,
+        expertData.gender,
+        expertData.education,
+        expertData.fieldId,
+        expertData.nik,
+        expertData.jobExperience,
+        expertData.ktp,
+        expertData.certificates,
+        expertData.profilePicture,
+        expertData.verified,
+        expertData.status,
+        expertData.cash_amount,
+        expertData.price,
+        expertData.id,
+        expertData.registered_date
+       
+      );
 
-      if (experts.length >= 4) {
-        break;
-      }
+      expertTransactions.push({
+        transaction: transactionData,
+        expert: expert,
+      });
     }
 
-    result.data = experts;
+    result.data = expertTransactions;
     result.errorMessage = "";
     result.statusCode = 200;
   } catch (error) {
     result.data = null;
-    result.errorMessage = "Failed to get experts by history: " + error.message;
+    result.errorMessage = "Failed to get latest expert transactions: " + error.message;
     result.statusCode = 500;
   }
 
