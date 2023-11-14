@@ -1,5 +1,5 @@
 export class Expert {
-    constructor(fullName, phoneNumber, email, password, birthDate, gender, education, fieldId, nik, jobExperience, ktp, certificates, profilePicture, cash_amount, price, id="") {
+    constructor(fullName, phoneNumber, email, password, birthDate, gender, education, fieldId, nik, jobExperience, ktp, certificates, profilePicture, verified, status, cash_amount, price, id, date) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -13,12 +13,12 @@ export class Expert {
         this.ktp = ktp;
         this.certificates = certificates;
         this.profilePicture = profilePicture;
-        this.verified = "false";
-        this.status = "offline";
-        this.cash_amount = 0;
+        this.verified = verified;
+        this.status = status;
+        this.cash_amount = cash_amount;
         this.price = price;
         this.id = id;
-        this.registered_date = new Date()
+        this.registered_date = date
     }
 
     serialize() {
