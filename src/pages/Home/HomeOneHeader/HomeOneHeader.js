@@ -3,13 +3,19 @@ import { FaFacebookF, FaTwitter, FaPinterestP, FaPhoneAlt, FaEnvelope, FaSearch,
 import { Link, NavLink } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import useGlobalContext from '../../../hooks/useGlobalContext';
-import { IsExpert, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent, IsUserSmallComponent } from '../../Middleware/Middlewares';
+import { IsExpert, IsAuthenticated, IsExpertSmallComponent, IsNotAuthenticated, IsNotAuthenticatedSmallComponent, IsUserSmallComponent } from '../../Middleware/Middlewares';
+import { logout } from "../../../controller/auth_controller/auth_controller";
 
 const HomeOneHeader = () => {
    const [show, setShow] = useState(false);
    const handleClose = () => setShow(false);
    const handleShow = () => setShow(true);
    const { stickyMenu } = useGlobalContext();
+
+   const handleLogout = () => {
+    logout();
+  };
+
    return (
      <>
        <header>
@@ -81,28 +87,33 @@ const HomeOneHeader = () => {
                            </li>
                            </IsUserSmallComponent> 
                            
-                           <li>
+                           {/* <li>
                              <NavLink to="/about">About Us </NavLink>
-                           </li>
+                           </li> */}
                            <li>
                              <NavLink to="/fields">Fields</NavLink>
                            </li>
-                           <li>
+                           {/* <li>
                              <NavLink to="/contact">Contact Us</NavLink>
                            </li>
                            <IsNotAuthenticatedSmallComponent>
                              <li>
                                <NavLink to="/login">Login</NavLink>
                              </li>
-                           </IsNotAuthenticatedSmallComponent>
+                           </IsNotAuthenticatedSmallComponent> */}
                          </ul>
                        </nav>
                      </div>
-                     <div className="header__btn d-none d-sm-block d-lg-none d-xl-block ml-50">
-                       <Link to="/contact" className="z-btn z-btn-white">
-                         Book Now
-                       </Link>
-                     </div>
+                     <IsNotAuthenticatedSmallComponent>
+                        <Link to="/contact" className="z-btn z-btn-3">
+                          <NavLink to="/login">Login</NavLink>
+                        </Link>
+                      </IsNotAuthenticatedSmallComponent>
+                      <IsAuthenticated>
+                        <Link to="/contact" className="z-btn z-btn-3">
+                          <NavLink onClick={handleLogout}>Logout</NavLink>
+                        </Link>
+                      </IsAuthenticated>
                      <div
                        onClick={handleShow}
                        className="sidebar__menu d-lg-none"
