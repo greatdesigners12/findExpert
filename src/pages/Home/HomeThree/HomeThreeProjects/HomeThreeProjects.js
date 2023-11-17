@@ -26,17 +26,17 @@ const HomeThreeProjects = () => {
    const testimonialData = [
       {
          id: 1,
-         title: <h3><Link to="/portfolioDetails">Organizational <br /> design for business</Link></h3>,
+         title: <h3>Experts in <br /> technologies</h3>,
          img:"assets/img/project/project-1.png",
       },
       {
          id: 2,
-         title: <h3><Link to="/portfolioDetails">Solve customer <br/> problems in a flash</Link></h3>,
+         title: <h3>Solve customer <br/> problems in a flash</h3>,
          img:"assets/img/project/project-2.png",
       },
       {
          id: 3,
-         title: <h3><Link to="/portfolioDetails">Organizational <br /> design for business</Link></h3>,
+         title: <h3>Experts in <br /> technologies</h3>,
          img: "assets/img/project/project-1.png",
       },
    ]
@@ -48,7 +48,7 @@ const HomeThreeProjects = () => {
                   <div className="col-xl-7">
                      <div className="section-title section__title-3 mb-70">
                         <h2>Future is brighter <br/> when you're more prepared</h2>
-                        <p>We help you weather today's uncertainty through our best team <br/> intelligence and needs.</p>
+                        <p>We navigate your difficulty with our team of top experts. Find your expert now.</p>
                      </div>
                   </div>
                </div>

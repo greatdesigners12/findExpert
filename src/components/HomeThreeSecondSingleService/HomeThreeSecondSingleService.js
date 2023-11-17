@@ -15,9 +15,7 @@ const HomeThreeSecondSingleService = ({ title }) => {
             <div className="services__content-3 pl-70 pr-70">
               <h3>{title}</h3>
               <p>
-                The bee's knees cockup loo cracking goal hotpot bits and bobs a
-                load of old tosh bubble and squeak arse over tit twit, excuse my
-                French bevvy Eaton argy-bargy amongst codswallop.
+              Struggling with a challenge? Connect with our network of experts who are ready to guide you. Whether it's professional advice, personal support, or specialized knowledge, we have the right experts to help you overcome obstacles. Describe your situation, and we'll match you with the expertise you need. You don't have to face it alone – let our community of experts support you on your journey.
               </p>
               <div className="services__icon-wrapper d-md-flex mb-35">
                 <div className="services__icon-item d-flex mr-60 mb-30">
@@ -25,7 +23,7 @@ const HomeThreeSecondSingleService = ({ title }) => {
                     <img src="assets/img/icon/services/services-9.png" alt="" />
                   </div>
                   <div className="text">
-                    <h3>Acquisitions Finance Consulting</h3>
+                    <h3>Consult to the Expert</h3>
                   </div>
                 </div>
                 <div className="services__icon-item d-flex mb-30">
@@ -36,7 +34,7 @@ const HomeThreeSecondSingleService = ({ title }) => {
                     />
                   </div>
                   <div className="text">
-                    <h3>Private Placement Consulting</h3>
+                    <h3>Help Your Tech Problems</h3>
                   </div>
                 </div>
               </div>

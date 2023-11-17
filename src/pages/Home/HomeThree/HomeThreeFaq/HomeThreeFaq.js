@@ -39,7 +39,7 @@ const HomeThreeFaq = () => {
                           aria-expanded="true"
                           aria-controls="collapse_1"
                         >
-                          Can you help my business grow?
+                          Can you help my tech problem?
                         </button>
                       </h5>
                     </div>
@@ -52,10 +52,7 @@ const HomeThreeFaq = () => {
                     >
                       <div className="card-body accordion-body">
                         <p>
-                          He nicked it show off show pick your nose and blow off
-                          such a fiber bleeding well get stuffed mate no biggie,
-                          in my flat bugger wind up cheesed off blower burke
-                          james bond cheeky.
+                          Yes, tech expert fron FindExpert can help your tech problems. Register and consult with them now!
                         </p>
                       </div>
                     </div>
@@ -70,7 +67,7 @@ const HomeThreeFaq = () => {
                           aria-expanded="true"
                           aria-controls="collapse_2"
                         >
-                          What are your best interest rates?
+                          How long is each session?
                         </button>
                       </h5>
                     </div>
@@ -83,10 +80,7 @@ const HomeThreeFaq = () => {
                     >
                       <div className="card-body accordion-body">
                         <p>
-                          He nicked it show off show pick your nose and blow off
-                          such a fiber bleeding well get stuffed mate no biggie,
-                          in my flat bugger wind up cheesed off blower burke
-                          james bond cheeky.
+                         The session is 30 minute long and clients can chat from video chat and text chat from this website.  
                         </p>
                       </div>
                     </div>
@@ -101,7 +95,7 @@ const HomeThreeFaq = () => {
                           aria-expanded="true"
                           aria-controls="collapse_3"
                         >
-                          How do you calculate cost of services?
+                          How much is each session? 
                         </button>
                       </h5>
                     </div>
@@ -114,10 +108,7 @@ const HomeThreeFaq = () => {
                     >
                       <div className="card-body accordion-body">
                         <p>
-                          He nicked it show off show pick your nose and blow off
-                          such a fiber bleeding well get stuffed mate no biggie,
-                          in my flat bugger wind up cheesed off blower burke
-                          james bond cheeky.
+                         Contact our customer service for the session cost.
                         </p>
                       </div>
                     </div>
@@ -145,10 +136,7 @@ const HomeThreeFaq = () => {
                     >
                       <div className="card-body accordion-body">
                         <p>
-                          He nicked it show off show pick your nose and blow off
-                          such a fiber bleeding well get stuffed mate no biggie,
-                          in my flat bugger wind up cheesed off blower burke
-                          james bond cheeky.
+                          The cost is calculated from how many session you choose. If you choose 2 session means that you get 2x30 minute (1 hour) of session. The the session you choose will be calculated with the expert expert price (session x price).
                         </p>
                       </div>
                     </div>
