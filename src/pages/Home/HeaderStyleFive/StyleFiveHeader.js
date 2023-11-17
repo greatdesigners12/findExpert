@@ -119,14 +119,14 @@ const StyleFiveHeader = () => {
                   <div className="header__bottom-right d-flex justify-content-end align-items-center">
                     <div className="header__btn d-none d-sm-block d-lg-none d-xl-block ml-50">
                       <IsNotAuthenticatedSmallComponent>
-                        <NavLink to="/login" className="z-btn z-btn-white">
+                        <NavLink to="/login" className="z-btn z-btn-3">
                           Login
                         </NavLink>
                       </IsNotAuthenticatedSmallComponent>
                       <IsAuthenticatedSmallComponent>
                         <NavLink
                           onClick={handleLogout}
-                          className="z-btn z-btn-white"
+                          className="z-btn z-btn-3"
                         >
                           Logout
                         </NavLink>

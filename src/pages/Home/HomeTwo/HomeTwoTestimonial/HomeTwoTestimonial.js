@@ -15,7 +15,7 @@ const HomeTwoTestimonial = () => {
       {
          id:1,
          name:'John Doe',
-         title:'Founder and CEO',
+         title:'University Student',
       },
       {
          id:2,
@@ -41,7 +41,7 @@ const HomeTwoTestimonial = () => {
                            {
                               testimonialData.map((testimonial,index) => {
                                  return <div key={index} className="testimonial__item">
-                                    <p className="white-color">He nicked it fantastic well on your bike mate have it a I bum bag I twit easy peasy that, chimney pot amongst are you taking the piss daft show off show off pick.</p>
+                                    <p className="white-color">This website help me learn and solve my problems</p>
                                     <div className="testimonial__content d-flex align-items-center">
                                        <div className="quote mr-20">
                                           <img src="assets/img/icon/testimonial/quote.png" alt="quote" />
