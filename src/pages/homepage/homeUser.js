@@ -17,12 +17,14 @@ import {
   getExpertsByFieldAndStatus,
 } from "../../../src/controller/fields_controller/fields_controller";
 import "./home.css";
+import { ref } from 'react';
 import { useContext } from "react";
 import { UserContext, getValidatedUser } from "../../context/authContext.js";
 import HomeServices from "../Home/HomeServices/HomeServices";
 import { IsUserSmallComponent } from "../Middleware/Middlewares.js";
 import { Link } from "react-router-dom";
 import { getLatestExpertTransaction } from "../../controller/transaction_controller/transaction_controller.js";
+import { useLocation } from 'react-router-dom';
 
 export const HomeUser = () => {
   const [expertsData, setExpertsData] = useState([]);
@@ -33,17 +35,32 @@ export const HomeUser = () => {
   const id = params.id;
   const name = params.name;
   const { userData, setUser } = useContext(UserContext);
+  const location = useLocation();
+
+  useEffect(() => {
+    const elementId = location.hash.substring(1); // Remove the leading '#' from the URL hash
+    scrollToElement(elementId);
+  }, [location]);
+
+  const scrollToElement = (elementId) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   useEffect(() => {
     const fetchHistory = async () => {
       // Replace with the actual expert ID
       const user = await getValidatedUser();
-      const expertId = user.uid; // Replace with the actual expert ID
-      const result = await getLatestExpertTransaction(user.uid);
-      console.log(userData.uid);
-      setHistory(result.data);
-      console.log(result.data);
-      setLoadingHistory(false);
+        const expertId = user.uid; // Replace with the actual expert ID
+        const result = await getLatestExpertTransaction(user.uid);
+        console.log(userData.uid);
+        setHistory(result.data);
+        console.log(result.data);
+        setLoadingHistory(false);
+
+     
     };
     fetchHistory();
   }, []);
@@ -53,65 +70,21 @@ export const HomeUser = () => {
   useEffect(() => {
     const getData = async () => {
       const data = await getAllFieldsWithExperts();
-      setFieldData(data);
-      console.log(data);
-      setLoading(false);
+      if (data.data != null){
+        setFieldData(data);
+        console.log(data);
+        setLoading(false);
+      }
     };
     getData();
   }, []);
 
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getExpertsByFieldAndStatus(id);
-      setExpertsData(data);
-      console.log(data);
-    };
-
-    getData();
-  }, [id]);
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (searchTerm.trim() === "") {
-      // If the search term is empty, reset to the original data
-      const data = await getExpertsByFieldAndStatus(id);
-      setExpertsData(data);
-    } else {
-      // Filter the data based on the search term
-      const filteredData = expertsData.data.filter((expert) =>
-        expert.fullName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setExpertsData({ data: filteredData });
-    }
-  };
   return (
     <>
       <PageHelmet pageTitle="Home Page" />
       <StyleFiveHeader />
       <HomeThreeHeroSection />
 
-      <div className="container">
-        <form className="d-flex mb-3" onSubmit={handleSearch}>
-          <div className="input-group">
-            <input
-              className="form-control"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-purple focus-purple"
-                type="submit"
-              >
-                <FontAwesomeIcon icon={faSearch} />
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
       <div className="home-expert-page container">
         <IsUserSmallComponent>
           <div className="row">
@@ -233,11 +206,11 @@ export const HomeUser = () => {
           </div>
         </div>
       </section>
-      <div><HomeThreeSecondServices /></div>
+      <div id="about"><HomeThreeSecondServices /></div>
       <HomeTwoTestimonial />
       <HomeThreeProjects />
       <HomeThreeFaq />
-      <CommonCtaArea />
+      <div id="contact"><CommonCtaArea/></div>
       <Footer />
     </>
   );

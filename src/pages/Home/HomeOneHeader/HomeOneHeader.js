@@ -1,18 +1,13 @@
 import { useState } from "react";
 import {
-  FaFacebookF,
-  FaTwitter,
-  FaPinterestP,
-  FaPhoneAlt,
-  FaEnvelope,
-  FaSearch,
-  FaLinkedinIn,
+FaSearch,
 } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import useGlobalContext from "../../../hooks/useGlobalContext";
 import {
   IsAuthenticated,
+  IsNotUserSmallComponent,
   IsAuthenticatedSmallComponent,
   IsExpert,
   IsExpertSmallComponent,
@@ -22,7 +17,11 @@ import {
 } from "../../Middleware/Middlewares";
 import { logout } from "../../../controller/auth_controller/auth_controller";
 
+
 const HomeOneHeader = () => {
+  const targetElementId = 'about';
+  const targetElementId2 = 'contact';
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -32,6 +31,7 @@ const HomeOneHeader = () => {
     logout();
   };
 
+
   return (
     <>
       <header>
@@ -40,29 +40,6 @@ const HomeOneHeader = () => {
             <div className="container">
               <div className="row align-items-center">
                 <div className="col-xl-6 col-lg-5 col-md-4"></div>
-                {/* <div className="col-xl-6 col-lg-7 col-md-8">
-                           <div className="header__info f-right">
-                              <ul>
-                                 <li>
-                                    <a href="tel:(+468)-254-762-443">
-                                       <i > <FaPhoneAlt/> </i>
-                                       (+468) 254 762 443
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <a href="mailto:info@consulting.com">
-                                       <i > <FaEnvelope/> </i>
-                                       info@consulting.com
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <a href="#" className="search-toggle">
-                                       <i > <FaSearch/> </i>
-                                    </a>
-                                 </li>
-                              </ul>
-                           </div>
-                        </div> */}
               </div>
             </div>
           </div>
@@ -102,39 +79,52 @@ const HomeOneHeader = () => {
                               <NavLink to="/">Home</NavLink>
                             </li>
                           </IsUserSmallComponent>
-
-                          {/* <li>
-                             <NavLink to="/about">About Us </NavLink>
-                           </li> */}
+                          <IsNotUserSmallComponent>
+                            <li>
+                              <NavLink to="/">Home</NavLink>
+                            </li>
+                          </IsNotUserSmallComponent>
+                          <li>
+                            <NavLink
+                              to={`/#${targetElementId}`}
+                              spy={true}
+                              smooth={true}
+                              offset={50}
+                              duration={500}
+                            >
+                              About Us
+                            </NavLink>
+                          </li>
                           <li>
                             <NavLink to="/fields">Fields</NavLink>
                           </li>
-                          {/* <li>
-                             <NavLink to="/contact">Contact Us</NavLink>
-                           </li> */}
-                          {/* <IsNotAuthenticatedSmallComponent>
-                             <li>
-                               <NavLink to="/login">Login</NavLink>
-                             </li>
-                           </IsNotAuthenticatedSmallComponent>
-                           <IsAuthenticated>
-                           <li>
-                               <NavLink onClick={handleLogout}>Logout</NavLink>
-                             </li>
-                           </IsAuthenticated> */}
+                          <li>
+                            <NavLink
+                              to={`/#${targetElementId2}`}
+                              spy={true}
+                              smooth={true}
+                              offset={50}
+                              duration={500}
+                            >
+                              Contact Us
+                            </NavLink>{" "}
+                          </li>
                         </ul>
                       </nav>
                     </div>
                     <div className="header__btn d-none d-sm-block d-lg-none d-xl-block ml-50">
                       <IsNotAuthenticatedSmallComponent>
-                        <Link to="/contact" className="z-btn z-btn-white">
-                          <NavLink to="/login">Login</NavLink>
-                        </Link>
+                        <NavLink to="/login" className="z-btn z-btn-white">
+                          Login
+                        </NavLink>
                       </IsNotAuthenticatedSmallComponent>
                       <IsAuthenticatedSmallComponent>
-                        <Link to="/contact" className="z-btn z-btn-white">
-                          <NavLink onClick={handleLogout}>Logout</NavLink>
-                        </Link>
+                        <NavLink
+                          onClick={handleLogout}
+                          className="z-btn z-btn-white"
+                        >
+                          Logout
+                        </NavLink>
                       </IsAuthenticatedSmallComponent>
                     </div>
                     <div

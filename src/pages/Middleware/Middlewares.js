@@ -114,3 +114,10 @@ export const IsUserSmallComponent = ({ children }) => {
     }
   }
 };
+
+export const IsNotUserSmallComponent = ({ children }) => {
+  const { userData, setUser } = useContext(UserContext);
+      if (userData == null) {
+        return children;
+  }
+};

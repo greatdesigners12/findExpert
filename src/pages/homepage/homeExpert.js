@@ -9,7 +9,7 @@ import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 import "./home.css";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { UserContext } from "../../context/authContext.js";
+import { UserContext, getValidatedUser } from "../../context/authContext.js";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
 import {
@@ -122,10 +122,12 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
       // try {
       const expertId = userData.uid; // Replace with the actual expert ID
       const result = await getAllCashRecords(expertId);
-      setTransactions(result.data);
-      setPageSizeTransactions(5);
-      console.log(result);
-      setLoadingTransactions(false);
+      if (result.data !== null){
+        setTransactions(result.data);
+        setPageSizeTransactions(5);
+        console.log(result);
+        setLoadingTransactions(false);
+      }
     };
     fetchTransactions();
   }, []);
@@ -133,10 +135,16 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
   useEffect(() => {
     const fetchTotalMoney = async () => {
       const ec = new ExpertsController();
+      const user = await getValidatedUser();
       const expertId = userData.uid; // Replace with the actual expert ID
-      const result = await ec.getExpertCashAmountById(expertId);
-      setTotalCash(result.data);
-      console.log(result.data);
+      const result = await ec.getExpertCashAmountById(user.uid);
+      if (result.data !== null){
+        setTotalCash(result.data);
+        console.log(result.data);
+      }else{
+        setTotalCash(0)
+      }
+      
     };
     fetchTotalMoney();
   }, []);
@@ -145,9 +153,13 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
     const fetchConsultation = async () => {
       const expertId = userData.uid; // Replace with the actual expert ID
       const result = await getExpertTransactionsById(expertId);
-      setConsultation(result.data);
-      console.log(result.data);
-      setLoadingTransactionsbyid(false);
+      if (result.data !== null){
+        setConsultation(result.data);
+        console.log(result.data);
+        setLoadingTransactionsbyid(false);
+      }else{
+        setTotalCash(0)
+      }
     };
     fetchConsultation();
   }, []);

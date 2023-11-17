@@ -14,9 +14,11 @@ export const ServicesPages = () => {
   useEffect(() => {
     const getData = async () => {
       const data = await getAllFieldsWithExperts();
-      setFieldData(data);
-      console.log(data);
-      setLoading(false);
+      if(data.data != null){
+        setFieldData(data.data);
+        console.log(data);
+        setLoading(false);  
+      }
     };
     getData();
   }, []);
@@ -43,7 +45,7 @@ export const ServicesPages = () => {
             {isLoading ? (
               <LoadingSpinner />
             ) : (
-              fieldData.data.map((field) => (
+              fieldData.map((field) => (
                 <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                   <div key={field.id}>
                     <div className="services__item mb-90">

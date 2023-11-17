@@ -8,6 +8,7 @@ import {
   IsExpert,
   IsExpertSmallComponent,
   IsNotAuthenticated,
+  IsNotUserSmallComponent, 
   IsNotAuthenticatedSmallComponent,
   IsUserSmallComponent,
 } from "../../Middleware/Middlewares";
@@ -18,6 +19,23 @@ const StyleFiveHeader = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const { stickyMenu } = useGlobalContext();
+
+  const handleClickScroll = () => {
+    const element = document.getElementById('about');
+    if (element) {
+      // 👇 Will scroll smoothly to the top of the next section
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleClickScrollContact = () => {
+    const element = document.getElementById('contact');
+    if (element) {
+      // 👇 Will scroll smoothly to the top of the next section
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
 
   const handleLogout = () => {
     logout();
@@ -64,16 +82,24 @@ const StyleFiveHeader = () => {
                               <NavLink to="/">Home</NavLink>
                             </li>
                           </IsUserSmallComponent>
-
-                          {/* <li>
-                             <NavLink to="/about">About Us </NavLink>
-                           </li> */}
+                          <IsNotUserSmallComponent>
+                            <li>
+                              <NavLink to="/">Home</NavLink>
+                            </li>
+                          </IsNotUserSmallComponent>
+                          <li>
+                            <NavLink onClick={handleClickScroll}>
+                              About Us{" "}
+                            </NavLink>
+                          </li>
                           <li>
                             <NavLink to="/fields">Fields</NavLink>
                           </li>
-                          {/* <li>
-                             <NavLink to="/contact">Contact Us</NavLink>
-                           </li> */}
+                          <li>
+                            <NavLink onClick={handleClickScrollContact}>
+                              Contact Us
+                            </NavLink>
+                          </li>
                           {/* <IsNotAuthenticatedSmallComponent>
                              <li>
                                <NavLink to="/login">Login</NavLink>
@@ -91,16 +117,19 @@ const StyleFiveHeader = () => {
                 </div>
                 <div className="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-6">
                   <div className="header__bottom-right d-flex justify-content-end align-items-center">
-                    <div className="header__btn d-none d-sm-block d-xl-block ml-50">
+                    <div className="header__btn d-none d-sm-block d-lg-none d-xl-block ml-50">
                       <IsNotAuthenticatedSmallComponent>
-                        <Link to="/contact" className="z-btn z-btn-3">
-                          <NavLink to="/login">Login</NavLink>
-                        </Link>
+                        <NavLink to="/login" className="z-btn z-btn-white">
+                          Login
+                        </NavLink>
                       </IsNotAuthenticatedSmallComponent>
                       <IsAuthenticatedSmallComponent>
-                        <Link to="/contact" className="z-btn z-btn-3">
-                          <NavLink onClick={handleLogout}>Logout</NavLink>
-                        </Link>
+                        <NavLink
+                          onClick={handleLogout}
+                          className="z-btn z-btn-white"
+                        >
+                          Logout
+                        </NavLink>
                       </IsAuthenticatedSmallComponent>
                     </div>
                     <div
