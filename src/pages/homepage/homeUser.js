@@ -53,6 +53,8 @@ export const HomeUser = () => {
     const fetchHistory = async () => {
       // Replace with the actual expert ID
       const user = await getValidatedUser();
+      if (user != null){
+        console.log("user error: ",user)
         const expertId = user.uid; // Replace with the actual expert ID
         const result = await getLatestExpertTransaction(user.uid);
         console.log(userData.uid);
@@ -60,6 +62,8 @@ export const HomeUser = () => {
         console.log(result.data);
         setLoadingHistory(false);
 
+      }
+    
      
     };
     fetchHistory();
