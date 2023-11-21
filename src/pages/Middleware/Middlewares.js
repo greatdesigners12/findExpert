@@ -80,11 +80,13 @@ export const IsExpertSmallComponent = ({ children }) => {
 export const IsAdmin = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 
-  if (userData != null && userData != "") {
-    if (userData.displayName == "admin") {
-      return children;
-    } else {
-      return <Navigate to="/" />;
+  if (userData != "") {
+    if (userData != null) {
+      if (userData.displayName == "admin") {
+        return children;
+      } else {
+        return <Navigate to="/" />;
+      }
     }
   } else {
     return <Navigate to="/login" />;
@@ -117,7 +119,7 @@ export const IsUserSmallComponent = ({ children }) => {
 
 export const IsNotUserSmallComponent = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
-      if (userData == null) {
-        return children;
+  if (userData == null) {
+    return children;
   }
 };

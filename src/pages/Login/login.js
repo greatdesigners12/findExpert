@@ -21,7 +21,14 @@ export const Login = () => {
 
       if (result.data != null) {
         sessionStorage.setItem("role", result.data.role);
-        navigate("/");
+
+        if (result.data.role == "user") {
+          navigate("/");
+        } else if (result.data.role == "expert") {
+          navigate("/homeexpert");
+        } else {
+          navigate("/admin");
+          }
       } else {
         console.log(result);
         setMessage(result.errorMessage);
