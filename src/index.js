@@ -69,9 +69,11 @@ const router = createBrowserRouter([
   {
     path: "/admin/",
     element: (
-      <IsAdmin>
-        <AdminPage />
-      </IsAdmin>
+      <IsAuthenticated>
+        <IsAdmin>
+          <AdminPage />
+        </IsAdmin>
+      </IsAuthenticated>
     ),
   },
   {
