@@ -84,7 +84,7 @@ const onSubmitHandler = async (event) => {
     formattedDate, // Menggunakan tanggal saat ini
     "",
     invoicePicture,
-    ""
+    "unverified"
   );
 
   const result = await createTransaction(data);
