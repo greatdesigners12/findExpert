@@ -38,12 +38,7 @@ import { FaVideo } from "react-icons/fa";
 import PageHelmet from "../../components/shared/PageHelmet";
 
 export const LiveChatPage = () => {
-  const rtcProps = {
-    appId: "9389c3640acc415295195dce74994e91",
-    channel: "jack",
-    token: null,
-    enableScreensharing: true,
-  };
+  
 
   const [counter, setCounter] = useState(0);
 
@@ -52,6 +47,12 @@ export const LiveChatPage = () => {
   const navigate = useNavigate();
   const p = useParams();
   const transactionId = p.id;
+  const rtcProps = {
+    appId: "9389c3640acc415295195dce74994e91",
+    channel: transactionId,
+    token: null,
+    enableScreensharing: true,
+  };
   const [inputText, setInputText] = useState("");
   const [allMessages, setMessages] = useState([]);
   const [transaction, setTransaction] = useState(null);
@@ -73,6 +74,7 @@ export const LiveChatPage = () => {
     uid = userData.uid;
     senderRole = userData.displayName;
   }
+  
   const inputTextListener = (event) => {
     setInputText(event.target.value);
   };
@@ -85,7 +87,7 @@ export const LiveChatPage = () => {
         : transaction.expert_id;
 
     chat = new Chat(target, currentUser, inputText, "text", transaction.id);
-
+    setInputText("")
     const result = await send_message(chat);
   };
 
@@ -99,7 +101,7 @@ export const LiveChatPage = () => {
   useEffect(() => {
     const getAllMessage = async () => {
       const result = await getAllMessages(transactionId);
-      console.log(result);
+      
       if (result.statusCode === 200) {
         setMessages(result.data);
         setLoadingMessages(false);
@@ -116,8 +118,8 @@ export const LiveChatPage = () => {
       );
       const result = await getTransactionById(transactionId);
       setTransaction(result.data);
-      console.log("Masook");
-      console.log(updateStatusDone);
+      
+      
     };
 
     if (counter > 0) {
@@ -130,23 +132,41 @@ export const LiveChatPage = () => {
     }
   }, [counter]);
 
-  // useEffect(() => {
-  //   const q = query(
-  //     collection(dbFirebase, "livechat"),
-  //     where("transaction_id", "==", transactionId),
-  //     orderBy("date")
-  //   );
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     const result = [];
-  //     querySnapshot.forEach((doc) => {
-  //       result.push(doc.data());
-  //     });
+  useEffect(() => {
+    const q = query(
+      collection(dbFirebase, "livechat"),
+      where("transaction_id", "==", transactionId),
+      orderBy("date")
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const result = [];
+      querySnapshot.forEach((doc) => {
+        result.push(doc.data());
+      });
 
-  //     setMessages(result);
-  //     setLoadingMessages(false);
-  //   });
-  //   return unsubscribe;
-  // }, []);
+      setMessages(result);
+      setLoadingMessages(false);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const q = query(
+      collection(dbFirebase, "transactions"),
+      where("id", "==", transactionId)
+     
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const result = [];
+      querySnapshot.forEach((doc) => {
+        result.push(doc.data());
+      });
+      
+      setTransaction(result[0]);
+      
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const getTransaction = async () => {
@@ -155,6 +175,7 @@ export const LiveChatPage = () => {
 
       const e = new ExpertsController();
       const expertDataTemp = await e.getExpertById(result.data.expert_id);
+      
       setExpertData(expertDataTemp.data);
       const userInfo = await getUserById(result.data.customer_id);
       setUserInformation(userInfo.data);
@@ -170,7 +191,7 @@ export const LiveChatPage = () => {
         const updateStatus = await updateTransactionStatusToOngoing(
           transactionId
         );
-        console.log(updateStatus);
+        
 
         if (
           updateStatus.errorMessage == "Transaction is not in 'waiting' status."
@@ -187,7 +208,7 @@ export const LiveChatPage = () => {
 
         const result = await getTransactionById(transactionId);
         setTransaction(result.data);
-        console.log(updateStatusDone);
+        
       } else {
         setCounter(result.data.end_time - Timestamp.now());
       }
@@ -217,7 +238,7 @@ export const LiveChatPage = () => {
     event.target.value = "";
   };
 
-  console.log(getCurrentUser());
+  
   const getMinutes = (date) => {
     const d = new Date(date.seconds * 1000);
     return d.getHours();
@@ -234,7 +255,7 @@ export const LiveChatPage = () => {
     inputField.current.click();
   };
 
-  if (isLoadingReceiverData || isLoadingMessages) {
+  if (expertData === null || isLoadingMessages || transaction === null) {
     return <LoadingSpinner />;
   } else {
     return videoCall ? (
@@ -359,7 +380,7 @@ export const LiveChatPage = () => {
               </h5>
             </div>
             {allMessages.map((dt) =>
-              dt.receiver_id !== uid ? (
+              dt.receiver_id === uid ? (
                 <div key={dt.date} className="d-flex flex-row">
                   <div className="containerLivechat d-flex flex-column w-100 px-4">
                     <div className="d-flex flex-row w-100 justify-content-end">
@@ -378,7 +399,7 @@ export const LiveChatPage = () => {
                   </div>
                   <img
                     src={
-                      senderRole !== "user"
+                      senderRole === "user"
                         ? expertData.profilePicture
                         : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
                     }
@@ -390,7 +411,7 @@ export const LiveChatPage = () => {
                 <div key={dt.date} className="d-flex flex-row">
                   <img
                     src={
-                      senderRole === "user"
+                      senderRole !== "user"
                         ? expertData.profilePicture
                         : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
                     }

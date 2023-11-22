@@ -82,7 +82,7 @@ const onSubmitHandler = async (event) => {
     timeIntervals,
     totalPrices,
     formattedDate, // Menggunakan tanggal saat ini
-    "",
+    "unverified",
     invoicePicture,
     ""
   );
