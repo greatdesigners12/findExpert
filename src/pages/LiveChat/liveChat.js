@@ -327,14 +327,14 @@ export const LiveChatPage = () => {
           </div>
         </section>
         <div className="pt-4">
-          <div className="px-4">
+          <div className="px-4 mb-5">
             <div className="d-flex flex-row justify-content-center">
               <h5>
                 {transaction.transaction_status === "ongoing"
-                  ? "This Consultation Session Will End At " +
-                    Math.floor(counter / 60) +
+                  ? "This Consultation Session Will End At " + Math.floor(counter / (60 * 60)) +
+                    Math.floor((counter / 60) % 60) +
                     ":" +
-                    Math.floor(counter % 60)
+                    (Math.floor(counter % 60) > 9 ? Math.floor(counter % 60) : "0" + Math.floor(counter % 60))
                   : "This Consultation Session Ended At " +
                     new Date(transaction.end_time.seconds * 1000).getHours() +
                     ":" +
