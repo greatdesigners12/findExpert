@@ -12,6 +12,8 @@ import { useContext } from "react";
 import { UserContext, getValidatedUser } from "../../context/authContext.js";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
+
+
 import {
   createCashRequest,
   getAllCashRecords,
@@ -25,6 +27,8 @@ import {
   updateTransactionByExpert,
   updateTransactionStatus,
 } from "../../controller/transaction_controller/transaction_controller.js";
+import { collection, query, onSnapshot, where, orderBy, getDoc, getDocs, doc } from "firebase/firestore";
+import { db } from "../../controller/firebaseApp.js";
 
 export const HomeExpert = () => {
 
@@ -56,7 +60,8 @@ export const HomeExpert = () => {
   const [transactions, setTransactions] = useState([]);
   const [transactionsbyid, setTransactionsbyid] = useState([]);
   const [transactionsbyid2, setTransactionsbyid2] = useState([]);
-
+  const [transactionsRequest, setTransactionsRequest] = useState([]);
+  
   const currentTableDataTransactions = useMemo(() => {
     const firstPageIndex = (currentPageTransactions - 1) * pageSizeTransactions;
     const lastPageIndex = firstPageIndex + pageSizeTransactions;
@@ -72,7 +77,7 @@ export const HomeExpert = () => {
   }, [currentPageTransactionsbyid, pageSizeTransactionsbyid]);
 
 
-const currentTableDataTransactionsbyid2 = useMemo(() => {
+  const currentTableDataTransactionsbyid2 = useMemo(() => {
     const firstPageIndex = (currentPageTransactionsbyid2 - 1) * pageSizeTransactionsbyid2;
     const lastPageIndex = firstPageIndex + pageSizeTransactionsbyid2;
 
@@ -100,6 +105,80 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
       }
     };
     fetchTransactionsByID();
+  }, []);
+
+  useEffect(() => {
+    const transactionsCollection = collection(db, "transactions");
+    const expertId = userData.uid; 
+    const q = query(
+      transactionsCollection,
+      where("expert_id", "==", expertId),
+      where(
+        "transaction_status",
+        "in",
+        ["ongoing", "done", "cancel", "verified", "unverified"],
+        orderBy("transaction_date", "desc")
+      )
+    );
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const result = [];
+      querySnapshot.forEach((doc) => {
+        result.push(doc.data());
+      });
+
+      setTransactionsbyid2(result);
+      
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const transactionsCollection = collection(db, "transactions");
+    const expertId = userData.uid; 
+    const q = query(
+      transactionsCollection,
+      where("expert_id", "==", expertId),
+      where(
+        "transaction_status",
+        "in",
+        ["ongoing","verified"],
+        orderBy("transaction_date", "desc")
+      )
+    );
+
+    const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+      
+      
+
+      const transactionsSnapshot = await getDocs(q);
+
+      const transactions = [];
+      for (const transactionDoc of transactionsSnapshot.docs) {
+        const transactionData = transactionDoc.data();
+
+        try {
+          const userRef = doc(db, "userData", transactionData.customer_id);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            transactionData["customerData"] = userSnap.data();
+          } else {
+            // Handle the case where customer data is not found
+            transactionData["customerData"] = null;
+          }
+        } catch (error) {
+          // Handle any error that might occur while fetching customer data
+          console.error("Error fetching customer data:", error.message);
+          transactionData["customerData"] = null;
+        }
+        transactions.push(transactionData);
+      }
+      setTransactionsRequest(transactions);
+      
+      
+    });
+    
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
@@ -382,7 +461,7 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
                     </div>
                   ) : (
                 <div className="row mb-3">
-                  {currentTableDataTransactionsbyid.map((transaction) => {
+                  {transactionsRequest.map((transaction) => {
                     return (
                       <div className="col-xl-3 col-lg-3 col-md-3">
                         <div className="textdeco text-center mb-30">
@@ -399,7 +478,7 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
                                   {transaction.customerData.fullName}
                                 </h3>
                                 {transaction.transaction_status ===
-                                "on going" ? (
+                                "ongoing" ? (
                                   <>
                                     <div
                                       style={{
@@ -411,7 +490,7 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
                                       }}
                                     >
                                       {transaction.transaction_status ===
-                                        "on going" && (
+                                        "ongoing" && (
                                         <span style={{ color: "white" }}>
                                           On Going
                                         </span>
@@ -530,7 +609,7 @@ const currentTableDataTransactionsbyid2 = useMemo(() => {
                                 <td>
                                 {transaction2.transaction_date}
                                 </td>
-                                <td>{transaction2.start_time}-{transaction2.end_time}</td>
+                                <td>{new Date(transaction2.start_time * 1000).toISOString().substring(11, 16)}-{new Date(transaction2.end_time * 1000).toISOString().substring(11, 16)}</td>
                                 <td>{transaction2.customerData.fullName}</td>
                                 <td>{transaction2.payment_amount}</td>
                                 <td

@@ -92,9 +92,11 @@ const StyleFiveHeader = () => {
                               About Us{" "}
                             </NavLink>
                           </li>
-                          <li>
-                            <NavLink to="/fields">Fields</NavLink>
-                          </li>
+                          <IsUserSmallComponent>
+                            <li>
+                              <NavLink to="/fields">Fields</NavLink>
+                            </li>
+                          </IsUserSmallComponent>
                           <li>
                             <NavLink onClick={handleClickScrollContact}>
                               Contact Us

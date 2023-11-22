@@ -12,6 +12,7 @@ import HomeThreeSecondServices from "../Home/HomeThreeSecondServices/HomeThreeSe
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../../../src/components/shared/LoadingSpinner";
+
 import {
   getAllFieldsWithExperts,
   getExpertsByFieldAndStatus,
@@ -25,6 +26,9 @@ import { IsUserSmallComponent } from "../Middleware/Middlewares.js";
 import { Link } from "react-router-dom";
 import { getLatestExpertTransaction } from "../../controller/transaction_controller/transaction_controller.js";
 import { useLocation } from 'react-router-dom';
+import { collection, doc, getDoc, query, where, onSnapshot,  } from "firebase/firestore";
+import { Expert } from "../../controller/experts_controller/models/expert.js";
+import { db } from "../../controller/firebaseApp.js";
 
 export const HomeUser = () => {
   const [expertsData, setExpertsData] = useState([]);
@@ -49,6 +53,8 @@ export const HomeUser = () => {
     }
   };
 
+  
+
   useEffect(() => {
     const fetchHistory = async () => {
       // Replace with the actual expert ID
@@ -68,6 +74,65 @@ export const HomeUser = () => {
     };
     fetchHistory();
   }, []);
+
+  useEffect(() => {
+    if(userData !== "" && userData !== null){
+    const userId = userData.uid; 
+    const transactionsCollection = collection(db, "transactions");
+    const userTransactionsQuery = query(
+      transactionsCollection,
+      where("customer_id", "in", [userId])
+    );
+
+    const unsubscribe = onSnapshot(userTransactionsQuery, async (querySnapshot) => {
+      const sortedTransactions = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => b.transaction_date - a.transaction_date);
+        const result = []
+        for (const transactionData of sortedTransactions) {
+          const id = transactionData.expert_id;
+    
+          // Mendapatkan data expert menggunakan expert_id
+          const expertDoc = await getDoc(doc(db, "expertData", id));
+          const expertData = expertDoc.data();
+    
+          const expert = new Expert(
+            expertData.fullName,
+            expertData.phoneNumber,
+            expertData.email,
+            expertData.password,
+            expertData.birthDate,
+            expertData.gender,
+            expertData.education,
+            expertData.fieldId,
+            expertData.nik,
+            expertData.jobExperience,
+            expertData.ktp,
+            expertData.certificates,
+            expertData.profilePicture,
+            expertData.verified,
+            expertData.status,
+            expertData.cash_amount,
+            expertData.price,
+            expertData.id,
+            expertData.registered_date
+          );
+    
+          result.push({
+            transaction: transactionData,
+            expert: expert,
+          });
+
+
+        }
+        setHistory(result)
+        
+        
+      });
+      
+      return unsubscribe;
+    }
+  }, [userData]);
 
   const [fieldData, setFieldData] = useState([]);
   const [isLoading, setLoading] = useState(true);

@@ -311,7 +311,7 @@ export async function updateTransactionStatus(id, isAccepted = true) {
     const transactionRef = doc(transactionsCollection, id);
 
     const r = await updateDoc(transactionRef, {
-      transaction_status: isAccepted ? "on going" : "cancel",
+      transaction_status: isAccepted ? "ongoing" : "cancel",
     });
 
     result.data = r;
@@ -517,7 +517,7 @@ export async function getExpertTransactionsById(
       where(
         "transaction_status",
         "in",
-        ["on going", "verified"],
+        ["ongoing", "verified"],
         orderBy("transaction_status", "asc") // Sort by transaction_status in ascending order
       )
     );
