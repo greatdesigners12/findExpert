@@ -38,8 +38,6 @@ import { FaVideo } from "react-icons/fa";
 import PageHelmet from "../../components/shared/PageHelmet";
 
 export const LiveChatPage = () => {
-  
-
   const [counter, setCounter] = useState(0);
 
   const { userData, setUser } = useContext(UserContext);
@@ -74,7 +72,7 @@ export const LiveChatPage = () => {
     uid = userData.uid;
     senderRole = userData.displayName;
   }
-  
+
   const inputTextListener = (event) => {
     setInputText(event.target.value);
   };
@@ -87,7 +85,7 @@ export const LiveChatPage = () => {
         : transaction.expert_id;
 
     chat = new Chat(target, currentUser, inputText, "text", transaction.id);
-    setInputText("")
+    setInputText("");
     const result = await send_message(chat);
   };
 
@@ -101,7 +99,7 @@ export const LiveChatPage = () => {
   useEffect(() => {
     const getAllMessage = async () => {
       const result = await getAllMessages(transactionId);
-      
+
       if (result.statusCode === 200) {
         setMessages(result.data);
         setLoadingMessages(false);
@@ -118,8 +116,6 @@ export const LiveChatPage = () => {
       );
       const result = await getTransactionById(transactionId);
       setTransaction(result.data);
-      
-      
     };
 
     if (counter > 0) {
@@ -154,16 +150,14 @@ export const LiveChatPage = () => {
     const q = query(
       collection(dbFirebase, "transactions"),
       where("id", "==", transactionId)
-     
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const result = [];
       querySnapshot.forEach((doc) => {
         result.push(doc.data());
       });
-      
+
       setTransaction(result[0]);
-      
     });
     return unsubscribe;
   }, []);
@@ -175,15 +169,16 @@ export const LiveChatPage = () => {
 
       const e = new ExpertsController();
       const expertDataTemp = await e.getExpertById(result.data.expert_id);
-      
+
       setExpertData(expertDataTemp.data);
       const userInfo = await getUserById(result.data.customer_id);
       setUserInformation(userInfo.data);
       const user = await getValidatedUser();
-      console.log(result.data);
+      console.log(expertDataTemp.data);
       setTransaction(result.data);
-      if (userInfo.data.id != user.uid) {
-        return <Navigate to="/" />;
+      if (userInfo.data.id != user.uid && expertDataTemp.data.id != user.uid) {
+        console.log("Masuka");
+        navigate("/");
       } else if (
         result.data.transaction_status != "ongoing" &&
         result.data.transaction_status != "done"
@@ -191,7 +186,6 @@ export const LiveChatPage = () => {
         const updateStatus = await updateTransactionStatusToOngoing(
           transactionId
         );
-        
 
         if (
           updateStatus.errorMessage == "Transaction is not in 'waiting' status."
@@ -208,9 +202,10 @@ export const LiveChatPage = () => {
 
         const result = await getTransactionById(transactionId);
         setTransaction(result.data);
-        
+        console.log("Masuka");
       } else {
         setCounter(result.data.end_time - Timestamp.now());
+        console.log("Masukb");
       }
 
       setLoadingReceiverData(false);
@@ -238,7 +233,6 @@ export const LiveChatPage = () => {
     event.target.value = "";
   };
 
-  
   const getMinutes = (date) => {
     const d = new Date(date.seconds * 1000);
     return d.getHours();
@@ -265,6 +259,8 @@ export const LiveChatPage = () => {
       >
         <h5 className="w-100 text-center">
           {"This Consultation Session Will End At " +
+            Math.floor(counter / (60 * 60)) +
+            ":" +
             Math.floor(counter / 60) +
             ":" +
             Math.floor(counter % 60)}
@@ -352,10 +348,14 @@ export const LiveChatPage = () => {
             <div className="d-flex flex-row justify-content-center">
               <h5>
                 {transaction.transaction_status === "ongoing"
-                  ? "This Consultation Session Will End At " + Math.floor(counter / (60 * 60)) +
+                  ? "This Consultation Session Will End At " +
+                    Math.floor(counter / (60 * 60)) +
+                    ":" +
                     Math.floor((counter / 60) % 60) +
                     ":" +
-                    (Math.floor(counter % 60) > 9 ? Math.floor(counter % 60) : "0" + Math.floor(counter % 60))
+                    (Math.floor(counter % 60) > 9
+                      ? Math.floor(counter % 60)
+                      : "0" + Math.floor(counter % 60))
                   : "This Consultation Session Ended At " +
                     new Date(transaction.end_time.seconds * 1000).getHours() +
                     ":" +
