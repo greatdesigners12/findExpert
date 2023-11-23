@@ -379,7 +379,7 @@ export const LiveChatPage = () => {
                     new Date(transaction.end_time.seconds * 1000).getFullYear()}
               </h5>
             </div>
-            <div className="pb-5">
+            <div className="pb-5 mb-4">
               {allMessages.map((dt) =>
                 dt.receiver_id === uid ? (
                   <div key={dt.date} className="d-flex flex-row">
