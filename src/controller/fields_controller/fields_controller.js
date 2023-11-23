@@ -99,6 +99,32 @@ export async function getAllFieldsWithExperts() {
     return result;
 }
 
+export async function getAllFields() {
+    const result = new ResultData();
+
+    try {
+        const fieldsCollection = collection(db, "field");
+        const fieldSnapshot = await getDocs(fieldsCollection);
+        const data = []
+        fieldSnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+            data.push(doc.data())
+        });
+
+        
+        result.data = data;
+        result.errorMessage = "No fields with verified experts found"; // Update the error message
+        result.statusCode = 404;
+        
+    } catch (error) {
+        result.data = null;
+        result.errorMessage = "Failed to get all fields with experts: " + error.message;
+        result.statusCode = 500;
+    }
+
+    return result;
+}
+
 export async function searchFieldsAndExperts(queryText) {
     const result = new ResultData();
 
