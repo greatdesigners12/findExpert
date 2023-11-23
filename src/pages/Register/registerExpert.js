@@ -3,7 +3,7 @@ import LoginRegisterPageHelmet from "../../components/shared/LoginRegisterPageHe
 import { registerExpert } from "../../controller/auth_controller/auth_controller";
 import { useNavigate } from "react-router-dom";
 import { Form } from "react-bootstrap";
-import { getAllFieldsWithExperts } from "../../controller/fields_controller/fields_controller";
+import { getAllFields, getAllFieldsWithExperts } from "../../controller/fields_controller/fields_controller";
 import { useEffect } from "react";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 import { Expert } from "../../controller/experts_controller/models/expert";
@@ -41,7 +41,7 @@ export const RegisterExpert = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const data = await getAllFieldsWithExperts();
+      const data = await getAllFields();
       setFieldData(data.data);
       console.log(data.data);
       setLoading(false);
