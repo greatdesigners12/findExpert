@@ -32,13 +32,15 @@ export async function getAllMessages(id_transaction){
 
 export async function getTransactionById(id_transaction){
     const result = new ResultData();
-    
+    console.log(id_transaction)
+    console.log("id_transaction")
     try{
         const docRef = doc(db, "transactions", id_transaction);
+
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
-            console.log(docSnap.data())
+            
          
             result.data = docSnap.data()
             result.statusCode = 200
@@ -65,6 +67,7 @@ export async function send_message(chat){
     try{
         var r = null
         if(chat.type === "text"){
+            console.log(chat)
             r = await addDoc(collection(db, "livechat"), chat.serialize());
         }else{
             const storage = getStorage();

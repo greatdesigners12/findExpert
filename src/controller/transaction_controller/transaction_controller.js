@@ -136,7 +136,7 @@ export async function updateTransactionStatusToOngoing(transactionId) {
 
     if (transactionSnapshot.exists()) {
       // Check if the current transaction status is "waiting" to update it to "ongoing"
-      if (transactionSnapshot.data().transaction_status === "waiting") {
+      if (transactionSnapshot.data().transaction_status === "waiting" || transactionSnapshot.data().transaction_status === "verified") {
         // Use new Date() for current time (local time)
         const currentTimestamp = Timestamp.fromDate(new Date());
         const amount = transactionSnapshot.data().consultation_time;

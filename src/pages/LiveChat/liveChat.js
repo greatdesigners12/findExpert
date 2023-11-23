@@ -87,6 +87,7 @@ export const LiveChatPage = () => {
     chat = new Chat(target, currentUser, inputText, "text", transaction.id);
     setInputText("");
     const result = await send_message(chat);
+    console.log(result)
   };
 
   const onClickEndChat = async (event) => {
@@ -152,11 +153,12 @@ export const LiveChatPage = () => {
       where("id", "==", transactionId)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      
       const result = [];
       querySnapshot.forEach((doc) => {
         result.push(doc.data());
       });
-
+      console.log(result)
       setTransaction(result[0]);
     });
     return unsubscribe;
@@ -187,11 +189,9 @@ export const LiveChatPage = () => {
           transactionId
         );
 
-        if (
-          updateStatus.errorMessage == "Transaction is not in 'waiting' status."
-        ) {
-          navigate("/");
-        }
+        console.log(updateStatus)
+
+        
       }
 
       if (Timestamp.now() >= result.data.end_time) {

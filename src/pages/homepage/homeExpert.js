@@ -89,7 +89,7 @@ export const HomeExpert = () => {
     await updateTransactionStatus(id, true);
 
     // Navigate to another page after the action is performed
-    navigate("/livechat/"+id);
+    navigate(`/livechat/${id}`);
   };
 
   useEffect(() => {
