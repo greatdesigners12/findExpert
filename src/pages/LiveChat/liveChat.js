@@ -76,6 +76,8 @@ export const LiveChatPage = () => {
   const inputTextListener = (event) => {
     setInputText(event.target.value);
   };
+  const divRef = useRef(null);
+
   const onClickBtn = async (event) => {
     var chat = null;
     const currentUser = uid;
@@ -87,7 +89,7 @@ export const LiveChatPage = () => {
     chat = new Chat(target, currentUser, inputText, "text", transaction.id);
     setInputText("");
     const result = await send_message(chat);
-    console.log(result)
+    divRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   const onClickEndChat = async (event) => {
@@ -439,6 +441,7 @@ export const LiveChatPage = () => {
                   </div>
                 )
               )}
+              <div ref={divRef} />
             </div>
           </div>
           <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
