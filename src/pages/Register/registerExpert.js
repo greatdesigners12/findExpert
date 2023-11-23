@@ -7,6 +7,7 @@ import { getAllFieldsWithExperts } from "../../controller/fields_controller/fiel
 import { useEffect } from "react";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 import { Expert } from "../../controller/experts_controller/models/expert";
+import { Timestamp } from "firebase/firestore";
 
 export const RegisterExpert = () => {
   const [name, setName] = useState("");
@@ -112,10 +113,14 @@ export const RegisterExpert = () => {
           KTP,
           certificates,
           profilePicture,
+          false,
+          "offline",
           0,
           price,
-          ""
+          "",
+          Timestamp.now()
         );
+        console.log(newExpert)
         const result = await registerExpert(newExpert);
 
         if (result.data != null) {
