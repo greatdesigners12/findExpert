@@ -379,65 +379,67 @@ export const LiveChatPage = () => {
                     new Date(transaction.end_time.seconds * 1000).getFullYear()}
               </h5>
             </div>
-            {allMessages.map((dt) =>
-              dt.receiver_id === uid ? (
-                <div key={dt.date} className="d-flex flex-row">
-                  <div className="containerLivechat d-flex flex-column w-100 px-4">
-                    <div className="d-flex flex-row w-100 justify-content-end">
-                      {dt.type === "text" ? (
-                        <p className="fw-medium">{dt.sender_message}</p>
-                      ) : (
-                        <img src={dt.sender_message} className="sent-img" />
-                      )}
-                    </div>
-                    <span className="time-left">
-                      {getMinutes(dt.date)} :{" "}
-                      {getSeconds(dt.date) > 9
-                        ? getSeconds(dt.date)
-                        : "0" + getSeconds(dt.date)}
-                    </span>
-                  </div>
-                  <img
-                    src={
-                      senderRole === "user"
-                        ? expertData.profilePicture
-                        : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
-                    }
-                    alt="Avatar"
-                    className="chat-profile-picture ms-3 mt-2"
-                  />
-                </div>
-              ) : (
-                <div key={dt.date} className="d-flex flex-row">
-                  <img
-                    src={
-                      senderRole !== "user"
-                        ? expertData.profilePicture
-                        : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
-                    }
-                    alt="Avatar"
-                    className="chat-profile-picture me-3 mt-2"
-                  />
-                  <div className="containerLivechat d-flex flex-column w-100 px-4">
-                    <div className="d-flex flex-row w-100 justify-content-start">
-                      {dt.type === "text" ? (
-                        <p className="fw-medium">{dt.sender_message}</p>
-                      ) : (
-                        <img src={dt.sender_message} className="sent-img" />
-                      )}
-                    </div>
-                    <div className="d-flex flex-row justify-content-end">
-                      <span className="time-right">
+            <div className="padding-chat">
+              {allMessages.map((dt) =>
+                dt.receiver_id === uid ? (
+                  <div key={dt.date} className="d-flex flex-row">
+                    <div className="containerLivechat d-flex flex-column w-100 px-4">
+                      <div className="d-flex flex-row w-100 justify-content-end">
+                        {dt.type === "text" ? (
+                          <p className="fw-medium">{dt.sender_message}</p>
+                        ) : (
+                          <img src={dt.sender_message} className="sent-img" />
+                        )}
+                      </div>
+                      <span className="time-left">
                         {getMinutes(dt.date)} :{" "}
                         {getSeconds(dt.date) > 9
                           ? getSeconds(dt.date)
                           : "0" + getSeconds(dt.date)}
                       </span>
                     </div>
+                    <img
+                      src={
+                        senderRole === "user"
+                          ? expertData.profilePicture
+                          : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+                      }
+                      alt="Avatar"
+                      className="chat-profile-picture ms-3 mt-2"
+                    />
                   </div>
-                </div>
-              )
-            )}
+                ) : (
+                  <div key={dt.date} className="d-flex flex-row">
+                    <img
+                      src={
+                        senderRole !== "user"
+                          ? expertData.profilePicture
+                          : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+                      }
+                      alt="Avatar"
+                      className="chat-profile-picture me-3 mt-2"
+                    />
+                    <div className="containerLivechat d-flex flex-column w-100 px-4">
+                      <div className="d-flex flex-row w-100 justify-content-start">
+                        {dt.type === "text" ? (
+                          <p className="fw-medium">{dt.sender_message}</p>
+                        ) : (
+                          <img src={dt.sender_message} className="sent-img" />
+                        )}
+                      </div>
+                      <div className="d-flex flex-row justify-content-end">
+                        <span className="time-right">
+                          {getMinutes(dt.date)} :{" "}
+                          {getSeconds(dt.date) > 9
+                            ? getSeconds(dt.date)
+                            : "0" + getSeconds(dt.date)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
           </div>
           <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
             {transaction.transaction_status === "ongoing" ? (

@@ -4,6 +4,10 @@
   font-family: "Montserrat" !important;
 }
 
+.padding-chat {
+  padding-bottom: 75px !important;
+}
+
 html {
   width: 100%;
   height: 100%;
