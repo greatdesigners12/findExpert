@@ -111,6 +111,12 @@ export const LiveChatPage = () => {
     };
     getAllMessage();
   }, []);
+  useEffect(() => {
+    if(divRef !== null && divRef.current !== null){
+      divRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+  }, [allMessages])
 
   useEffect(() => {
     const updateStatusToDone = async () => {
@@ -150,10 +156,11 @@ export const LiveChatPage = () => {
       console.log(result)
       setMessages(result);
       setLoadingMessages(false);
-      divRef.current.scrollIntoView({ behavior: 'smooth' });
+      
     });
     return unsubscribe;
   }, []);
+  
 
   useEffect(() => {
     const q = query(
