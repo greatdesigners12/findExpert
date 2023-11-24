@@ -104,6 +104,7 @@ export const LiveChatPage = () => {
       const result = await getAllMessages(transactionId);
 
       if (result.statusCode === 200) {
+        console.log(result)
         setMessages(result.data);
         setLoadingMessages(false);
       }
@@ -140,9 +141,13 @@ export const LiveChatPage = () => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const result = [];
       querySnapshot.forEach((doc) => {
-        result.push(doc.data());
+        const curData = doc.data()
+        if(curData.date === null){
+          curData.date = new Date()
+        }
+        result.push(curData);
       });
-
+      console.log(result)
       setMessages(result);
       setLoadingMessages(false);
     });
@@ -178,10 +183,10 @@ export const LiveChatPage = () => {
       const userInfo = await getUserById(result.data.customer_id);
       setUserInformation(userInfo.data);
       const user = await getValidatedUser();
-      console.log(expertDataTemp.data);
+      
       setTransaction(result.data);
       if (userInfo.data.id != user.uid && expertDataTemp.data.id != user.uid) {
-        console.log("Masuka");
+        
         navigate("/");
       } else if (
         result.data.transaction_status != "ongoing" &&
@@ -191,7 +196,7 @@ export const LiveChatPage = () => {
           transactionId
         );
 
-        console.log(updateStatus)
+        
 
         
       }
@@ -204,10 +209,10 @@ export const LiveChatPage = () => {
 
         const result = await getTransactionById(transactionId);
         setTransaction(result.data);
-        console.log("Masuka");
+        
       } else {
         setCounter(result.data.end_time - Timestamp.now());
-        console.log("Masukb");
+       
       }
 
       setLoadingReceiverData(false);

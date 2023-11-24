@@ -1,5 +1,5 @@
 import { db, app } from "../firebaseApp";
-import {collection, addDoc, getDocs, orderBy, query, where, getDoc, doc} from "firebase/firestore"; 
+import {collection, addDoc, getDocs, orderBy, query, where, getDoc, doc, serverTimestamp} from "firebase/firestore"; 
 import { ResultData } from "../structureJson/resultData";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -16,7 +16,7 @@ export async function getAllMessages(id_transaction){
             
             allMessages.push(doc.data())
         });
-        
+        console.log(allMessages)
         result.data = allMessages
         result.statusCode = 200
         result.errorMessage = null
@@ -32,8 +32,7 @@ export async function getAllMessages(id_transaction){
 
 export async function getTransactionById(id_transaction){
     const result = new ResultData();
-    console.log(id_transaction)
-    console.log("id_transaction")
+    
     try{
         const docRef = doc(db, "transactions", id_transaction);
 
@@ -67,7 +66,7 @@ export async function send_message(chat){
     try{
         var r = null
         if(chat.type === "text"){
-            console.log(chat)
+            chat.date = serverTimestamp()
             r = await addDoc(collection(db, "livechat"), chat.serialize());
         }else{
             const storage = getStorage();
@@ -82,6 +81,8 @@ export async function send_message(chat){
                 await getDownloadURL(snapshot.ref).then((downloadURL) => {
                     chat.sender_message = downloadURL
                   });
+                chat.date = serverTimestamp()
+
                 r = await addDoc(collection(db, "livechat"), chat.serialize());
               
             });
