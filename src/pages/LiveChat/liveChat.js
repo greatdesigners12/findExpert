@@ -150,6 +150,7 @@ export const LiveChatPage = () => {
       console.log(result)
       setMessages(result);
       setLoadingMessages(false);
+      divRef.current.scrollIntoView({ behavior: 'smooth' });
     });
     return unsubscribe;
   }, []);
