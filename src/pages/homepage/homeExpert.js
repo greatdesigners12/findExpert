@@ -291,7 +291,7 @@ export const HomeExpert = () => {
                       className="form-control font-montserrat"
                       id="inputaccType"
                       name="accType"
-                      placeholder="Enter Account Type"
+                      placeholder="Enter Bank Name"
                       value={accType}
                       onChange={(e) => setaccType(e.target.value)}
                       required
