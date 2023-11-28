@@ -89,7 +89,7 @@ export const LiveChatPage = () => {
     chat = new Chat(target, currentUser, inputText, "text", transaction.id);
     setInputText("");
     const result = await send_message(chat);
-    divRef.current.scrollIntoView({ behavior: 'smooth' });
+    divRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   const onClickEndChat = async (event) => {
@@ -104,7 +104,7 @@ export const LiveChatPage = () => {
       const result = await getAllMessages(transactionId);
 
       if (result.statusCode === 200) {
-        console.log(result)
+        console.log(result);
         setMessages(result.data);
         setLoadingMessages(false);
       }
@@ -112,11 +112,10 @@ export const LiveChatPage = () => {
     getAllMessage();
   }, []);
   useEffect(() => {
-    if(divRef !== null && divRef.current !== null){
-      divRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (divRef !== null && divRef.current !== null) {
+      divRef.current.scrollIntoView({ behavior: "smooth" });
     }
-    
-  }, [allMessages])
+  }, [allMessages]);
 
   useEffect(() => {
     const updateStatusToDone = async () => {
@@ -147,20 +146,18 @@ export const LiveChatPage = () => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const result = [];
       querySnapshot.forEach((doc) => {
-        const curData = doc.data()
-        if(curData.date === null){
-          curData.date = new Date()
+        const curData = doc.data();
+        if (curData.date === null) {
+          curData.date = new Date();
         }
         result.push(curData);
       });
-      console.log(result)
+      console.log(result);
       setMessages(result);
       setLoadingMessages(false);
-      
     });
     return unsubscribe;
   }, []);
-  
 
   useEffect(() => {
     const q = query(
@@ -168,12 +165,11 @@ export const LiveChatPage = () => {
       where("id", "==", transactionId)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      
       const result = [];
       querySnapshot.forEach((doc) => {
         result.push(doc.data());
       });
-      console.log(result)
+      console.log(result);
       setTransaction(result[0]);
     });
     return unsubscribe;
@@ -191,10 +187,9 @@ export const LiveChatPage = () => {
       const userInfo = await getUserById(result.data.customer_id);
       setUserInformation(userInfo.data);
       const user = await getValidatedUser();
-      
+
       setTransaction(result.data);
       if (userInfo.data.id != user.uid && expertDataTemp.data.id != user.uid) {
-        
         navigate("/");
       } else if (
         result.data.transaction_status != "ongoing" &&
@@ -203,10 +198,6 @@ export const LiveChatPage = () => {
         const updateStatus = await updateTransactionStatusToOngoing(
           transactionId
         );
-
-        
-
-        
       }
 
       if (Timestamp.now() >= result.data.end_time) {
@@ -217,10 +208,8 @@ export const LiveChatPage = () => {
 
         const result = await getTransactionById(transactionId);
         setTransaction(result.data);
-        
       } else {
         setCounter(result.data.end_time - Timestamp.now());
-       
       }
 
       setLoadingReceiverData(false);
@@ -366,7 +355,9 @@ export const LiveChatPage = () => {
                   ? "This Consultation Session Will End At " +
                     Math.floor(counter / (60 * 60)) +
                     ":" +
-                    Math.floor((counter / 60) % 60) +
+                    (Math.floor((counter / 60) % 60) > 9
+                      ? Math.floor((counter / 60) % 60)
+                      : "0" + Math.floor((counter / 60) % 60)) +
                     ":" +
                     (Math.floor(counter % 60) > 9
                       ? Math.floor(counter % 60)
@@ -397,21 +388,26 @@ export const LiveChatPage = () => {
             <div className="padding-chat">
               {allMessages.map((dt) =>
                 dt.receiver_id === uid ? (
-                  <div key={dt.date} className="d-flex flex-row">
-                    <div className="containerLivechat d-flex flex-column w-100 px-4">
-                      <div className="d-flex flex-row w-100 justify-content-end">
-                        {dt.type === "text" ? (
-                          <p className="fw-medium">{dt.sender_message}</p>
-                        ) : (
-                          <img src={dt.sender_message} className="sent-img" />
-                        )}
+                  <div
+                    key={dt.date}
+                    className="d-flex flex-row justify-content-end"
+                  >
+                    <div>
+                      <div className="containerLivechat d-flex flex-column me-auto px-4">
+                        <div className="d-flex flex-row w-100 justify-content-end">
+                          {dt.type === "text" ? (
+                            <p className="fw-medium">{dt.sender_message}</p>
+                          ) : (
+                            <img src={dt.sender_message} className="sent-img" />
+                          )}
+                        </div>
+                        <span className="time-left">
+                          {getMinutes(dt.date)} :{" "}
+                          {getSeconds(dt.date) > 9
+                            ? getSeconds(dt.date)
+                            : "0" + getSeconds(dt.date)}
+                        </span>
                       </div>
-                      <span className="time-left">
-                        {getMinutes(dt.date)} :{" "}
-                        {getSeconds(dt.date) > 9
-                          ? getSeconds(dt.date)
-                          : "0" + getSeconds(dt.date)}
-                      </span>
                     </div>
                     <img
                       src={
@@ -434,8 +430,8 @@ export const LiveChatPage = () => {
                       alt="Avatar"
                       className="chat-profile-picture me-3 mt-2"
                     />
-                    <div className="containerLivechat d-flex flex-column w-100 px-4">
-                      <div className="d-flex flex-row w-100 justify-content-start">
+                    <div className="containerLivechat d-flex flex-column me-auto px-4">
+                      <div className="d-flex flex-row justify-content-start">
                         {dt.type === "text" ? (
                           <p className="fw-medium">{dt.sender_message}</p>
                         ) : (
