@@ -19,7 +19,7 @@ const HomeThreeFaq = () => {
                   </p>
                 </div>
                 <Link
-                  to="https://api.whatsapp.com/send/?phone=6282148442180&text=Hello+I+want+to+ask+more+about+something&type=phone_number&app_absent=0"
+                  to="https://api.whatsapp.com/send/?phone=6281216501976&text=Hello+I+want+to+ask+more+about+something&type=phone_number&app_absent=0"
                   className="z-btn z-btn-border"
                 >
                   Ask More
