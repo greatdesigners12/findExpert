@@ -1,8 +1,5 @@
-import { FaClock } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../../../components/shared/LoadingSpinner";
 import "./expertdetail.css";
 import { ExpertsController } from "../../../controller/experts_controller/experts_controller";
@@ -28,7 +25,7 @@ export const ExpertDetailsArea = () => {
   // /expertDetail/:id
   const params = useParams();
   const id = params.id;
-  
+
   const handleIncrementTime = () => {
     setTimeIntervals(timeIntervals + 1);
     setCountIntervals(count + 30);
@@ -57,7 +54,7 @@ export const ExpertDetailsArea = () => {
       {expertsData == null ? (
         <LoadingSpinner />
       ) : (
-        <section className="team__details pt-120 pb-160">
+        <section className="team__details pt-50 pb-50">
           <div className="container">
             <div className="team__details-inner p-relative white-bg">
               <div className="team__details-shape p-absolute">
@@ -66,11 +63,16 @@ export const ExpertDetailsArea = () => {
               <div className="row">
                 <div className="col-xl-6 col-lg-6">
                   <div className="team__details-img w-img mr-70">
-                    <img src={expertsData.data.profilePicture} alt="" />
+                    <img
+                      src={expertsData.data.profilePicture}
+                      alt=""
+                      style={{ maxWidth: "100%", maxHeight: "100%" }}
+                    />
                   </div>
                 </div>
+
                 <div className="col-xl-6 col-lg-6">
-                  <div className="team__details-content pt-50 pb-100">
+                  <div className="team__details-content pt-25">
                     <span>{expertsData.data.field.name}</span>
                     <h3>{expertsData.data.fullName}</h3>
                     <h5>{expertsData.data.education}</h5>
