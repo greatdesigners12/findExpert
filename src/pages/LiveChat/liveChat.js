@@ -257,20 +257,24 @@ export const LiveChatPage = () => {
     return <LoadingSpinner />;
   } else {
     return videoCall ? (
-      <div
-        style={{ width: "100vw", height: "100vh" }}
-        className="d-flex flex-column"
-      >
-        <h5 className="w-100 text-center">
-          {"This Consultation Session Will End At " +
-            Math.floor(counter / (60 * 60)) +
-            ":" +
-            Math.floor(counter / 60) +
-            ":" +
-            Math.floor(counter % 60)}
-        </h5>
-        <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
-      </div>
+      <>
+        <PageHelmet pageTitle="Live Chat" />
+        <link rel="stylesheet" href="../../../../assets/css/livechat.css" />
+        <div
+          style={{ width: "100vw", height: "100vh" }}
+          className="d-flex flex-column"
+        >
+          <h5 className="w-100 text-center mt-2">
+            {"This Consultation Session Will End At " +
+              Math.floor(counter / (60 * 60)) +
+              ":" +
+              Math.floor(counter / 60) +
+              ":" +
+              Math.floor(counter % 60)}
+          </h5>
+          <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
+        </div>
+      </>
     ) : (
       <>
         <PageHelmet pageTitle="Live Chat" />
@@ -349,42 +353,6 @@ export const LiveChatPage = () => {
         </section>
         <div className="pt-4">
           <div className="px-4 mb-5">
-            <div className="d-flex flex-row justify-content-center">
-              <h5>
-                {transaction.transaction_status === "ongoing"
-                  ? "This Consultation Session Will End At " +
-                    Math.floor(counter / (60 * 60)) +
-                    ":" +
-                    (Math.floor((counter / 60) % 60) > 9
-                      ? Math.floor((counter / 60) % 60)
-                      : "0" + Math.floor((counter / 60) % 60)) +
-                    ":" +
-                    (Math.floor(counter % 60) > 9
-                      ? Math.floor(counter % 60)
-                      : "0" + Math.floor(counter % 60))
-                  : "This Consultation Session Ended At " +
-                    new Date(transaction.end_time.seconds * 1000).getHours() +
-                    ":" +
-                    (new Date(
-                      transaction.end_time.seconds * 1000
-                    ).getMinutes() > 9
-                      ? new Date(
-                          transaction.end_time.seconds * 1000
-                        ).getMinutes()
-                      : "0" +
-                        new Date(
-                          transaction.end_time.seconds * 1000
-                        ).getMinutes()) +
-                    " " +
-                    new Date(transaction.end_time.seconds * 1000).getDate() +
-                    " " +
-                    new Date(
-                      transaction.end_time.seconds * 1000
-                    ).toLocaleString("default", { month: "long" }) +
-                    " " +
-                    new Date(transaction.end_time.seconds * 1000).getFullYear()}
-              </h5>
-            </div>
             <div className="padding-chat">
               {allMessages.map((dt) =>
                 dt.receiver_id === uid ? (
@@ -453,36 +421,69 @@ export const LiveChatPage = () => {
               <div ref={divRef} />
             </div>
           </div>
-          <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
-            {transaction.transaction_status === "ongoing" ? (
-              <>
-                <FontAwesomeIcon
-                  icon={faPaperclip}
-                  size="xl"
-                  onClick={paperclipClick}
-                  className="clipButton"
-                />
-                <input
-                  ref={imageRef}
-                  type="file"
-                  onChange={uploadImage}
-                  className="d-none"
-                />
-                <input
-                  value={inputText}
-                  type="text"
-                  onChange={inputTextListener}
-                  className="form-control ms-3"
-                />
-                <button onClick={onClickBtn} className="btn fw-bold">
-                  Send
-                </button>
-              </>
-            ) : (
-              <h5 className="time-left w-100 text-center mb-0 fw-semibold">
-                This Consultation Session Has Ended
-              </h5>
-            )}
+          <div className="bottom-container w-100 d-flex flex-column align-items-end">
+             {counter > 0 ? (<div className="floating-timer fw-semibold px-4 py-2 fs-5 me-3">
+              {Math.floor(counter / (60 * 60)) +
+                ":" +
+                (Math.floor((counter / 60) % 60) > 9
+                  ? Math.floor((counter / 60) % 60)
+                  : "0" + Math.floor((counter / 60) % 60)) +
+                ":" +
+                (Math.floor(counter % 60) > 9
+                  ? Math.floor(counter % 60)
+                  : "0" + Math.floor(counter % 60))}
+            </div>) : (<div></div>)}
+            <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
+              {transaction.transaction_status === "ongoing" ? (
+                <>
+                  <FontAwesomeIcon
+                    icon={faPaperclip}
+                    size="xl"
+                    onClick={paperclipClick}
+                    className="clipButton"
+                  />
+                  <input
+                    ref={imageRef}
+                    type="file"
+                    onChange={uploadImage}
+                    className="d-none"
+                  />
+                  <input
+                    value={inputText}
+                    type="text"
+                    onChange={inputTextListener}
+                    className="form-control ms-3"
+                  />
+                  <button onClick={onClickBtn} className="btn fw-bold">
+                    Send
+                  </button>
+                </>
+              ) : (
+                <h5 className="time-left w-100 text-center mb-0 fw-semibold">
+                  This Consultation Session Has Ended at{" "}
+                  {new Date(transaction.end_time.seconds * 1000).getHours() +
+                    ":" +
+                    (new Date(
+                      transaction.end_time.seconds * 1000
+                    ).getMinutes() > 9
+                      ? new Date(
+                          transaction.end_time.seconds * 1000
+                        ).getMinutes()
+                      : "0" +
+                        new Date(
+                          transaction.end_time.seconds * 1000
+                        ).getMinutes()) +
+                    " " +
+                    new Date(transaction.end_time.seconds * 1000).getDate() +
+                    " " +
+                    new Date(
+                      transaction.end_time.seconds * 1000
+                    ).toLocaleString("default", { month: "long" }) +
+                    " " +
+                    new Date(transaction.end_time.seconds * 1000).getFullYear()}
+                </h5>
+              )}
+            </div>
           </div>
         </div>
       </>
