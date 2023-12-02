@@ -12,7 +12,7 @@ const CommonCtaArea = () => {
                      <div className="cta__content text-center">
                         <h1 >Do you have any question? Feel free to contact us</h1>
                         <div className="cta__btn">
-                           <Link to="https://api.whatsapp.com/send/?phone=6282148442180&text=Hello+I+want+to+ask&type=phone_number&app_absent=0" className="z-btn z-btn-white mb-30">Contact Us</Link>
+                           <Link to="https://api.whatsapp.com/send/?phone=6281216501976&text=Hello+I+want+to+ask&type=phone_number&app_absent=0" className="z-btn z-btn-white mb-30">Contact Us</Link>
                         </div>
                      </div>
                   </div>

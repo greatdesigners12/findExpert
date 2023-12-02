@@ -39,7 +39,7 @@ const HomeThreeSecondSingleService = ({ title }) => {
                 </div>
               </div>
               <Link
-                to="https://api.whatsapp.com/send/?phone=6282148442180&text=Hello+I+want+to+get+started&type=phone_number&app_absent=0"
+                to="https://api.whatsapp.com/send/?phone=6281216501976&text=Hello+I+want+to+get+started&type=phone_number&app_absent=0"
                 className="z-btn"
               >
                 Get Started
