@@ -468,7 +468,9 @@ export const HomeExpert = () => {
                 </div>
               ) : transactionsRequest.length == 0 ? (
                 <div className="py-5 w-100 d-flex justify-content-center">
-                  <h1 className="text-center">No Consultations Yet</h1>
+                  <h2 className="text-center font-montserrat">
+                    No Consultations Yet
+                  </h2>
                 </div>
               ) : (
                 <div className="row mb-3">
