@@ -467,8 +467,8 @@ export const HomeExpert = () => {
                   <LoadingSpinner />
                 </div>
               ) : transactionsRequest.length == 0 ? (
-                <div className="py-5">
-                  <h5>No Consultations Yet</h5>
+                <div className="py-5 w-100 d-flex justify-content-center">
+                  <h1 className="text-center">No Consultations Yet</h1>
                 </div>
               ) : (
                 <div className="row mb-3">
