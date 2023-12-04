@@ -462,9 +462,13 @@ export const HomeExpert = () => {
                   </div>
                 </div>
               </div>
-              {isLoadingTransactionsbyid.length == 0 ? (
+              {isLoadingTransactionsbyid ? (
                 <div className="py-5">
                   <LoadingSpinner />
+                </div>
+              ) : transactionsRequest.length == 0 ? (
+                <div className="py-5">
+                  <h5>No Consultations Yet</h5>
                 </div>
               ) : (
                 <div className="row mb-3">
