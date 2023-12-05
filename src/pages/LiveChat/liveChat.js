@@ -268,7 +268,7 @@ export const LiveChatPage = () => {
             {"This Consultation Session Will End At " +
               Math.floor(counter / (60 * 60)) +
               ":" +
-              Math.floor(counter / 60) +
+              Math.floor((counter / 60) % 60) +
               ":" +
               Math.floor(counter % 60)}
           </h5>
@@ -422,17 +422,21 @@ export const LiveChatPage = () => {
             </div>
           </div>
           <div className="bottom-container w-100 d-flex flex-column align-items-end">
-             {counter > 0 ? (<div className="floating-timer fw-semibold px-4 py-2 fs-5 me-3">
-              {Math.floor(counter / (60 * 60)) +
-                ":" +
-                (Math.floor((counter / 60) % 60) > 9
-                  ? Math.floor((counter / 60) % 60)
-                  : "0" + Math.floor((counter / 60) % 60)) +
-                ":" +
-                (Math.floor(counter % 60) > 9
-                  ? Math.floor(counter % 60)
-                  : "0" + Math.floor(counter % 60))}
-            </div>) : (<div></div>)}
+            {counter > 0 ? (
+              <div className="floating-timer fw-semibold px-4 py-2 fs-5 me-3">
+                {Math.floor(counter / (60 * 60)) +
+                  ":" +
+                  (Math.floor((counter / 60) % 60) > 9
+                    ? Math.floor((counter / 60) % 60)
+                    : "0" + Math.floor((counter / 60) % 60)) +
+                  ":" +
+                  (Math.floor(counter % 60) > 9
+                    ? Math.floor(counter % 60)
+                    : "0" + Math.floor(counter % 60))}
+              </div>
+            ) : (
+              <div></div>
+            )}
             <div className="d-flex flex-row py-4 align-items-center px-5 send-msg-container mt-3">
               {transaction.transaction_status === "ongoing" ? (
                 <>
