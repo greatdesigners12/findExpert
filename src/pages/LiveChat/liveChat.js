@@ -272,7 +272,9 @@ export const LiveChatPage = () => {
                 ? Math.floor((counter / 60) % 60) > 9
                 : "0" + Math.floor((counter / 60) % 60) > 9) +
               ":" +
-              Math.floor(counter % 60)}
+              (Math.floor(counter % 60) > 9
+                ? Math.floor(counter % 60)
+                : "0" + Math.floor(counter % 60))}
           </h5>
           <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
         </div>
