@@ -610,7 +610,9 @@ export const HomeExpert = () => {
                             return (
                               <tr key={transaction2.id}>
                                 <th scope="row" className="th-row">
-                                  {transaction2.id}
+                                  <a href={"/livechat/" + transaction2.id}>
+                                    {transaction2.id}
+                                  </a>
                                 </th>
                                 <td>{transaction2.transaction_date}</td>
                                 <td>
