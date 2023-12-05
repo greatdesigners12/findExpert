@@ -268,7 +268,9 @@ export const LiveChatPage = () => {
             {"This Consultation Session Will End At " +
               Math.floor(counter / (60 * 60)) +
               ":" +
-              Math.floor((counter / 60) % 60) +
+              (Math.floor((counter / 60) % 60) > 9
+                ? Math.floor((counter / 60) % 60) > 9
+                : "0" + Math.floor((counter / 60) % 60) > 9) +
               ":" +
               Math.floor(counter % 60)}
           </h5>
