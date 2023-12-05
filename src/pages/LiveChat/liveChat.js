@@ -454,6 +454,7 @@ export const LiveChatPage = () => {
                     ref={imageRef}
                     type="file"
                     onChange={uploadImage}
+                    accept="image/png, image/jpeg"
                     className="d-none"
                   />
                   <input
