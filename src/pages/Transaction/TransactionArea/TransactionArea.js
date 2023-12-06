@@ -112,7 +112,7 @@ return (
           </div>
           <div className="right-side">
           <h1>BCA Account</h1>
-              <h1>7055086202 (BCA)</h1>
+              <h1>7055086206 (BCA)</h1>
               <h1
                 onChange={totalPricesInputHandler}
                 name="totalPrices"
