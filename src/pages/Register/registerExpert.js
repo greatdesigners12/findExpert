@@ -3,7 +3,10 @@ import LoginRegisterPageHelmet from "../../components/shared/LoginRegisterPageHe
 import { registerExpert } from "../../controller/auth_controller/auth_controller";
 import { useNavigate } from "react-router-dom";
 import { Form } from "react-bootstrap";
-import { getAllFields, getAllFieldsWithExperts } from "../../controller/fields_controller/fields_controller";
+import {
+  getAllFields,
+  getAllFieldsWithExperts,
+} from "../../controller/fields_controller/fields_controller";
 import { useEffect } from "react";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 import { Expert } from "../../controller/experts_controller/models/expert";
@@ -120,7 +123,7 @@ export const RegisterExpert = () => {
           "",
           Timestamp.now()
         );
-        console.log(newExpert)
+        console.log(newExpert);
         const result = await registerExpert(newExpert);
 
         if (result.data != null) {
@@ -151,6 +154,8 @@ export const RegisterExpert = () => {
       if (!phone.match(phoneRegex)) {
         msg = msg + "Invalid Phone Number format.";
       }
+
+      setMessage(msg);
     }
   };
 
