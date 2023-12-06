@@ -13,7 +13,6 @@ import { UserContext, getValidatedUser } from "../../context/authContext.js";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
 
-
 import {
   createCashRequest,
   getAllCashRecords,
@@ -27,13 +26,19 @@ import {
   updateTransactionByExpert,
   updateTransactionStatus,
 } from "../../controller/transaction_controller/transaction_controller.js";
-import { collection, query, onSnapshot, where, orderBy, getDoc, getDocs, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  where,
+  orderBy,
+  getDoc,
+  getDocs,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../controller/firebaseApp.js";
 
 export const HomeExpert = () => {
-
-
-
   //withdraw cash
   const [accType, setaccType] = useState("");
   const [accNumber, setaccNumber] = useState("");
@@ -42,9 +47,10 @@ export const HomeExpert = () => {
   const { userData, setUser } = useContext(UserContext);
   const [isLoading, setLoading] = useState(true);
   const [isLoadingTransaction, setLoadingTransactions] = useState(true);
-  const [isLoadingTransactionsbyid, setLoadingTransactionsbyid] = useState(true);
-  const [isLoadingTransactionsbyid2, setLoadingTransactionsbyid2] = useState(true);
-
+  const [isLoadingTransactionsbyid, setLoadingTransactionsbyid] =
+    useState(true);
+  const [isLoadingTransactionsbyid2, setLoadingTransactionsbyid2] =
+    useState(true);
 
   console.log(userData.uid);
   //for cash
@@ -52,16 +58,18 @@ export const HomeExpert = () => {
   const [consultation, setConsultation] = useState([]);
   const [currentPageTransactions, setCurrentPageTransactions] = useState(1);
   const [pageSizeTransactions, setPageSizeTransactions] = useState(1);
-  const [currentPageTransactionsbyid, setCurrentPageTransactionsbyid] = useState(1);
+  const [currentPageTransactionsbyid, setCurrentPageTransactionsbyid] =
+    useState(1);
   const [pageSizeTransactionsbyid, setPageSizeTransactionsbyid] = useState(1);
-  const [currentPageTransactionsbyid2, setCurrentPageTransactionsbyid2] = useState(1);
+  const [currentPageTransactionsbyid2, setCurrentPageTransactionsbyid2] =
+    useState(1);
   const [pageSizeTransactionsbyid2, setPageSizeTransactionsbyid2] = useState(1);
   //for transaction
   const [transactions, setTransactions] = useState([]);
   const [transactionsbyid, setTransactionsbyid] = useState([]);
   const [transactionsbyid2, setTransactionsbyid2] = useState([]);
   const [transactionsRequest, setTransactionsRequest] = useState([]);
-  
+
   const currentTableDataTransactions = useMemo(() => {
     const firstPageIndex = (currentPageTransactions - 1) * pageSizeTransactions;
     const lastPageIndex = firstPageIndex + pageSizeTransactions;
@@ -70,15 +78,16 @@ export const HomeExpert = () => {
   }, [currentPageTransactions, pageSizeTransactions]);
 
   const currentTableDataTransactionsbyid = useMemo(() => {
-    const firstPageIndex = (currentPageTransactionsbyid - 1) * pageSizeTransactionsbyid;
+    const firstPageIndex =
+      (currentPageTransactionsbyid - 1) * pageSizeTransactionsbyid;
     const lastPageIndex = firstPageIndex + pageSizeTransactionsbyid;
 
     return transactionsbyid.slice(firstPageIndex, lastPageIndex);
   }, [currentPageTransactionsbyid, pageSizeTransactionsbyid]);
 
-
   const currentTableDataTransactionsbyid2 = useMemo(() => {
-    const firstPageIndex = (currentPageTransactionsbyid2 - 1) * pageSizeTransactionsbyid2;
+    const firstPageIndex =
+      (currentPageTransactionsbyid2 - 1) * pageSizeTransactionsbyid2;
     const lastPageIndex = firstPageIndex + pageSizeTransactionsbyid2;
 
     return transactionsbyid2.slice(firstPageIndex, lastPageIndex);
@@ -96,12 +105,16 @@ export const HomeExpert = () => {
     const fetchTransactionsByID = async () => {
       // try {
       const expertId = userData.uid; // Replace with the actual expert ID
-      const result = await getExpertTransactionsById(expertId, currentPageTransactionsbyid, pageSizeTransactionsbyid);
-      if(result.statusCode == 200){
-      setTransactionsbyid(result.data);
-      setPageSizeTransactionsbyid(5);
-      console.log(result.data);
-      setLoadingTransactionsbyid(false);
+      const result = await getExpertTransactionsById(
+        expertId,
+        currentPageTransactionsbyid,
+        pageSizeTransactionsbyid
+      );
+      if (result.statusCode == 200) {
+        setTransactionsbyid(result.data);
+        setPageSizeTransactionsbyid(5);
+        console.log(result.data);
+        setLoadingTransactionsbyid(false);
       }
     };
     fetchTransactionsByID();
@@ -109,7 +122,7 @@ export const HomeExpert = () => {
 
   useEffect(() => {
     const transactionsCollection = collection(db, "transactions");
-    const expertId = userData.uid; 
+    const expertId = userData.uid;
     const q = query(
       transactionsCollection,
       where("expert_id", "==", expertId),
@@ -128,29 +141,25 @@ export const HomeExpert = () => {
       });
 
       setTransactionsbyid2(result);
-      
     });
     return unsubscribe;
   }, []);
 
   useEffect(() => {
     const transactionsCollection = collection(db, "transactions");
-    const expertId = userData.uid; 
+    const expertId = userData.uid;
     const q = query(
       transactionsCollection,
       where("expert_id", "==", expertId),
       where(
         "transaction_status",
         "in",
-        ["ongoing","verified"],
+        ["ongoing", "verified"],
         orderBy("transaction_date", "desc")
       )
     );
 
     const unsubscribe = onSnapshot(q, async (querySnapshot) => {
-      
-      
-
       const transactionsSnapshot = await getDocs(q);
 
       const transactions = [];
@@ -174,10 +183,8 @@ export const HomeExpert = () => {
         transactions.push(transactionData);
       }
       setTransactionsRequest(transactions);
-      
-      
     });
-    
+
     return unsubscribe;
   }, []);
 
@@ -185,12 +192,16 @@ export const HomeExpert = () => {
     const fetchTransactionsByID2 = async () => {
       // try {
       const expertId = userData.uid; // Replace with the actual expert ID
-      const result = await getExpertTransactionsById2(expertId, currentPageTransactionsbyid2, pageSizeTransactionsbyid2);
-      if(result.statusCode == 200){
-      setTransactionsbyid2(result.data);
-      setPageSizeTransactionsbyid2(5);
-      console.log(result.data);
-      setLoadingTransactionsbyid2(false);
+      const result = await getExpertTransactionsById2(
+        expertId,
+        currentPageTransactionsbyid2,
+        pageSizeTransactionsbyid2
+      );
+      if (result.statusCode == 200) {
+        setTransactionsbyid2(result.data);
+        setPageSizeTransactionsbyid2(5);
+        console.log(result.data);
+        setLoadingTransactionsbyid2(false);
       }
     };
     fetchTransactionsByID2();
@@ -201,7 +212,7 @@ export const HomeExpert = () => {
       // try {
       const expertId = userData.uid; // Replace with the actual expert ID
       const result = await getAllCashRecords(expertId);
-      if (result.data !== null){
+      if (result.data !== null) {
         setTransactions(result.data);
         setPageSizeTransactions(5);
         console.log(result);
@@ -217,13 +228,12 @@ export const HomeExpert = () => {
       const user = await getValidatedUser();
       const expertId = userData.uid; // Replace with the actual expert ID
       const result = await ec.getExpertCashAmountById(user.uid);
-      if (result.data !== null){
+      if (result.data !== null) {
         setTotalCash(result.data);
         console.log(result.data);
-      }else{
-        setTotalCash(0)
+      } else {
+        setTotalCash(0);
       }
-      
     };
     fetchTotalMoney();
   }, []);
@@ -232,12 +242,12 @@ export const HomeExpert = () => {
     const fetchConsultation = async () => {
       const expertId = userData.uid; // Replace with the actual expert ID
       const result = await getExpertTransactionsById(expertId);
-      if (result.data !== null){
+      if (result.data !== null) {
         setConsultation(result.data);
         console.log(result.data);
         setLoadingTransactionsbyid(false);
-      }else{
-        setTotalCash(0)
+      } else {
+        setTotalCash(0);
       }
     };
     fetchConsultation();
@@ -291,7 +301,7 @@ export const HomeExpert = () => {
                       className="form-control font-montserrat"
                       id="inputaccType"
                       name="accType"
-                      placeholder="Enter Account Type"
+                      placeholder="Enter Bank Name"
                       value={accType}
                       onChange={(e) => setaccType(e.target.value)}
                       required
@@ -431,35 +441,38 @@ export const HomeExpert = () => {
           </div>
 
           <div className="row mb-3">
-           
-              <div className="mb-3">
-                <h3 className="mb-3">Consultation</h3>
-                <div className="col-xl-3 col-lg-4 col-md-6">
-                  
-                  <div className="d-flex justify-content-start w-100">
-                    <div className="d-flex flex-row align-items-center">
-
-                      <p className="mb-0 me-3">Show </p>
-                      <Form.Select
-                        className="mb-3 mt-4"
-                        value={pageSizeTransactionsbyid}
-                        onChange={(e) => {
-                          setCurrentPageTransactionsbyid(e.target.value);
-                        }}
-                      >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={15}>15</option>
-                      </Form.Select>
-                      <p className="mb-0 ms-3">Entries</p>
-                    </div>
+            <div className="mb-3">
+              <h3 className="mb-3">Consultation</h3>
+              <div className="col-xl-3 col-lg-4 col-md-6">
+                <div className="d-flex justify-content-start w-100">
+                  <div className="d-flex flex-row align-items-center">
+                    <p className="mb-0 me-3">Show </p>
+                    <Form.Select
+                      className="mb-3 mt-4"
+                      value={pageSizeTransactionsbyid}
+                      onChange={(e) => {
+                        setPageSizeTransactionsbyid(e.target.value);
+                      }}
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={15}>15</option>
+                    </Form.Select>
+                    <p className="mb-0 ms-3">Entries</p>
                   </div>
                 </div>
-                {transactionsbyid.length == 0 ? (
-                    <div className="py-5">
-                      <LoadingSpinner />
-                    </div>
-                  ) : (
+              </div>
+              {isLoadingTransactionsbyid ? (
+                <div className="py-5">
+                  <LoadingSpinner />
+                </div>
+              ) : transactionsRequest.length == 0 ? (
+                <div className="py-5 w-100 d-flex justify-content-center">
+                  <h2 className="text-center font-montserrat">
+                    No Consultations Yet
+                  </h2>
+                </div>
+              ) : (
                 <div className="row mb-3">
                   {transactionsRequest.map((transaction) => {
                     return (
@@ -539,53 +552,45 @@ export const HomeExpert = () => {
                           </div>
                         </div>
                       </div>
-                       
                     );
-                    
                   })}
-               
                 </div>
-)}
-                <Pagination
-                        className="pagination-bar"
-                        currentPageTransactionsbyid={currentPageTransactionsbyid}
-                        totalCount={transactionsbyid.length}
-                        pageSize={pageSizeTransactionsbyid}
-                        onPageChange={(page) =>
-                          setCurrentPageTransactionsbyid(page)
-                        }
-                      />
-
-              </div>
-
+              )}
+              <Pagination
+                className="pagination-bar"
+                currentPageTransactionsbyid={currentPageTransactionsbyid}
+                totalCount={transactionsbyid.length}
+                pageSize={pageSizeTransactionsbyid}
+                onPageChange={(page) => setCurrentPageTransactionsbyid(page)}
+              />
+            </div>
           </div>
           <div className="row my-3">
-            
-              <div>
-                <h3>Consultation List</h3>
-                <div className="col-xl-3 col-lg-4 col-md-6">
-                  <div className="d-flex justify-content-start w-100">
-                    <div className="d-flex flex-row align-items-center">
-                      <p className="mb-0 me-3">Show </p>
-                      <Form.Select
-                        className="mb-3 mt-4"
-                        value={pageSizeTransactionsbyid2}
-                        onChange={(e) => {
-                          setCurrentPageTransactionsbyid2(e.target.value);
-                        }}
-                      >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={15}>15</option>
-                      </Form.Select>
-                      <p className="mb-0 ms-3">Entries</p>
-                    </div>
+            <div>
+              <h3>Consultation List</h3>
+              <div className="col-xl-3 col-lg-4 col-md-6">
+                <div className="d-flex justify-content-start w-100">
+                  <div className="d-flex flex-row align-items-center">
+                    <p className="mb-0 me-3">Show </p>
+                    <Form.Select
+                      className="mb-3 mt-4"
+                      value={pageSizeTransactionsbyid2}
+                      onChange={(e) => {
+                        setPageSizeTransactionsbyid2(e.target.value);
+                      }}
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={15}>15</option>
+                    </Form.Select>
+                    <p className="mb-0 ms-3">Entries</p>
                   </div>
                 </div>
-                <div id="table-container"></div>
-                {transactionsbyid2.length == 0 ? (
-              <LoadingSpinner />
-            ) : (
+              </div>
+              <div id="table-container"></div>
+              {transactionsbyid2.length == 0 ? (
+                <LoadingSpinner />
+              ) : (
                 <div class="records table-responsive">
                   <div>
                     <table width="100%">
@@ -600,44 +605,53 @@ export const HomeExpert = () => {
                         </tr>
                       </thead>
                       <tbody>
-                          {currentTableDataTransactionsbyid2.map((transaction2) => {
+                        {currentTableDataTransactionsbyid2.map(
+                          (transaction2) => {
                             return (
                               <tr key={transaction2.id}>
                                 <th scope="row" className="th-row">
-                                  {transaction2.id}
+                                  <a href={"/livechat/" + transaction2.id}>
+                                    {transaction2.id}
+                                  </a>
                                 </th>
+                                <td>{transaction2.transaction_date}</td>
                                 <td>
-                                {transaction2.transaction_date}
+                                  {new Date(transaction2.start_time * 1000)
+                                    .toISOString()
+                                    .substring(11, 16)}
+                                  -
+                                  {new Date(transaction2.end_time * 1000)
+                                    .toISOString()
+                                    .substring(11, 16)}
                                 </td>
-                                <td>{new Date(transaction2.start_time * 1000).toISOString().substring(11, 16)}-{new Date(transaction2.end_time * 1000).toISOString().substring(11, 16)}</td>
                                 <td>{transaction2.customerData.fullName}</td>
                                 <td>{transaction2.payment_amount}</td>
-                                <td
-                                  
-                                >
-                                  <img src="../assets/img/Vector (1).png"
-                          alt="logo"
-                          className="p-3"></img>
+                                <td>
+                                  <img
+                                    src="../assets/img/Vector (1).png"
+                                    alt="logo"
+                                    className="p-3"
+                                  ></img>
                                 </td>
                               </tr>
                             );
-                          })}
-                        </tbody>
+                          }
+                        )}
+                      </tbody>
                     </table>
                     <Pagination
-                        className="pagination-bar"
-                        currentPageTransactionsbyid={currentPageTransactionsbyid2}
-                        totalCount={transactionsbyid2.length}
-                        pageSize={pageSizeTransactionsbyid2}
-                        onPageChange={(page) =>
-                          setCurrentPageTransactionsbyid2(page)
-                        }
-                      />
+                      className="pagination-bar"
+                      currentPageTransactionsbyid={currentPageTransactionsbyid2}
+                      totalCount={transactionsbyid2.length}
+                      pageSize={pageSizeTransactionsbyid2}
+                      onPageChange={(page) =>
+                        setCurrentPageTransactionsbyid2(page)
+                      }
+                    />
                   </div>
                 </div>
-)}
-              </div>
-            
+              )}
+            </div>
           </div>
         </div>
       </section>

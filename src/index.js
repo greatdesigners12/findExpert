@@ -37,7 +37,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/livechat/:id",
-    element: <LiveChatPage />,
+    element: (
+      <IsAuthenticated>
+        <LiveChatPage />
+      </IsAuthenticated>
+    ),
   },
   {
     path: "/register/expert",

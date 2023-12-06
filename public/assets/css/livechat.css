@@ -5,7 +5,7 @@
 }
 
 .padding-chat {
-  padding-bottom: 75px !important;
+  padding-bottom: 90px !important;
 }
 
 html {
@@ -60,11 +60,23 @@ input[type="color"]:focus,
   margin: 10px 0;
 }
 
+.floating-timer {
+  border: 0.5px solid #3b1c91 !important;
+  background-color: #4d29b1 !important;
+  box-shadow: 0.5px 0.5px 4px 0.75px #b7b7b732 !important;
+  border-radius: 10px;
+  width: fit-content !important;
+  color: white;
+}
+
+.bottom-container {
+  position: fixed;
+  bottom: 0;
+}
+
 .send-msg-container {
   border: 0.5px solid #dedede;
   background-color: #f1f1f1;
-  position: fixed;
-  bottom: 0;
   width: 100%;
 }
 
