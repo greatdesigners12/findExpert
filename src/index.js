@@ -28,6 +28,7 @@ import { TransactionList } from "./pages/Transaction/TransactionList";
 import { HomeExpert } from "./pages/homepage/homeExpert";
 import { HomeUser } from "./pages/homepage/homeUser";
 import { AdminPage } from "./pages/Admin/admin";
+import { LiveChatPageTesting } from "./testing backend/livechat";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
       <IsNotAuthenticated>
         <RegisterUser />
       </IsNotAuthenticated>
+    ),
+  },
+  {
+    path: "/testinglivechat/",
+    element: (
+      
+        <LiveChatPageTesting />
+      
     ),
   },
   {
