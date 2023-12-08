@@ -341,8 +341,8 @@ export const RegisterExpert = () => {
                       id="inputKTP"
                       name="KTP"
                       accept="image/png, image/jpeg"
-                      value={KTP}
-                      onChange={(e) => setKTP(e.target.value)}
+                      // value={KTP}
+                      onChange={(e) => setKTP(e.target.files)}
                       required
                     />
                   </div>
@@ -367,8 +367,8 @@ export const RegisterExpert = () => {
                       id="inputProfilePicture"
                       name="ProfilePicture"
                       accept="image/png, image/jpeg"
-                      value={profilePicture}
-                      onChange={(e) => setProfilePicture(e.target.value)}
+                      // value={profilePicture}
+                      onChange={(e) => setProfilePicture(e.target.files)}
                       required
                     />
                   </div>

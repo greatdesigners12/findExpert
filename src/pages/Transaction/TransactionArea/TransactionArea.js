@@ -51,7 +51,7 @@ export const TransactionArea = () => {
   };
 
   const invoicePictureInputHandler = (event) => {
-    updateInvoicePicture(event.target.files[0]);
+    updateInvoicePicture(event.target.files);
     console.log(invoicePicture);
   };
 
@@ -130,7 +130,7 @@ return (
             />
             {invoicePicture && (
               <img
-                src={URL.createObjectURL(invoicePicture)}
+                src={URL.createObjectURL(invoicePicture[0])}
                 alt="Invoice Preview"
                 style={{ maxWidth: "200px", marginTop: "10px" }}
               />
