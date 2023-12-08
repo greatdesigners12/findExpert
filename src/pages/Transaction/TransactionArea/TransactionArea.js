@@ -79,7 +79,7 @@ const onSubmitHandler = async (event) => {
     userData.uid,
     "",
     "",
-    timeIntervals,
+    timeIntervals*30,
     totalPrices,
     formattedDate, // Menggunakan tanggal saat ini
     "unverified",
