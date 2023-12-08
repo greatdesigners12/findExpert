@@ -7,16 +7,20 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-
 import { ResultData } from "../structureJson/resultData";
 import { UserData } from "./models/userData";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 export async function login(email, password) {
   const auth = getAuth();
   const result = new ResultData();
-  
+
   const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -83,27 +87,25 @@ export async function login(email, password) {
         }
       }
       updateProfile(auth.currentUser, {
-        displayName: result.data.role
-      })
-     
+        displayName: result.data.role,
+      });
     })
     .catch((error) => {
-      
       const errorMessage = error.message;
       result.data = null;
-      if(errorMessage.includes("invalid-login-credentials")){
+      if (errorMessage.includes("invalid-login-credentials")) {
         result.errorMessage = "The user is not found";
-      }else{
+      } else {
         result.errorMessage = errorMessage;
       }
-      
+
       result.statusCode = 400;
     });
 
   return result;
 }
 
-export async function getUserById(id){
+export async function getUserById(id) {
   const result = new ResultData();
 
   try {
@@ -111,7 +113,7 @@ export async function getUserById(id){
     const checkUserSnap = await getDoc(checkUser);
 
     if (checkUserSnap.exists()) {
-      result.data = checkUserSnap.data()
+      result.data = checkUserSnap.data();
     }
     result.statusCode = 200;
     result.errorMessage = null;
@@ -217,32 +219,32 @@ export async function register(name, job, email, password, confirmPassword) {
       result.data = userCredential.user;
       result.errorMessage = "";
       result.statusCode = 200;
-      
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      if(errorMessage.includes("email-already-in-use")){
-        result.errorMessage = "Email is already registered, please use another email";
-      }else{
+      if (errorMessage.includes("email-already-in-use")) {
+        result.errorMessage =
+          "Email is already registered, please use another email";
+      } else {
         result.errorMessage = errorMessage;
       }
       result.data = errorCode;
-      
+
       result.statusCode = 400;
     });
 
   if (result.statusCode === 200) {
     const data = new UserData(result.data.uid, name, job).serialize();
-    
+
     await setDoc(doc(db, "userData", result.data.uid), data);
   }
 
   return result;
 }
 
-export async function logout(){
-  return await authApp.signOut()
+export async function logout() {
+  return await authApp.signOut();
 }
 
 export async function registerExpert(expert) {
@@ -256,6 +258,12 @@ export async function registerExpert(expert) {
   }
   try {
     const auth = getAuth();
+    const metadata = {
+      contentType: "image/png",
+      customMetadata: {
+        butts: "image/png",
+      },
+    };
     await createUserWithEmailAndPassword(auth, expert.email, expert.password)
       .then((userCredential) => {
         result.data = userCredential.user;
@@ -265,13 +273,14 @@ export async function registerExpert(expert) {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        if(errorMessage.includes("email-already-in-use")){
-          result.errorMessage = "Email is already registered, please use another email";
-        }else{
+        if (errorMessage.includes("email-already-in-use")) {
+          result.errorMessage =
+            "Email is already registered, please use another email";
+        } else {
           result.errorMessage = errorMessage;
         }
         result.data = errorCode;
-        
+
         result.statusCode = 400;
       });
 
@@ -282,7 +291,7 @@ export async function registerExpert(expert) {
     const storage = getStorage();
     var curKTPPicName = new Date().getTime().toString() + ".png";
     const storageKTPPicRef = ref(storage, "ktp/" + curKTPPicName);
-    await uploadBytes(storageKTPPicRef, expert.ktp[0]).then(
+    await uploadBytesResumable(storageKTPPicRef, expert.ktp[0], metadata).then(
       async (snapshot) => {
         await getDownloadURL(snapshot.ref).then((downloadURL) => {
           curKTPPicName = downloadURL;
@@ -295,21 +304,24 @@ export async function registerExpert(expert) {
       "userProfilePics/" + curProfilePicName
     );
 
-    await uploadBytes(storageProfilePicRef, expert.profilePicture[0]).then(
-      async (snapshot) => {
-        await getDownloadURL(snapshot.ref).then((downloadURL) => {
-          curProfilePicName = downloadURL;
-        });
-      }
-    );
+    await uploadBytesResumable(
+      storageProfilePicRef,
+      expert.profilePicture[0],
+      metadata
+    ).then(async (snapshot) => {
+      await getDownloadURL(snapshot.ref).then((downloadURL) => {
+        curProfilePicName = downloadURL;
+      });
+    });
 
     const allAchievementsPicNames = [];
     for (var el of expert.certificates) {
       const curAchievementPicName = new Date().getTime().toString() + ".png";
 
-      await uploadBytes(
+      await uploadBytesResumable(
         ref(storage, "achievements/" + curAchievementPicName),
-        el
+        el,
+        metadata
       ).then(async (snapshot) => {
         await getDownloadURL(snapshot.ref).then((downloadURL) => {
           allAchievementsPicNames.push(downloadURL);
