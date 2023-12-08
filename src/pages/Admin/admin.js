@@ -154,9 +154,14 @@ export const AdminPage = () => {
 
   useEffect(() => {
     const getPaymentVerifications = async () => {
-      const result = await getAllUnverifiedTransactions();
-
+      var result = await getAllUnverifiedTransactions();
       setTimeout(function () {
+        
+        result.data = result.data.sort(function(a,b){
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+          return new Date(b.transaction_date) - new Date(a.transaction_date);
+        });
         setPaymentVerfications(result.data);
         setPageSizePaymentVerifications(5);
         setIsLoadingPaymentVerifications(false);
@@ -548,8 +553,13 @@ export const AdminPage = () => {
                           {transaction.transaction_status == "unverified" ? (
                             <>
                               <button
-                                onClick={() =>
-                                  updateTransactionStatus(transaction.id, true)
+                                onClick={async () => {
+                                  const data = await updateTransactionStatus(transaction.id, true);
+                                  if(data.statusCode === 200) {
+                                    window.location.reload();
+                                  }
+                                  
+                                  }
                                 }
                                 className="btn btn-success"
                               >

@@ -266,10 +266,10 @@ export const LiveChatPage = () => {
         >
           <h5 className="w-100 text-center mt-2">
             {"This Consultation Session Will End At " +
-              Math.floor(counter / (60 * 60)) +
+              Math.floor(counter / (60 * 60)) >= 1 ? "0" + Math.floor(counter / (60 * 60)) : "0" +
               ":" +
               (Math.floor((counter / 60) % 60) > 9
-                ? Math.floor((counter / 60) % 60) > 9
+                ? Math.floor((counter / 60) % 60) 
                 : "0" + Math.floor((counter / 60) % 60) > 9) +
               ":" +
               (Math.floor(counter % 60) > 9

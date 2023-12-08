@@ -188,7 +188,7 @@ export async function getAllUnverifiedTransactions() {
 
     try {
       
-        const first = query(collection(db, "transactions"), where("transaction_status", "==", "unverified"), orderBy("transaction_date"));
+        const first = query(collection(db, "transactions"), where("transaction_status", "==", "unverified"), orderBy("transaction_date", "desc"));
         
         const querySnapshot = await getDocs(first);
         const data = []
