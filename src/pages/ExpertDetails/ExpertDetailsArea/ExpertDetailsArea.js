@@ -76,7 +76,7 @@ export const ExpertDetailsArea = () => {
                     <span>{expertsData.data.field.name}</span>
                     <h3>{expertsData.data.fullName}</h3>
                     <h5>{expertsData.data.education}</h5>
-                    <h4>Rp. {expertsData.data.price} / Jam</h4>
+                    <h4>Rp. {expertsData.data.price} / sesi</h4>
                     <div className="py-2">
                       <button
                         className="custom-button"
