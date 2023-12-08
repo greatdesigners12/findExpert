@@ -116,7 +116,7 @@ export const RegisterExpert = () => {
           KTP,
           certificates,
           profilePicture,
-          false,
+          "false",
           "offline",
           0,
           price,
