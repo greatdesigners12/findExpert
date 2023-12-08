@@ -92,7 +92,7 @@ export class ExpertsController {
 
         try {
             const expertsCollection = collection(db, "expertData");
-            const verifiedExpertsQuery = query(expertsCollection, where("verified", "==", "true"));
+            const verifiedExpertsQuery = query(expertsCollection, where("verified", "==", "verified"));
             const expertSnapshot = await getDocs(verifiedExpertsQuery);
 
             const experts = [];

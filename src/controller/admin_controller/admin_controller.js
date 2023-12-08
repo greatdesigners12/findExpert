@@ -108,7 +108,7 @@ export async function updateExpertStatus(id, isVerified) {
 
         const r = await updateDoc(transactionRef, {
             
-            verified: isVerified ? "true" : "rejected"
+            verified: isVerified ? "verified" : "rejected"
         });
 
         result.data = r;
