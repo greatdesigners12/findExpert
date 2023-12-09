@@ -268,11 +268,29 @@ export const LiveChatPage = () => {
           className="d-flex flex-column"
         >
           <h5 className="w-100 text-center mt-2">
-            {"This Consultation Session Will End At " +
-              Math.floor(counter / (60 * 60)) >=
-            1
-              ? "0" + Math.floor(counter / (60 * 60))
-              : "0" +
+            {transaction.transaction_status == "done"
+              ? ("This Consultation Session Has Ended at" +
+                new Date(transaction.end_time.seconds * 1000).getHours() +
+                ":" +
+                (new Date(transaction.end_time.seconds * 1000).getMinutes() > 9
+                  ? new Date(transaction.end_time.seconds * 1000).getMinutes()
+                  : "0" +
+                    new Date(
+                      transaction.end_time.seconds * 1000
+                    ).getMinutes()) +
+                " " +
+                new Date(transaction.end_time.seconds * 1000).getDate() +
+                " " +
+                new Date(transaction.end_time.seconds * 1000).toLocaleString(
+                  "default",
+                  { month: "long" }
+                ) +
+                " " +
+                new Date(transaction.end_time.seconds * 1000).getFullYear())
+              : ("This Consultation Session Will End At " +
+                (Math.floor(counter / (60 * 60)) >= 1
+                  ? "0" + Math.floor(counter / (60 * 60))
+                  : "0") +
                 ":" +
                 (Math.floor((counter / 60) % 60) > 9
                   ? Math.floor((counter / 60) % 60)
@@ -280,7 +298,7 @@ export const LiveChatPage = () => {
                 ":" +
                 (Math.floor(counter % 60) > 9
                   ? Math.floor(counter % 60)
-                  : "0" + Math.floor(counter % 60))}
+                  : "0" + Math.floor(counter % 60)))}
           </h5>
           <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
         </div>
@@ -476,8 +494,11 @@ export const LiveChatPage = () => {
                     Send
                   </button>
                 </>
-              ) : (transaction.transaction_status === "waiting" ? (
-                <h5 className="time-left w-100 text-center mb-0 fw-semibold">This Consultation Session Has Not Been Verified Yet</h5>) : (
+              ) : transaction.transaction_status === "waiting" ? (
+                <h5 className="time-left w-100 text-center mb-0 fw-semibold">
+                  This Consultation Session Has Not Been Verified Yet
+                </h5>
+              ) : (
                 <h5 className="time-left w-100 text-center mb-0 fw-semibold">
                   This Consultation Session Has Ended at{" "}
                   {new Date(transaction.end_time.seconds * 1000).getHours() +
@@ -501,7 +522,7 @@ export const LiveChatPage = () => {
                     " " +
                     new Date(transaction.end_time.seconds * 1000).getFullYear()}
                 </h5>
-              ))}
+              )}
             </div>
           </div>
         </div>
