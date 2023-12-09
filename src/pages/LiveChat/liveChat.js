@@ -476,7 +476,8 @@ export const LiveChatPage = () => {
                     Send
                   </button>
                 </>
-              ) : (
+              ) : (transaction.transaction_status === "waiting" ? (
+                <h5 className="time-left w-100 text-center mb-0 fw-semibold">This Consultation Session Has Not Been Verified Yet</h5>) : (
                 <h5 className="time-left w-100 text-center mb-0 fw-semibold">
                   This Consultation Session Has Ended at{" "}
                   {new Date(transaction.end_time.seconds * 1000).getHours() +
@@ -500,7 +501,7 @@ export const LiveChatPage = () => {
                     " " +
                     new Date(transaction.end_time.seconds * 1000).getFullYear()}
                 </h5>
-              )}
+              ))}
             </div>
           </div>
         </div>
