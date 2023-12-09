@@ -588,8 +588,16 @@ export const HomeExpert = () => {
                 </div>
               </div>
               <div id="table-container"></div>
-              {transactionsbyid2.length == 0 ? (
-                <LoadingSpinner />
+              {isLoadingTransactionsbyid2 ? (
+                <div className="py-5">
+                  <LoadingSpinner />
+                </div>
+              ) :  currentTableDataTransactionsbyid2.length == 0 ? (
+                <div className="py-5 w-100 d-flex justify-content-center">
+                  <h2 className="text-center font-montserrat">
+                    No Consultations List Yet
+                  </h2>
+                </div>
               ) : (
                 <div class="records table-responsive">
                   <div>

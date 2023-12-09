@@ -200,16 +200,19 @@ export const LiveChatPage = () => {
         );
       }
 
-      if (Timestamp.now() >= result.data.end_time) {
+      const result2 = await getTransactionById(transactionId);
+      setTransaction(result2.data);
+
+      if (Timestamp.now() >= result2.data.end_time) {
         const updateStatusDone = await updateTransactionByExpert(
           transactionId,
           "done"
         );
 
-        const result = await getTransactionById(transactionId);
-        setTransaction(result.data);
+        const result3 = await getTransactionById(transactionId);
+        setTransaction(result3.data);
       } else {
-        setCounter(result.data.end_time - Timestamp.now());
+        setCounter(result2.data.end_time - Timestamp.now());
       }
 
       setLoadingReceiverData(false);
@@ -266,15 +269,18 @@ export const LiveChatPage = () => {
         >
           <h5 className="w-100 text-center mt-2">
             {"This Consultation Session Will End At " +
-              Math.floor(counter / (60 * 60)) >= 1 ? "0" + Math.floor(counter / (60 * 60)) : "0" +
-              ":" +
-              (Math.floor((counter / 60) % 60) > 9
-                ? Math.floor((counter / 60) % 60) 
-                : "0" + Math.floor((counter / 60) % 60) > 9) +
-              ":" +
-              (Math.floor(counter % 60) > 9
-                ? Math.floor(counter % 60)
-                : "0" + Math.floor(counter % 60))}
+              Math.floor(counter / (60 * 60)) >=
+            1
+              ? "0" + Math.floor(counter / (60 * 60))
+              : "0" +
+                ":" +
+                (Math.floor((counter / 60) % 60) > 9
+                  ? Math.floor((counter / 60) % 60)
+                  : "0" + Math.floor((counter / 60) % 60) > 9) +
+                ":" +
+                (Math.floor(counter % 60) > 9
+                  ? Math.floor(counter % 60)
+                  : "0" + Math.floor(counter % 60))}
           </h5>
           <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
         </div>
@@ -359,7 +365,7 @@ export const LiveChatPage = () => {
           <div className="px-4 mb-5">
             <div className="padding-chat">
               {allMessages.map((dt) =>
-                dt.receiver_id === uid ? (
+                dt.receiver_id != uid ? (
                   <div
                     key={dt.date}
                     className="d-flex flex-row justify-content-end"
@@ -374,7 +380,10 @@ export const LiveChatPage = () => {
                           )}
                         </div>
                         <span className="time-left">
-                          {getMinutes(dt.date)} :{" "}
+                          {getMinutes(dt.date) > 9
+                            ? getMinutes(dt.date)
+                            : "0" + getMinutes(dt.date)}{" "}
+                          :{" "}
                           {getSeconds(dt.date) > 9
                             ? getSeconds(dt.date)
                             : "0" + getSeconds(dt.date)}
@@ -467,7 +476,8 @@ export const LiveChatPage = () => {
                     Send
                   </button>
                 </>
-              ) : (
+              ) : (transaction.transaction_status === "waiting" ? (
+                <h5 className="time-left w-100 text-center mb-0 fw-semibold">This Consultation Session Has Not Been Verified Yet</h5>) : (
                 <h5 className="time-left w-100 text-center mb-0 fw-semibold">
                   This Consultation Session Has Ended at{" "}
                   {new Date(transaction.end_time.seconds * 1000).getHours() +
@@ -491,7 +501,7 @@ export const LiveChatPage = () => {
                     " " +
                     new Date(transaction.end_time.seconds * 1000).getFullYear()}
                 </h5>
-              )}
+              ))}
             </div>
           </div>
         </div>
