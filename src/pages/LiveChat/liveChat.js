@@ -199,18 +199,18 @@ export const LiveChatPage = () => {
           transactionId
         );
       }
-      
+
       const result2 = await getTransactionById(transactionId);
       setTransaction(result2.data);
 
-      if (Timestamp.now() >= result.data.end_time) {
+      if (Timestamp.now() >= result2.data.end_time) {
         const updateStatusDone = await updateTransactionByExpert(
           transactionId,
           "done"
         );
 
-        const result = await getTransactionById(transactionId);
-        setTransaction(result.data);
+        const result3 = await getTransactionById(transactionId);
+        setTransaction(result3.data);
       } else {
         setCounter(result2.data.end_time - Timestamp.now());
       }
