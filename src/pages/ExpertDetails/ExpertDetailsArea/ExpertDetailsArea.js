@@ -95,7 +95,7 @@ export const ExpertDetailsArea = () => {
                     <div className="address-button">
                       {isExpertAvailable ? (
                         <Link
-                          to={`/transaction/${expertsData.data.id}/${timeIntervals}`}
+                          to={`/transaction/${expertsData.data.id}/${timeIntervals * 30}`}
                           className="z-btn custom-consult-button"
                         >
                           Consult
