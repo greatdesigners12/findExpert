@@ -25,7 +25,7 @@ export const TransactionArea = () => {
       const data = await ec.getExpertById(id);
       console.log(data);
       setExpertsData(data);
-      const calculatedTotalPrices = data.data.price * timeIntervals + 1000;
+      const calculatedTotalPrices = data.data.price * (timeIntervals/30);
       const getStatus = data.data.status;
       updateTotalPrices(calculatedTotalPrices);
       updateStatus(getStatus);
@@ -119,7 +119,7 @@ return (
                 value={`Rp. ${totalPrices}`}
               ></h1>
               <h3>Total Prices : Rp. {totalPrices}</h3>
-              <h5>Consultation Duration : {timeIntervals*30} menit</h5>
+              <h5>Consultation Duration : {timeIntervals} menit</h5>
               <h5>Consultation Fee : Rp {expertsData.data.price} / 30 menit</h5>
               <h5>Service Fee : Rp 1.000</h5>
             <input
