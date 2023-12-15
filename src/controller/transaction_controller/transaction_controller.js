@@ -311,7 +311,7 @@ export async function updateTransactionStatus(id, isAccepted = true) {
     const transactionRef = doc(transactionsCollection, id);
 
     const r = await updateDoc(transactionRef, {
-      transaction_status: isAccepted ? "ongoing" : "cancel",
+      transaction_status: isAccepted ? "waiting" : "cancel",
     });
 
     result.data = r;
