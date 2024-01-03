@@ -162,7 +162,7 @@ export const HomeExpert = () => {
     const unsubscribe = onSnapshot(q, async (querySnapshot) => {
       const transactionsSnapshot = await getDocs(q);
 
-      const transactions = [];
+      let transactions = [];
       for (const transactionDoc of transactionsSnapshot.docs) {
         const transactionData = transactionDoc.data();
 
@@ -182,6 +182,12 @@ export const HomeExpert = () => {
         }
         transactions.push(transactionData);
       }
+        transactions = transactions.sort(function(a,b){
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+          return new Date(b.transaction_date) - new Date(a.transaction_date);
+        });
+        
       setTransactionsRequest(transactions);
     });
 
@@ -490,6 +496,7 @@ export const HomeExpert = () => {
                                 <h3 className="m-2">
                                   {transaction.customerData.fullName}
                                 </h3>
+                                {console.log(transaction)}
                                 {transaction.transaction_status ===
                                 "ongoing" ? (
                                   <>

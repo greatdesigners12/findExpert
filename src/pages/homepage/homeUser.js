@@ -186,33 +186,34 @@ export const HomeUser = () => {
                           key={historys.expert.id}
                           className="col-xl-3 col-lg-4 col-md-6"
                         >
-                          <a href={`/livechat/${historys.transaction.id}`}>
+                          <a style={historys.transaction.transaction_status === "unverified" ? {pointerEvents: "none"} : null} href={`/livechat/${historys.transaction.id}`}>
                             <div className="team__item p-relative text-center fix mb-30">
                               <div className="team__thumb mb-25">
                                 <img
                                   src={historys.expert.profilePicture}
                                   alt="team"
                                 />
+                                
                                 <div
                                   className="status-circle"
                                   style={{ backgroundColor: circleColor }}
                                 ></div>
                                 <div className="team__info text-start">
                                   <h3>
-                                    <Link to={`/transaction/${historys.id}`}>
-                                      {historys.expert.fullName}
-                                    </Link>
+                                    <a style={historys.transaction.transaction_status === "unverified" ? {pointerEvents: "none"} : null} href={`/livechat/${historys.transaction.id}`}>{historys.expert.fullName}</a>
+                                    
                                   </h3>
                                   <span>{name}</span>
                                 </div>
                               </div>
                               <div className="team__content">
                                 <h3>
-                                  <Link to={`/transaction/${historys.id}`}>
-                                    {historys.expert.fullName}
-                                  </Link>
+                                <a style={historys.transaction.transaction_status === "unverified" ? {pointerEvents: "none"} : null} href={`/livechat/${historys.transaction.id}`}>{historys.expert.fullName}</a>
+
                                 </h3>
                                 <span>{name}</span>
+                                <span>{historys.transaction.transaction_status === "unverified" ? "Waiting for confirmation" : "Click here to Join Now !"}</span>
+                                
                               </div>
                             </div>
                           </a>

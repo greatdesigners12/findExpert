@@ -95,8 +95,11 @@ export const LiveChatPage = () => {
   const onClickEndChat = async (event) => {
     setLoadingReceiverData(true);
     const endChat = await updateTransactionByExpert(transactionId, "done");
-
-    navigate("/");
+    console.log(endChat);
+    if(endChat.statusCode === 200){
+      navigate("/");
+    }
+    
   };
 
   useEffect(() => {
@@ -383,7 +386,7 @@ export const LiveChatPage = () => {
           <div className="px-4 mb-5">
             <div className="padding-chat">
               {allMessages.map((dt) =>
-                dt.receiver_id != uid ? (
+                dt.receiver_id === uid ? (
                   <div
                     key={dt.date}
                     className="d-flex flex-row justify-content-end"
