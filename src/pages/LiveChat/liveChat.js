@@ -101,6 +101,7 @@ export const LiveChatPage = () => {
     }
     
   };
+  
 
   useEffect(() => {
     const getAllMessage = async () => {
@@ -114,6 +115,34 @@ export const LiveChatPage = () => {
     };
     getAllMessage();
   }, []);
+
+  useEffect(() => {
+    if(videoCall === true){
+      checkPermission()
+    }
+  }, [videoCall])
+
+  function checkPermission(){
+    navigator.permissions.query(
+      { name: 'camera' },
+      { name: 'microphone' }
+      // { name: 'geolocation' }
+      // { name: 'notifications' } 
+      // { name: 'midi', sysex: false }
+      // { name: 'midi', sysex: true }
+      // { name: 'push', userVisibleOnly: true }
+      // { name: 'push' } // without userVisibleOnly isn't supported in chrome M45, yet
+    ).then(function(permissionStatus){
+        
+      if(permissionStatus.state === "denied" || permissionStatus.state === "prompt"){
+        alert("Please allow the microphone and camera permission");
+      }
+    
+        
+    
+    })
+  }
+
   useEffect(() => {
     if (divRef !== null && divRef.current !== null) {
       divRef.current.scrollIntoView({ behavior: "smooth" });
@@ -215,6 +244,7 @@ export const LiveChatPage = () => {
         const result3 = await getTransactionById(transactionId);
         setTransaction(result3.data);
       } else {
+        
         setCounter(result2.data.end_time - Timestamp.now());
       }
 

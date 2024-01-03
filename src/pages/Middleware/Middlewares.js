@@ -105,6 +105,8 @@ export const HomeCheckerForUser = ({ children }) => {
       } else {
         return children
       }
+    }else{
+      return children
     }
   } else {
     return children;
