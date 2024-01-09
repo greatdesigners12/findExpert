@@ -11,6 +11,7 @@ import {
   updateTransactionStatus,
   updateTransactionWithdrawStatus,
 } from "../../controller/admin_controller/admin_controller";
+
 import { useEffect } from "react";
 import PageHelmet from "../../components/shared/PageHelmet";
 import { Link, NavLink } from "react-router-dom";
@@ -19,6 +20,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import { Form } from "react-bootstrap";
 import { LoadingSpinner } from "../../components/shared/LoadingSpinner";
 import { logout } from "../../controller/auth_controller/auth_controller";
+import SidebarAdmin from "../../components/sidebar-admin/sidebar-admin.component";
 
 export const AdminPage = () => {
   const [equity, setEquity] = useState("");
@@ -177,6 +179,7 @@ export const AdminPage = () => {
 
   return (
     <div className="admin-page-bg">
+      <SidebarAdmin>
       <PageHelmet pageTitle="Admin Panel" />
       <link rel="stylesheet" href="../../../../assets/css/admin.css" />
       <div className="admin-navbar w-100 justify-content-between d-flex">
@@ -606,6 +609,7 @@ export const AdminPage = () => {
           )}
         </div>
       </div>
+      </SidebarAdmin>
     </div>
   );
 };
