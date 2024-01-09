@@ -93,6 +93,26 @@ export const IsAdmin = ({ children }) => {
   }
 };
 
+export const HomeCheckerForUser = ({ children }) => {
+  const { userData, setUser } = useContext(UserContext);
+
+  if (userData != "") {
+    if (userData != null) {
+      if (userData.displayName === "admin") {
+        return <Navigate to="/admin" />;
+      }else if(userData.displayName === "expert"){
+        return <Navigate to="/homeexpert" />;
+      } else {
+        return children
+      }
+    }else{
+      return children
+    }
+  } else {
+    return children;
+  }
+};
+
 export const IsAdminSmallComponent = ({ children }) => {
   const { userData, setUser } = useContext(UserContext);
 

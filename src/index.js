@@ -21,6 +21,7 @@ import {
   IsAuthenticated,
   IsExpert,
   IsNotAuthenticated,
+  HomeCheckerForUser
 } from "./pages/Middleware/Middlewares";
 import { UserContextProvider } from "./context/authContext";
 import { RegisterExpert } from "./pages/Register/registerExpert";
@@ -137,7 +138,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <HomeUser />,
+    element: (
+      <HomeCheckerForUser>
+        <HomeUser />
+      </HomeCheckerForUser>
+    ),
   },
 ]);
 

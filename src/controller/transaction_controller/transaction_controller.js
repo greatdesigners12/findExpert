@@ -366,10 +366,11 @@ export async function updateTransactionByExpert(id, newStatus) {
       const transactionData = (await getDoc(transactionRef)).data();
 
       // Check if it has been at least 15 minutes since the transaction started
-      const startTime = new Date(transactionData.start_time.seconds * 1000);
-      const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
-
-      if (currentTimestamp >= fifteenMinutesLater) {
+      // const startTime = new Date(transactionData.start_time.seconds * 1000);
+      // const fifteenMinutesLater = new Date(startTime.getTime() + 15 * 60000);
+      // console.log(startTime)
+      // console.log(fifteenMinutesLater)
+      
         // Update the 'transaction_status' to "done"
         await updateDoc(transactionRef, {
           transaction_status: "done",
@@ -387,12 +388,7 @@ export async function updateTransactionByExpert(id, newStatus) {
         result.data = newStatus;
         result.errorMessage = "";
         result.statusCode = 200;
-      } else {
-        result.data = null;
-        result.errorMessage =
-          "Transaction must be at least 15 minutes to be marked as 'done'.";
-        result.statusCode = 400;
-      }
+      
     } else if (newStatus === "cancel") {
       // Update the 'transaction_status' to "cancel"
       await updateDoc(transactionRef, {
@@ -518,7 +514,7 @@ export async function getExpertTransactionsById(
         "transaction_status",
         "in",
         ["ongoing", "verified"],
-        orderBy("transaction_status", "asc") // Sort by transaction_status in ascending order
+        orderBy("transaction_status", "desc") // Sort by transaction_status in ascending order
       )
     );
 
