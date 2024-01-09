@@ -187,7 +187,7 @@ export const AdminPage = () => {
             alt=""
           />
         </div>
-        <NavLink onClick={handleLogout} className="z-btn z-btn-white">
+        <NavLink onClick={handleLogout} className="">
           Logout
         </NavLink>
       </div>
