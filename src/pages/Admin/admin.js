@@ -88,6 +88,10 @@ export const AdminPage = () => {
     return "Rp. " + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
   }
 
+  const handleLogout = () => {
+    logout();
+  };
+
   useEffect(() => {
     const getEquityTransactionsConsultants = async () => {
       const result1 = await getTotalEquity();
@@ -156,8 +160,7 @@ export const AdminPage = () => {
     const getPaymentVerifications = async () => {
       var result = await getAllUnverifiedTransactions();
       setTimeout(function () {
-        
-        result.data = result.data.sort(function(a,b){
+        result.data = result.data.sort(function (a, b) {
           // Turn your strings into dates, and then subtract them
           // to get a value that is either negative, positive, or zero.
           return new Date(b.transaction_date) - new Date(a.transaction_date);
@@ -175,7 +178,7 @@ export const AdminPage = () => {
     <div className="admin-page-bg">
       <PageHelmet pageTitle="Admin Panel" />
       <link rel="stylesheet" href="../../../../assets/css/admin.css" />
-      <div className="admin-navbar w-100">
+      <div className="admin-navbar w-100 justify-content-between d-flex">
         <div className="align-items-center admin-navbar-logo-container h-100 px-5">
           <img
             src="assets/img/logo/logo-white.png"
@@ -183,6 +186,9 @@ export const AdminPage = () => {
             alt=""
           />
         </div>
+        <NavLink onClick={handleLogout} className="z-btn z-btn-white">
+          Logout
+        </NavLink>
       </div>
       <div className="container py-5">
         <div className="row d-flex flex-row justify-content-evenly">
@@ -554,13 +560,14 @@ export const AdminPage = () => {
                             <>
                               <button
                                 onClick={async () => {
-                                  const data = await updateTransactionStatus(transaction.id, true);
-                                  if(data.statusCode === 200) {
+                                  const data = await updateTransactionStatus(
+                                    transaction.id,
+                                    true
+                                  );
+                                  if (data.statusCode === 200) {
                                     window.location.reload();
                                   }
-                                  
-                                  }
-                                }
+                                }}
                                 className="btn btn-success"
                               >
                                 Accept
