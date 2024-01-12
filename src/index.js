@@ -21,15 +21,19 @@ import {
   IsAuthenticated,
   IsExpert,
   IsNotAuthenticated,
-  HomeCheckerForUser
+  HomeCheckerForUser,
 } from "./pages/Middleware/Middlewares";
 import { UserContextProvider } from "./context/authContext";
 import { RegisterExpert } from "./pages/Register/registerExpert";
 import { TransactionList } from "./pages/Transaction/TransactionList";
 import { HomeExpert } from "./pages/homepage/homeExpert";
 import { HomeUser } from "./pages/homepage/homeUser";
-import { AdminPage } from "./pages/Admin/admin";
+import { AdminPage } from "./pages/Admin/admin.component";
 import { LiveChatPageTesting } from "./testing backend/livechat";
+import { WithdrawVerificationAdmin } from "./pages/Admin/withdrawVerificationAdmin";
+import { TransactionAdmin } from "./pages/Admin/TransactionAdmin";
+import { ExpertVerificationsAdmin } from "./pages/Admin/ExpertVerificationsAdmin";
+import { PaymentVerificationAdmin } from "./pages/Admin/PaymentVerificationAdmin";
 
 const router = createBrowserRouter([
   {
@@ -58,11 +62,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/testinglivechat/",
-    element: (
-      
-        <LiveChatPageTesting />
-      
-    ),
+    element: <LiveChatPageTesting />,
   },
   {
     path: "/register-expert/",
@@ -81,11 +81,41 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin/",
+    path: "/admin-transactions/",
     element: (
       <IsAuthenticated>
         <IsAdmin>
-          <AdminPage />
+          <TransactionAdmin />
+        </IsAdmin>
+      </IsAuthenticated>
+    ),
+  },
+  {
+    path: "/admin-expert-verifications/",
+    element: (
+      <IsAuthenticated>
+        <IsAdmin>
+          <ExpertVerificationsAdmin />
+        </IsAdmin>
+      </IsAuthenticated>
+    ),
+  },
+  {
+    path: "/admin-withdraw-requests/",
+    element: (
+      <IsAuthenticated>
+        <IsAdmin>
+          <WithdrawVerificationAdmin />
+        </IsAdmin>
+      </IsAuthenticated>
+    ),
+  },
+  {
+    path: "/admin-payment-verifications/",
+    element: (
+      <IsAuthenticated>
+        <IsAdmin>
+          <PaymentVerificationAdmin />
         </IsAdmin>
       </IsAuthenticated>
     ),

@@ -99,7 +99,7 @@ export const HomeCheckerForUser = ({ children }) => {
   if (userData != "") {
     if (userData != null) {
       if (userData.displayName === "admin") {
-        return <Navigate to="/admin" />;
+        return <Navigate to="/admin-transactions" />;
       }else if(userData.displayName === "expert"){
         return <Navigate to="/homeexpert" />;
       } else {

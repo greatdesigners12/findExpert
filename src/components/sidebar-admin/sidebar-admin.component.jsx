@@ -6,7 +6,10 @@ import {
     FaRegChartBar,
     FaCommentAlt,
     FaShoppingBag,
-    FaThList
+    FaThList,
+    FaMoneyCheck,
+    FaMoneyBill,
+    FaDollarSign
 }from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 import "./sidebar.css";
@@ -16,24 +19,24 @@ const SidebarAdmin = ({children}) => {
     const toggle = () => setIsOpen (!isOpen);
     const menuItem=[
         {
-            path:"/",
-            name:"Withdraw Verification",
-            icon:<FaTh/>
+            path:"/admin-withdraw-requests",
+            name:"Withdraw Requests",
+            icon:<FaMoneyBill/>
         },
         {
-            path:"/about",
+            path:"/admin-expert-verifications",
             name:"Expert Verification",
             icon:<FaUserAlt/>
         },
         {
-            path:"/analytics",
+            path:"/admin-payment-verifications",
             name:"Payment Verification",
-            icon:<FaRegChartBar/>
+            icon:<FaDollarSign/>
         },
         {
-            path:"/comment",
+            path:"/admin-transactions",
             name:"All Transactions",
-            icon:<FaCommentAlt/>
+            icon:<FaMoneyCheck/>
         },
         
     ]

@@ -46,6 +46,10 @@
   overflow-x: scroll;
 }
 
+.admin-sidebar-margin {
+  padding-left: 50px;
+}
+
 .th-col {
   background-color: #f8f9fa;
   padding-top: 1rem !important;

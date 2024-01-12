@@ -1,42 +1,50 @@
-.container-admin{
-    display:flex;
+.container-admin {
+  width: 100%;
 }
-.sidebar-admin{
-    background: #1F1841;
-    color: #fff;
-    height: 100vh;
-    width: 200px;
-    transition: all 0.5s;
+.sidebar-admin {
+  background: #1f1841;
+  color: #fff;
+  height: 100vh;
+  width: 200px;
+  transition: all 0.5s;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
 }
-.top_section-admin{
-    display: flex;
-    align-items:center;
-    padding:20px 15px;
+.top_section-admin {
+  display: flex;
+  align-items: center;
+  padding: 20px 7.5px;
 }
-.logo-admin{
-    font-size: 30px;
+.logo-admin {
+  font-size: 30px;
 }
-.bars-admin{
-    display: flex;
-    font-size: 25px;
-    margin-left: 50px;
+.bars-admin {
+  display: flex;
+  font-size: 25px;
+  margin-left: 50px;
 }
-.link-admin{
-    display: flex;
-    color: #fff;
-    padding: 10px 15px;
-    gap: 15px;
-    transition: all 0.5s;
+.link-admin {
+  display: flex;
+  color: #fff;
+  padding: 10px 15px;
+  gap: 15px;
+  transition: all 0.5s;
 }
-.link-admin:hover{
-    background:white;
-    color: #000;
-    transition: all 0.5s;
+.link-admin:hover {
+  background: white;
+  color: #000;
+  transition: all 0.5s;
 }
-.active-admin{
-    background: lightskyblue;
-    color: #000;
+.active-admin {
+  background: lightskyblue;
+  color: #000;
 }
-.icon-admin, .link_text-admin{
-    font-size: 10px;
+.icon-admin,
+.link_text-admin {
+  font-size: 10px;
+}
+.admin-page-bg {
+  width: 100%;
 }
